@@ -1,5 +1,23 @@
 @import "./hexagon.scss";
 
+body {
+  font-family: verdana, arial, sans-serif;
+  background: rgb(31, 33, 32);
+  padding: 0;
+  margin: 1em;
+}
+
+a {
+  text-decoration:none;
+  color: rgb(31, 33, 32);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  margin: 0;
+  color: rgb(31, 33, 32);
+}
+
 .invisible { visibility: hidden !important; }
 
 .container {
@@ -7,16 +25,58 @@
   margin: 0 auto;
 }
 
-$hexSide: 100px;
-.hexagon { @include hexagon($hexSide, #0cc); }
+$hexSide: 130px;
+.hexagon {
+  @include hexagon($hexSide, #0cc);
+  &:before, &:after, & {
+    background: lighten(rgb(46, 204, 113), 10%);
+  }
+}
 
 .hexa-row {
   text-align: center;
-  padding-bottom: 3px;
+  padding-bottom: $hexSide/25;
 }
 
 .hexa-row.third {
   /* margin-left: -$hexSide*0.2; */
   margin-left: -1px;
-  margin-top: -$hexSide+12px;
+  margin-top: -$hexSide+$hexSide/9;
 }
+
+.text {
+  z-index: 10;
+  display: block;
+  width: $hexSide*2;
+  /* color: rgb(31, 33, 32); */
+  text-align: center;
+  position: absolute;
+  left: -$hexSide/4;
+  width: $hexSide*1.5;
+  margin-bottom: 1em;
+
+  /* top: $hexSide/1.732; */
+  top: 35%;
+  transition: top 1s;
+}
+
+.text .side-content {
+
+}
+
+.text:hover .side-content {
+  opacity: 1;
+}
+
+.hexagon.main .logo {
+  position: absolute;
+  left: -$hexSide/2;
+  width: $hexSide*2;
+  height: $hexSide*2;
+  z-index: 5;
+  background-image: url("./logo.png");
+  background-repeat: no-repeat;
+  background-size: $hexSide*1.2 $hexSide*1.2;
+  background-position: $hexSide/2/1.2 $hexSide/3;
+}
+
