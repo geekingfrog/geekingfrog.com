@@ -1,0 +1,31 @@
+@mixin hexagon($side: 100px, $bgcol: red){
+  /* 1.732 = sqrt(3) */
+  width: $side;
+  height: 1.732*$side;
+  position: relative;
+  background-color: $bgcol;
+
+  &:before, &:after {
+    content: "";
+    width: $side;
+    height: 1.732/2*$side;
+    position: absolute;
+    background-color: $bgcol;
+    -moz-transform: rotate(60deg) skew(30deg);
+    -webkit-transform: rotate(60deg) skew(30deg);
+    transform: rotate(60deg) skew(30deg);
+  }
+
+  &:before {
+    right: $side/2;
+    top: 1.732/4*$side;
+  }
+
+  &:after {
+    left: $side/2;
+    top: 1.732/4*$side;
+  }
+
+}
+
+.hexagon { @include hexagon(100px, #0cc); }
