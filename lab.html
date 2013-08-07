@@ -28,16 +28,99 @@
 
       <div class="delimiter"> </div>
 
+      <div class="row">
+        <p>Here is a compilation of some (finished or mostly done) side projects I made.
+        The source code is available on <a href="//github.com/geekingfrog" title="github" alt="my github">my github</a>.
+        </p>
+      </div>
+
+      <div class="delimiter"> </div>
+
       <div class="content">
 
         <div class="labSection">
           <h3 class="title-labSection">Ultimate tic tac toe</h3>
           <img src="./ttt-preview.png" alt="preview ultimate tic tac toe" class="foo"/>
           <p>
-         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </p>
+          <a href="//ttt.geekingfrog.com"
+            title="Demo ultimate tic tac toe"
+            alt="demo ultimate tic tac toe">
+            <i class="icon-gamepad"></i> Demo
+            </a> | <a href="//github.com/geekingfrog/ultimateTTT"
+            title="source code" alt="source code"> <i class="icon-github"></i> Source
+          </a>
+          </p>
+          <p>
+          A welcome upgrade to one of the most boring game: the tic tac toe (Randall Munroe has a nice representation of the <a href="http://xkcd.com/832/" title="xkcd tic tac toe"
+            alt="xkcd optimal tic tac toe strategy">optimal strategy</a> for this game).
+          </p>
+          <h4>Technologies used</h4>
+          <ul>
+
+            <li> <i class="icon-cog"></i> Node.js with socket.io
+            <p>
+            This was the main focus of this project. Node really shine when it comes to bidirectional communication and a multiplayer game is the perfect occasion to try out this great library.
+            </p>
+            </li>
+
+            <li>
+            <i class="icon-cog"></i> Ember.js
+            <p>
+            At the beginning, I just used ember to take advantage of the goodness of two-way bindings. Since the board has a memory reprensation backed by regular array, it's a pain to keep the dom and the in-memory board in sync. Ember also make easy to get the state of each part of the board and apply the relevant css, thanks to the computed properties.
+            </p>
+            </li>
+
+          </ul>
         </div>
+
+      </div> <!-- end labsection ultimate tic tac toe-->
+
+
+      <div class="labSection">
+
+        <h3 class="title-labSection">Web fractals</h3>
+
+        <img src="./webFractal-preview.png" alt="preview web fractal" />
+
+        <p>
+        <a href="//fractal.geekingfrog.com"
+          title="Demo web fractal" alt="demo web fractal"> <i class="icon-eye-open"></i> Demo</a> (works best on chrome)
+        | <a href="//github.com/geekingfrog/webFractal"
+          alt="Source code" title="source code"> <i class="icon-github"></i> Source</a>
+        </p>
+
+        <p>
+        A small toy project to learn new things using the very well known Mandlebrot set.
+        </p>
+
+        <h4>Technologies used</h4>
+        <ul>
+          <li> <i class="icon-cog"></i> Canvas
+          <p>
+          I wanted to try out the 'new' canvas element in html5. The main goal was to 
+          become familiar with the basic api of the 2d context of canvas.
+          </p>
+          </li>
+
+          <li> <i class="icon-cog"></i> Web workers
+          <p>
+          This was another technology I wanted to explore and become more familiar with.
+          The main critic I hear about javascript is <em>"javascript has only one thread to
+          execute code, how can you scale ?</em>. It's true that if you need to do cpu intensive tasks, javascript is not ideal, but not with web workers anymore! The computation of a fractal is very cpu intensive and this was the ideal case study for web workers.
+          </p>
+          </li>
+
+          <li> <i class="icon-cog"></i> No third party library
+          <p>
+          Almost. I still use <a href="//lodash.com" title="lodash" alt="lodash">lodash</a>
+          to debounce a function or two, and <a href="https://github.com/kriskowal/q">Q</a> to
+          make promise and allow for easy cancellation. But there is no trace of jQuery or something similar here. In modern browser it's not that difficult (querySelector !) and I don't target old browsers (no web workers or canvas).
+          </p>
+          </li>
+          
+        </ul>
       
-      </div>
+      </div> <!-- end labSection web fractal -->
 
     </div>
 

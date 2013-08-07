@@ -24,6 +24,11 @@ body {
   background-image: url(./white_wall_hash.png);
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: darken($primary-color, 15%);
+  margin-bottom: .5em;
+}
+
 ul, ol { list-style-type: none; }
 
 a {
@@ -102,6 +107,7 @@ a:hover {
 
 .labSection {
   margin: 20px 2em;
+  overflow: auto;
 }
 
 .title-labSection {
@@ -112,12 +118,18 @@ a:hover {
   margin: 1em auto;
 }
 
-.foo {
-  max-width: 400px;
-  margin: 1em;
-  float: left;
-  display: block;
+.labSection {
+  img {
+    max-width: 400px;
+    margin: 1em;
+    float: left;
+    display: block;
+    border: 1px solid rgb(31, 33, 32);
+  }
+
+  &:nth-child(2n) { img { float: right; } }
 }
+
 
 .footer {
   margin: 0;
