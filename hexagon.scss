@@ -4,6 +4,9 @@
   height: 1.732*$side;
   position: relative;
   background-color: $bgcol;
+  display: inline-block;
+  margin: 0 $side;
+  padding: 0;
 
   &:before, &:after {
     content: "";
@@ -27,5 +30,3 @@
   }
 
 }
-
-.hexagon { @include hexagon(100px, #0cc); }

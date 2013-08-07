@@ -1,0 +1,22 @@
+@import "./hexagon.scss";
+
+.invisible { visibility: hidden !important; }
+
+.container {
+  width: 800px;
+  margin: 0 auto;
+}
+
+$hexSide: 100px;
+.hexagon { @include hexagon($hexSide, #0cc); }
+
+.hexa-row {
+  text-align: center;
+  padding-bottom: 3px;
+}
+
+.hexa-row.third {
+  /* margin-left: -$hexSide*0.2; */
+  margin-left: -1px;
+  margin-top: -$hexSide+12px;
+}
