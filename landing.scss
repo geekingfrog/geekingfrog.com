@@ -66,12 +66,12 @@ $hexSide: 110px;
 
 .legend {
   margin: 0;
-  margin-top: $hexSide/4;
+  margin-top: $hexSide/2;
   display: block;
   transition: margin-top .7s;
 }
 
-.hexagon:hover, .hexagon:after:hover, .hexagon:before:hover {
+.text:hover {
   .legend {
     margin-top: 0;
   }
