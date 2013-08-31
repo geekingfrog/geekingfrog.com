@@ -39,8 +39,41 @@
       <div class="content">
 
         <div class="labSection">
+          <h3 class="title-labSection">FrogComplete</h3>
+          <img src="./frogComplete-preview.png" alt="preview frogComplete" />
+          <p>
+          <a href="//geekingfrog.com/frogComplete/demo/demo.html"
+            title="Demo frogComplete widget"
+            alt="Demo frogComplete widget"
+            ><i class="icon-gamepad"></i>&nbsp;Demo</a> | <a
+            href="//github.com/geekingfrog/frogComplete"
+            title="github project"
+            alt="github project"
+            ><i class="icon-github"></i>&nbsp;Source</a>
+          </p>
+
+          <p>
+          A small autocomplete widget asked by Mozilla Taiwan as a pre-interview question. Very simple, it works great in all modern browsers and on mobile.
+          </p>
+
+          <h4>Technologies used</h4>
+          <ul>
+            <li> <i class="icon-cog"></i> vanilla javascript
+            <p>
+            It was required not to use any library, so no jquery or similar for this project.
+            It is actually pretty easy, in modern browser, the dom API is much nicer than before
+            thanks to document.querySelector and alike.
+            </p>
+            </li>
+
+          </ul>
+
+        </div>
+        <!-- end labSection frogComplete -->
+
+        <div class="labSection">
           <h3 class="title-labSection">Ultimate tic tac toe</h3>
-          <img src="./ttt-preview.png" alt="preview ultimate tic tac toe" class="foo"/>
+          <img src="./ttt-preview.png" alt="preview ultimate tic tac toe"/>
           <p>
           <a href="//geekingfrog.com:4445/app/index.html"
             title="Demo ultimate tic tac toe"
@@ -71,75 +104,74 @@
             </li>
 
           </ul>
-        </div>
 
-      </div> <!-- end labsection ultimate tic tac toe-->
+        </div> <!-- end labsection ultimate tic tac toe-->
 
 
-      <div class="labSection">
+        <div class="labSection">
 
-        <h3 class="title-labSection">Web fractals</h3>
+          <h3 class="title-labSection">Web fractals</h3>
 
-        <img src="./webFractal-preview.png" alt="preview web fractal" />
+          <img src="./webFractal-preview.png" alt="preview web fractal" />
 
-        <p>
-        <a href="//geekingfrog.com/fractal"
-          title="Demo web fractal" alt="demo web fractal"> <i class="icon-eye-open"></i> Demo</a> (works best on chrome)
-        | <a href="//github.com/geekingfrog/webFractal"
-          alt="Source code" title="source code"> <i class="icon-github"></i> Source</a>
-        </p>
-
-        <p>
-        A small toy project to learn new things using the very well known Mandlebrot set.
-        </p>
-
-        <h4>Technologies used</h4>
-        <ul>
-          <li> <i class="icon-cog"></i> Canvas
           <p>
-          I wanted to try out the 'new' canvas element in html5. The main goal was to 
-          become familiar with the basic api of the 2d context of canvas.
+          <a href="//geekingfrog.com/fractal"
+            title="Demo web fractal" alt="demo web fractal"> <i class="icon-eye-open"></i> Demo</a> (works best on chrome)
+          | <a href="//github.com/geekingfrog/webFractal"
+            alt="Source code" title="source code"> <i class="icon-github"></i> Source</a>
           </p>
-          </li>
 
-          <li> <i class="icon-cog"></i> Web workers
           <p>
-          This was another technology I wanted to explore and become more familiar with.
-          The main critic I hear about javascript is <em>"javascript has only one thread to
-          execute code, how can you scale ?</em>. It's true that if you need to do cpu intensive tasks, javascript is not ideal, but not with web workers anymore! The computation of a fractal is very cpu intensive and this was the ideal case study for web workers.
+          A small toy project to learn new things using the very well known Mandlebrot set.
           </p>
-          </li>
 
-          <li> <i class="icon-cog"></i> No third party library
-          <p>
-          Almost. I still use <a href="//lodash.com" title="lodash" alt="lodash">lodash</a>
-          to debounce a function or two, and <a href="https://github.com/kriskowal/q">Q</a> to
-          make promise and allow for easy cancellation. But there is no trace of jQuery or something similar here. In modern browser it's not that difficult (querySelector !) and I don't target old browsers (no web workers or canvas).
-          </p>
-          </li>
-          
-        </ul>
-      
-      </div> <!-- end labSection web fractal -->
+          <h4>Technologies used</h4>
+          <ul>
+            <li> <i class="icon-cog"></i> Canvas
+            <p>
+            I wanted to try out the 'new' canvas element in html5. The main goal was to 
+            become familiar with the basic api of the 2d context of canvas.
+            </p>
+            </li>
 
-    </div>
+            <li> <i class="icon-cog"></i> Web workers
+            <p>
+            This was another technology I wanted to explore and become more familiar with.
+            The main critic I hear about javascript is <em>"javascript has only one thread to
+              execute code, how can you scale ?</em>. It's true that if you need to do cpu intensive tasks, javascript is not ideal, but not with web workers anymore! The computation of a fractal is very cpu intensive and this was the ideal case study for web workers.
+            </p>
+            </li>
 
-    <div class="footer">
-      <small>Made by a geekingfrog</small>
-    </div>
+            <li> <i class="icon-cog"></i> No third party library
+            <p>
+            Almost. I still use <a href="//lodash.com" title="lodash" alt="lodash">lodash</a>
+            to debounce a function or two, and <a href="https://github.com/kriskowal/q">Q</a> to
+            make promise and allow for easy cancellation. But there is no trace of jQuery or something similar here. In modern browser it's not that difficult (querySelector !) and I don't target old browsers (no web workers or canvas).
+            </p>
+            </li>
 
-    <script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-23517617-1']);
-      _gaq.push(['_trackPageview']);
-      _gaq.push(['_setSiteSpeedSampleRate', 100]);
-      _gaq.push(['_setDomainName', 'geekingfrog.com']);
-      (function() {
-       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-       })();
-     </script>
+          </ul>
+
+        </div> <!-- end labSection web fractal -->
+
+      </div>
+
+      <div class="footer">
+        <small>Made by a geekingfrog</small>
+      </div>
+
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-23517617-1']);
+        _gaq.push(['_trackPageview']);
+        _gaq.push(['_setSiteSpeedSampleRate', 100]);
+        _gaq.push(['_setDomainName', 'geekingfrog.com']);
+        (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+</script>
 
 
   </body>
