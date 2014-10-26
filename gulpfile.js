@@ -9,7 +9,7 @@ var to5ops = {
 };
 
 gulp.task('script', function() {
-  var server = gulp.src('lib/index.js')
+  var server = gulp.src('lib/**/*.js')
   .pipe(to5(to5ops))
   .pipe(gulp.dest('dist'));
 

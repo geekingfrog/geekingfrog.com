@@ -1,3 +1,8 @@
+mixin post(data)
+  li
+    a(href=data.link) #{data.title}
+    time= data.date
+
 doctype html
 html(lang="en")
   head
@@ -26,15 +31,16 @@ html(lang="en")
           li Working at Digbil as lead backend engineer
 
         div(class='icons')
-          div(class='github')
-            a(href='https://github.com/geekingfrog')
-              include /assets/iconGithub.svg
-              // <div>Icon made by <a href="http://www.icomoon.io" title="Icomoon">Icomoon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
           div(class='email')
             a(href='mailto:greg@geekingfrog.com')
               include /assets/iconEmail.svg
               // <div>Icons made by SimpleIcon from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>         is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+
+          div(class='github')
+            a(href='https://github.com/geekingfrog')
+              include /assets/iconGithub.svg
+              // <div>Icon made by <a href="http://www.icomoon.io" title="Icomoon">Icomoon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
           div(class='gplus')
             a(href='https://plus.google.com/114043482738227815856')
@@ -53,10 +59,10 @@ html(lang="en")
       p
         | I'm also a co-organiser of the 
         a(href='http://www.meetup.com/javascript-enthusiasts/') taipei javascript meetup
-        | where I talk regularly about all things web.
+        |  where I talk regularly about all things web.
 
-    // h2(class='ui inverted black block header') hellooooo!
-    // div(class='ui grid')
-    //   div(class='four wide column') foo1
-    //   div(class='eight wide column') foo3
-    //   div(class='four wide column') foo4
+    div(class='content blog')
+      h2 Latest posts
+        ul
+          each post in posts
+            +post(post)

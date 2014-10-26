@@ -72,3 +72,24 @@ header b {
 .icons .github path, .icons .email path {
   fill: white;
 }
+
+.blog ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  font-size: .9em;
+}
+
+.blog li {
+  margin: .2em;
+  border-bottom: 1px solid #bfbebd;
+  overflow: auto;
+}
+
+.blog li time {
+  display: inline-block;
+  float: right;
+  white-space: nowrap;
+  opacity: .8;
+  font-family: "Lucida Sans Typewriter",Monaco,"Courier","Courier New",monospace;
+}
