@@ -1,0 +1,74 @@
+body{
+	font-family:'Open Sans',sans-serif;
+	color:#333
+}
+
+.content {
+  width: 760px;
+  margin: 0 auto;
+}
+
+a {
+  text-decoration: none;
+  color: #12C;
+}
+
+a:visited {
+  color: #32C;
+}
+
+header, header a {
+  background: black;
+  color: white;
+}
+
+header a:visited {
+  color: white;
+}
+
+header {
+  padding: 1.1em;
+}
+
+header img {
+  height: 1.5em;
+  padding-right: 1em;
+  vertical-align: bottom;
+}
+
+header b {
+  padding: 0 .5em;
+}
+
+.hero {
+  background: #222;
+  padding: 1em 0;
+  color: #BFBFBF;
+}
+
+.hero h2 {
+  color: white;
+}
+
+.icons {
+  margin-left: 3em;
+  height: 2em;
+}
+
+.icons > * {
+  display: inline-block;
+  margin: 0 .4em;
+}
+
+.icons div, .icons div svg {
+  height: inherit;
+}
+
+.icons svg {
+  width: 2em;
+  padding: 0 .1em;
+}
+
+.icons .github path, .icons .email path {
+  fill: white;
+}

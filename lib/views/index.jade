@@ -1,0 +1,62 @@
+doctype html
+html(lang="en")
+  head
+    link(rel='stylesheet' href='./css/normalize.css')
+    link(rel='stylesheet' href='./css/semantic.css')
+    link(rel='stylesheet' href='./css/custom.css')
+    link(rel='shortcut icon' type='image/png' href='favicon.png')
+    script(type='text/javascript' src='./javascript/jquery.js')
+    script(type='text/javascript' src='./javascript/semantic.js')
+    title= Geekingfrog
+
+  body
+    header
+      div(class='content')
+        img(src='logo.png')
+        a(href='/') Geekingfrog.com
+        b |
+        span Geek stuff by a batrachian
+    div(class='hero')
+      div(class='content')
+        h2 Grégoire Charvet
+        ul
+          li Web developper - full stack
+          li Living in Taiwan
+          li Interested in javascript, node.js, haskell
+          li Working at Digbil as lead backend engineer
+
+        div(class='icons')
+          div(class='github')
+            a(href='https://github.com/geekingfrog')
+              include /assets/iconGithub.svg
+              // <div>Icon made by <a href="http://www.icomoon.io" title="Icomoon">Icomoon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+          div(class='email')
+            a(href='mailto:greg@geekingfrog.com')
+              include /assets/iconEmail.svg
+              // <div>Icons made by SimpleIcon from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>         is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+          div(class='gplus')
+            a(href='https://plus.google.com/114043482738227815856')
+              include /assets/iconGplus.svg
+
+    div(class='content main')
+      p.
+        I am the backend lead developper at
+        <a href='http://www.digbil.com/'>Digbil</a>
+        where I focus on building a robust solution to glue together
+        our fleet of digital signage and power our web portal to
+        manage everything. <br>
+        I'm also responsible for deployment and architecture on top
+        of the amazon cloud.
+
+      p
+        | I'm also a co-organiser of the 
+        a(href='http://www.meetup.com/javascript-enthusiasts/') taipei javascript meetup
+        | where I talk regularly about all things web.
+
+    // h2(class='ui inverted black block header') hellooooo!
+    // div(class='ui grid')
+    //   div(class='four wide column') foo1
+    //   div(class='eight wide column') foo3
+    //   div(class='four wide column') foo4
