@@ -46,7 +46,7 @@ html(lang="en")
             a(href='https://plus.google.com/114043482738227815856')
               include /assets/iconGplus.svg
 
-    div(class='content main')
+    section(class='content main')
       p.
         I am the backend lead developper at
         <a href='http://www.digbil.com/'>Digbil</a>
@@ -61,8 +61,83 @@ html(lang="en")
         a(href='http://www.meetup.com/javascript-enthusiasts/') taipei javascript meetup
         |  where I talk regularly about all things web.
 
-    div(class='content blog')
+    section(class='content blog')
       h2 Latest posts
-        ul
-          each post in posts
-            +post(post)
+      ul
+        each post in posts
+          +post(post)
+
+    section(class='content lab')
+      h2 Projects
+      div(class='project')
+        // h3 
+        h3 FrogComplete (<a href='http://github.com/geekingfrog/frogComplete'>source</a> - Oct 2013)
+        img(src='./assets/frogComplete-preview.png', class='preview')
+        p
+          | A small autocomplete widget asked by Mozilla Taiwan
+          | as a pre-interview question. Very simple,
+          | it works great in all modern browsers and on mobile.
+        p
+          | For this, I used vanilla javascript.
+          | It was required not to use any library, so no jquery
+          | or similar for this project. It is actually pretty easy,
+          | in modern browser, the dom API is much nicer
+          | than before thanks to document.querySelector and alike.
+
+      div(class='project')
+        h3 Ultimate tic-tac-toe (<a href='http://github.com/geekingfrog/ultimateTTT'> source</a> - Aug 2013)
+        img(src='./assets/ttt-preview.png', class='preview')
+        p
+          | A welcome upgrade to one of the most boring
+          | game: the tic tac toe (Randall Munroe has
+          | a nice representation of
+          a(href='http://xkcd.com/832/')  the optimal strategy
+          |  for this game).
+
+        p
+          b Node.js with socket.io
+          |  This was the main focus of this project.
+          | Node.js really shine when it comes to bidirectional
+          | communication and a multiplayer game is the
+          | perfect occasion to try out this great library.
+
+        p
+          b Ember.js
+          |  At the beginning, I just used ember to take
+          | advantage of the goodness of two-way bindings. Since
+          | the board has a memory reprensation backed by regular
+          | array, it's a pain to keep the dom and the in-memory
+          | board in sync. Ember also make easy to get the
+          | state of each part of the board and apply
+          | the relevant css, thanks to the computed properties.
+
+      div(class='project')
+        h3 Web fractal (<a href='http://github.com/geekingfrog/webFractal'>source</a> - Jul 2013)
+        img(src='./assets/webFractal-preview.png', class='preview')
+        p
+          | A small toy project to learn new things using
+          | the very well known Mandlebrot set.
+        p
+          b Canvas
+          |  I wanted to try out the 'new' canvas element in html5.
+          | The main goal was to become familiar with
+          | the basic api of the 2d context of canvas.
+        p
+          b Web workers
+          |  This was another technology I wanted to
+          | explore and become more familiar with. The main
+          | critic I hear about javascript is "javascript
+          | has only one thread to execute code, how can
+          | you scale ?. It's true that if you need to do
+          | cpu intensive tasks, javascript is not ideal,
+          | but not with web workers anymore! The
+          | computation of a fractal is very cpu
+          | intensive and this was the ideal case study for web workers.
+        p
+          b No third party library
+          |  Almost. I still use lodash to debounce a
+          | function or two, and Q to make promise and allow for
+          | easy cancellation. But there is no trace of jQuery or
+          | something similar here. In modern browser it's not
+          | that difficult (querySelector !) and I don't target
+          | old browsers (no web workers or canvas).
