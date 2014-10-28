@@ -1,0 +1,9 @@
+{
+  "apps": [ {
+    "name": "geekingfrog",
+    "script": "dist/index.js",
+    "env": { "NODE_ENV": "prod" },
+    "node_args": "--harmony",
+    "port": 3000
+  } ]
+}
