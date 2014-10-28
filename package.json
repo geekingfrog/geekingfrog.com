@@ -28,8 +28,8 @@
     "koa": "^0.13.0",
     "koa-jade": "^0.3.1",
     "koa-trie-router": "^1.0.8",
+    "log4js": "^0.6.21",
     "merge-stream": "^0.1.6",
-    "request": "^2.47.0",
-    "thunkify": "^2.1.2"
+    "request": "^2.47.0"
   }
 }
