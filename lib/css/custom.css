@@ -67,7 +67,7 @@ header b {
 }
 
 .icons div, .icons div svg {
-  height: inherit;
+  height: 2em;
 }
 
 .icons svg {
