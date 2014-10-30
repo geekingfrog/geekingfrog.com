@@ -66,11 +66,12 @@ html(lang="en")
         a(href='https://github.com/geekingfrog/configFiles') vim
         |  and the awesome zsh.
 
-    section(class='content blog')
-      h2 Latest posts
-      ul
-        each post in posts
-          +post(post)
+    if posts && posts.length
+      section(class='content blog')
+        h2 Latest posts
+        ul
+          each post in posts
+            +post(post)
 
     section(class='content lab')
       h2 Projects
