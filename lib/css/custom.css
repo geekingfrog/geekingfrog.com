@@ -123,6 +123,7 @@ header b {
 
 .preview img {
   border: 1px solid black;
+  width: 400px;
 }
 
 .project h3 {
@@ -161,8 +162,8 @@ header b {
 }
 
 /* a bit of a hack to get good looking project preview */
-/* on mobile. The images are 403 px wide. */
-@media (max-width: 403px) {
+/* on mobile. The images are 400 px wide. */
+@media (max-width: 400px) {
   .preview img {
     width: 100%;
     height: 100%;

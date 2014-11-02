@@ -3,20 +3,21 @@
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var to5 = require('gulp-6to5');
+var imagemin = require('gulp-imagemin');
+var pngcrush = require('imagemin-pngcrush');
+var minifyCss = require('gulp-minify-css');
+var concat = require('gulp-concat');
 
+// node 0.11 --harmony supports these out of the box
 var to5ops = {
   blacklist: ['forOf', 'letScoping', 'generators']
 };
 
 gulp.task('script', function() {
-  var server = gulp.src('lib/**/*.js')
+  // server
+  return gulp.src('lib/**/*.js')
   .pipe(to5(to5ops))
   .pipe(gulp.dest('dist'));
-
-  var jquery = gulp.src('bower_components/jquery/dist/jquery.js')
-  .pipe(gulp.dest('dist/javascript'));
-
-  return merge(server, jquery);
 });
 
 gulp.task('jade', function() {
@@ -26,21 +27,28 @@ gulp.task('jade', function() {
 
 gulp.task('css', function() {
 
-  var normalize = gulp.src('bower_components/normalize.css/normalize.css')
+  var paths = [
+    'bower_components/normalize.css/normalize.css',
+    'lib/css/*'
+  ]
+
+  return gulp.src(paths)
+  .pipe(minifyCss())
+  .pipe(concat('geekingfrog.css'))
   .pipe(gulp.dest('dist/css'));
-
-  var semantic = gulp.src('bower_components/semantic/build/packaged/*')
-  .pipe(gulp.dest('dist'));
-
-  var custom = gulp.src('lib/css/*')
-  .pipe(gulp.dest('dist/css'));
-
-  return merge(normalize, semantic, custom);
 });
 
 gulp.task('assets', function() {
-  return gulp.src('assets/*')
+  var png = gulp.src('assets/*.png')
+  .pipe(pngcrush({reduce: true})())
   .pipe(gulp.dest('dist/assets'));
+
+  var svg = gulp.src('assets/*.svg')
+  .pipe(imagemin())
+  .pipe(gulp.dest('dist/assets'));
+
+  return merge(png, svg);
+
 });
 
 gulp.task('watch', function() {
