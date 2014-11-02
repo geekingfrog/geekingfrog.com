@@ -1,12 +1,18 @@
-body{
+* {
+  box-sizing: border-box;
+}
+
+body {
   font-family:'Open Sans',sans-serif;
   color:#333;
   font-size: 1.1em;
 }
 
 .content {
-  width: 800px;
+  /*  same as media query  */
+  max-width: 768px;
   margin: 0 auto;
+  padding: .3em .7em;
 }
 
 .content h2 {
@@ -99,16 +105,66 @@ header b {
   font-family: "Lucida Sans Typewriter",Monaco,"Courier","Courier New",monospace;
 }
 
+/* .blog li:after { */
+/*   clear: both; */
+/*   display: block; */
+/*   visibility: hidden; */
+/*   height: 0; */
+/* } */
+
 .project {
   overflow: hidden;
 }
 
 .project .preview {
-  border: 1px solid black;
   float: right;
   margin-left: 1em;
 }
 
+.preview img {
+  border: 1px solid black;
+}
+
 .project h3 {
   border-top: 1px solid #bfbebd;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 1.2em;
+  }
+
+  header { padding: .5em }
+  header b { display: none; }
+
+  header .more {
+    display: block;
+    padding: .2em 0;
+  }
+
+  content {
+    width: 100%;
+  }
+
+  .project .preview {
+    float: none;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .blog li time {
+    float: none;
+    display: block;
+    padding: .1em 0;
+  }
+}
+
+/* a bit of a hack to get good looking project preview */
+/* on mobile. The images are 403 px wide. */
+@media (max-width: 403px) {
+  .preview img {
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -9,6 +9,7 @@ html(lang="en")
     link(rel='stylesheet' href='./css/normalize.css')
     link(rel='stylesheet' href='./css/custom.css')
     link(rel='shortcut icon' type='image/png' href='favicon.png')
+    meta(name='viewport', content='width=device-width', initial-scale=1)
     title= Geekingfrog
 
   body
@@ -17,12 +18,12 @@ html(lang="en")
         img(src='logo.png')
         a(href='/') Geekingfrog.com
         b |
-        span Geek stuff by a batrachian
+        span(class='more') Geek stuff by a batrachian
     div(class='hero')
       div(class='content')
         h2 Grégoire Charvet
         ul
-          li Web developper - full stack
+          li French web developer - full stack
           li Living in Taiwan
           li Interested in javascript, node.js, haskell
           li Working at Digbil as lead backend engineer
@@ -78,7 +79,8 @@ html(lang="en")
       div(class='project')
         // h3 
         h3 FrogComplete (<a href='http://github.com/geekingfrog/frogComplete'>source</a> - Oct 2013)
-        img(src='./assets/frogComplete-preview.png', class='preview')
+        div(class='preview')
+          img(src='./assets/frogComplete-preview.png')
         p
           | A small autocomplete widget asked by Mozilla Taiwan
           | as a pre-interview question. Very simple,
@@ -92,7 +94,8 @@ html(lang="en")
 
       div(class='project')
         h3 Ultimate tic-tac-toe (<a href='http://github.com/geekingfrog/ultimateTTT'> source</a> - Aug 2013)
-        img(src='./assets/ttt-preview.png', class='preview')
+        div(class='preview')
+          img(src='./assets/ttt-preview.png')
         p
           | A welcome upgrade to one of the most boring
           | game: the tic tac toe (Randall Munroe has
@@ -119,7 +122,8 @@ html(lang="en")
 
       div(class='project')
         h3 Web fractal (<a href='http://github.com/geekingfrog/webFractal'>source</a> - Jul 2013)
-        img(src='./assets/webFractal-preview.png', class='preview')
+        div(class='preview')
+          img(src='./assets/webFractal-preview.png')
         p
           | A small toy project to learn new things using
           | the very well known Mandlebrot set.
