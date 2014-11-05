@@ -6,10 +6,19 @@ mixin post(data)
 doctype html
 html(lang="en")
   head
-    link(rel='stylesheet' href='./css/geekingfrog.css')
+    title| Geekingfrog
     link(rel='shortcut icon' type='image/png' href='favicon.png')
     meta(name='viewport', content='width=device-width', initial-scale=1)
-    title= Geekingfrog
+    if critical
+      script(async).
+        function loadCSS(e,t,n){"use strict";var i=window.document.createElement("link");var o=t||window.document.getElementsByTagName("script")[0];i.rel="stylesheet";i.href=e;i.media="only x";o.parentNode.insertBefore(i,o);setTimeout(function(){i.media=n||"all"})}
+
+        loadCSS('./css/geekingfrog.css');
+      style(rel='stylesheet')
+        #{critical}
+    else
+      link(rel='stylesheet' href='./css/geekingfrog.css')
+
 
   body
     header
