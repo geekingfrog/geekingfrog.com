@@ -17,6 +17,11 @@ body {
 
 .content h2 {
   margin: .5em 0;
+  overflow: hidden;
+}
+
+.content .right {
+  float: right;
 }
 
 a {

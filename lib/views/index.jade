@@ -77,7 +77,9 @@ html(lang="en")
 
     if posts && posts.length
       section(class='content blog')
-        h2 Latest posts
+        h2
+          | Latest posts
+          a(class='right', href="http://blog.geekingfrog.com") all posts
         ul
           each post in posts
             +post(post)
