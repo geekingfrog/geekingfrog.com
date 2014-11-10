@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "node node_modules/.bin/bower install && node node_modules/.bin/gulp build",
+    "postinstall": "node node_modules/.bin/bower install && node node_modules/.bin/gulp prod",
     "start": "node --harmony ."
   },
   "repository": {
