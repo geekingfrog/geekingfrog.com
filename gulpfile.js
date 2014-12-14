@@ -9,7 +9,6 @@ var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
 var minifyCss = require('gulp-minify-css');
 var concat = require('gulp-concat');
-var source = require('vinyl-source-stream');
 
 // node 0.11 --harmony supports these out of the box
 var to5ops = {
@@ -18,9 +17,20 @@ var to5ops = {
 
 gulp.task('script', function() {
   // server
-  return gulp.src('lib/**/*.js')
+  var server = gulp.src('lib/**/*.js')
   .pipe(to5(to5ops))
   .pipe(gulp.dest('dist'));
+
+  var clientJs = gulp.src([
+    'bower_components/d3/d3.min.js',
+    'bower_components/trianglify/trianglify.min.js',
+    'lib/triangle.js'
+  ])
+  .pipe(concat('scripts.js'))
+  .pipe(gulp.dest('dist/js'))
+
+  return merge(server, clientJs);
+
 });
 
 gulp.task('jade', function() {

@@ -59,12 +59,16 @@ header b {
 
 .hero {
   background: #222;
-  padding: 1em 0;
-  color: #BFBFBF;
+  padding: 0;
+  color: white;
+  position: relative;
 }
 
-.hero h2 {
-  color: white;
+.hero #test {
+  width: 30%;
+  height: 100%;
+  right: 0;
+  position: absolute;
 }
 
 .icons {
