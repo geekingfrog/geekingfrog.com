@@ -3,7 +3,7 @@
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var through = require('through2');
-var to5 = require('gulp-6to5');
+var babel = require('gulp-babel');
 var changed = require('gulp-changed');
 var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
@@ -11,14 +11,15 @@ var minifyCss = require('gulp-minify-css');
 var concat = require('gulp-concat');
 
 // node 0.11 --harmony supports these out of the box
-var to5ops = {
-  blacklist: ['forOf', 'letScoping', 'generators']
+var babelOps = {
+  // blacklist: ['es6.forOf', 'letScoping', 'generators']
+  blacklist: ['es6.forOf', 'regenerator']
 };
 
 gulp.task('script', function() {
   // server
   var server = gulp.src('lib/**/*.js')
-  .pipe(to5(to5ops))
+  .pipe(babel(babelOps))
   .pipe(gulp.dest('dist'));
 
   var clientJs = gulp.src([
