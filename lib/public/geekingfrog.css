@@ -1,0 +1,83 @@
+.mdl-layout--fixed-header {
+  background-color: teal;
+  color: white;
+}
+
+a { color: teal; }
+
+.mdl-grid {
+  max-width: 90em;
+}
+
+.mdl-card {
+  width: 100%;
+  font-size: 1em;
+}
+
+.first-row-card .mdl-card {
+  height: 20em;
+}
+
+.intro-card svg {
+  height: 90%;
+  padding: 1em;
+}
+
+.city-card {
+  height: 70%;
+  background: linear-gradient(to top, black 15%, transparent 0%), url('london.png');
+  background-position: center, center;
+}
+
+.language-card .mdl-card__supporting-text {
+  height: 4em;
+}
+
+.language-card__haskell .mdl-card__title {
+  background: hsl(274, 30%, 11%) url('/haskell.svg') 90%/contain no-repeat;
+  color: white;
+}
+
+.language-card__js .mdl-card__title {
+  background: hsl(52, 84%, 63%) url('/js.png') 100%/contain no-repeat;
+}
+
+.language-card__python .mdl-card__title {
+  background: hsl(200, 51%, 50%) url('/python.svg') 90% no-repeat;
+  background-size: auto 90%;
+  color: white;
+}
+
+.english-card .mdl-card__title {
+  background: url('/ujack.gif');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.french-card .mdl-card__title {
+  background: linear-gradient(to right, blue 33%, white 0, white 67%, red 0);
+}
+
+.chinese-card .mdl-card__title {
+  background: url('/china_flag.gif');
+  background-color: #FD0802;
+  background-position: bottom;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* css for tablet and below */
+@media (max-width: 839px) {
+  .first-row-card:nth-child(1) { order: 3; }
+  .first-row-card:nth-child(2) { order: 1; }
+  .first-row-card:nth-child(3) { order: 2; }
+
+  .language-card__python { order: 2; }
+  .language-card__js { order: 1; }
+  .language-card__haskell { order: 3; }
+}
+
+svg path, svg circle {
+  stroke: teal !important;
+}

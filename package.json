@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "node node_modules/.bin/bower install && node node_modules/.bin/gulp prod",
+    "postinstall": "rm -rf dist/ && cp -r lib/ dist",
     "start": "node --harmony ."
   },
   "repository": {
@@ -19,33 +19,8 @@
   },
   "homepage": "https://github.com/geekingfrog/geekingfrog.com",
   "dependencies": {
-    "bluebird": "^2.3.10",
-    "bower": "^1.3.12",
-    "browserify": "^7.0.0",
-    "cheerio": "^0.17.0",
-    "co": "^3.1.0",
-    "critical": "^0.4.0",
-    "gulp": "^3.8.9",
-    "gulp-6to5": "^1.0.1",
-    "gulp-changed": "^1.0.0",
-    "gulp-concat": "^2.4.1",
-    "gulp-imagemin": "^1.2.1",
-    "gulp-jade": "^0.9.0",
-    "gulp-minify-css": "^0.3.11",
-    "imagemin-pngcrush": "^4.0.0",
-    "jade": "^1.7.0",
-    "koa": "^0.13.0",
-    "koa-conditional-get": "^1.0.2",
-    "koa-etag": "^2.0.0",
-    "koa-gzip": "^0.1.0",
-    "koa-jade": "^0.3.1",
-    "koa-static": "^1.4.7",
-    "koa-trie-router": "^1.0.8",
-    "log4js": "^0.6.21",
-    "merge-stream": "^0.1.6",
-    "request": "^2.47.0",
-    "through2": "^0.6.3",
-    "thunkify": "^2.1.2",
-    "trianglify": "^0.1.5"
+    "express-livereload": "0.0.24",
+    "jade": "^1.11.0",
+    "morgan": "^1.6.1"
   }
 }

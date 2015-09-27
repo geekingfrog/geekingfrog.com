@@ -1,164 +1,105 @@
-mixin post(data)
-  li
-    a(href=data.link) #{data.title}
-    time= data.date
-
 doctype html
-html(lang="en")
+html(lang='en')
   head
     title| Geekingfrog
     link(rel='shortcut icon' type='image/png' href='favicon.png')
+    link(rel='stylesheet' href='/material.css')
+    link(rel='stylesheet' href='/geekingfrog.css')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons')
+    link(rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,700' type='text/css')
+    script(src='/material.js')
+    != LRScript
     meta(name='viewport', content='width=device-width', initial-scale=1)
-    if critical
-      script(async).
-        function loadCSS(e,t,n){"use strict";var i=window.document.createElement("link");var o=t||window.document.getElementsByTagName("script")[0];i.rel="stylesheet";i.href=e;i.media="only x";o.parentNode.insertBefore(i,o);setTimeout(function(){i.media=n||"all"})}
-
-        loadCSS('./css/geekingfrog.css');
-      style(rel='stylesheet')
-        #{critical}
-    else
-      link(rel='stylesheet' href='./css/geekingfrog.css')
-    script(async, src='./js/scripts.js')
-
 
   body
-    header
-      div(class='content')
-        img(src='assets/logo-thumb.png')
-        a(href='/') Geekingfrog.com
-        b |
-        span(class='more') Geek stuff by a batrachian
-    div(class='hero')
-      div(class='content')
-        h2 Grégoire Charvet
-        ul
-          li French web developer - full stack
-          li Living in Taiwan
-          li Interested in javascript, node.js, haskell
-          li Working at Digbil as lead backend engineer
+    div(class='mdl-layout mdl-layout--fixed-header')
+      header(class='mdl-layout__header-row')
+        span(class='mdl-layout-title') Geekingfrog &nbsp;|&nbsp; Geek stuff by a batrachian
+        div(class='mdl-layout-spacer')
+        nav(class='mdl-navigation')
+          a(class='mdl-navigation__link' href='https://github.com/geekingfrog') Github
+          a(class='mdl-navigation__link' href='https://www.linkedin.com/pub/gr%C3%A9goire-charvet/aa/440/b62') LinkedIn
+          a(class='mdl-navigation__link' href='http://blog.geekingfrog.com') Blog
 
-        div(class='icons')
-          div(class='email')
-            a(href='mailto:greg@geekingfrog.com')
-              include /assets/iconEmail.svg
-              // <div>Icons made by SimpleIcon from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>         is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+    div(class='mdl-grid')
+
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet first-row-card')
+        div(class='mdl-card mdl-shadow--2dp')
+          div(class='mdl-card__title')
+            p I'm a #[a(href="http://www.laurencegellert.com/2012/08/what-is-a-full-stack-developer/") Full stack] engineer, currently working at #[a(href="opensignal.com") Opensignal].
+          div(class='mdl-card--border mdl-card__actions')
+            p
+              | I've built various
+              strong  backend applications
+              |  ranging from apis
+              | to real time notifications services for clients in various countries.
+              | I'm also experienced building
+              strong  large single page
+              |  application in javascript.
+
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet first-row-card')
+        div(class='mdl-card mdl-shadow--2dp intro-card')
+          include ../public/logo-clean.svg
+          // img(src='/logo-clean2.svg')
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet first-row-card')
+        div(class='mdl-card mdl-shadow--2dp')
+          div(class='mdl-card__title city-card')
+          div(class='mdl-card__supporting-text')
+            h5 Living in London
+
+    div(class='mdl-grid')
+
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet language-card language-card__python')
+        div(class='mdl-card mdl-shadow--2dp')
+          div(class='mdl-card__title mdl-card--expand')
+            h3 Python
+          div(class='mdl-card__supporting-text')
+            | &#9733;&#9733;&#9733;&#9733; advanced
+            div
+              | api and map backend.
+
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet language-card language-card__js')
+        div(class='mdl-card mdl-shadow--2dp')
+          div(class='mdl-card__title mdl-card--expand')
+            h3 Javascript
+          div(class='mdl-card__supporting-text')
+            | &#9733;&#9733;&#9733;&#9733;&#9733; expert
+            div
+              | Browser and node.js alike, very strong knowledge.
+
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet language-card language-card__haskell')
+        div(class='mdl-card mdl-shadow--2dp')
+          div(class='mdl-card__title mdl-card--expand')
+            h2 Haskell
+          div(class='mdl-card__supporting-text')
+            | &#9733; enthusiast
+            div
+              | Learning and building expertise on the side.
 
 
-          div(class='github')
-            a(href='https://github.com/geekingfrog')
-              include /assets/iconGithub.svg
-              // <div>Icon made by <a href="http://www.icomoon.io" title="Icomoon">Icomoon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+    div(class='mdl-grid')
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet')
+        div(class='mdl-card mdl-shadow--2dp english-card')
+          div(class='mdl-card__title mdl-card--expand')
+          div(class='mdl-card__supporting-text')
+            div
+              | English: &nbsp;
+              strong Fluent
 
-          div(class='gplus')
-            a(href='https://plus.google.com/114043482738227815856')
-              include /assets/iconGplus.svg
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet')
+        div(class='mdl-card mdl-shadow--2dp french-card')
+          div(class='mdl-card__title mdl-card--expand')
+          div(class='mdl-card__supporting-text')
+            div
+              | French: &nbsp;
+              strong Native
 
-    section(class='content main')
-      p
-        | I'm a french
-        b  software engineer
-        |  focused on <b>web development</b>. I have a knowledge of 
-        a(href='http://www.laurencegellert.com/2012/08/what-is-a-full-stack-developer/') the full web stack
-        | . and I've been focusing on building web application since 2012.
-        | I'm currently living in Taiwan and work at 
-        a(href='http://www.digbil.com/') Digbil
-        |  where I am the lead developper for the back end (node.js). I also
-        | manage the deployment and the architecture on top of the
-        | amazon cloud.
+      div(class='mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet')
+        div(class='mdl-card mdl-shadow--2dp chinese-card')
+          div(class='mdl-card__title mdl-card--expand')
+          div(class='mdl-card__supporting-text')
+            div
+              | Chinese: &nbsp;
+              strong Advanced
 
-      p
-        | I'm also a co-organiser of the 
-        a(href='http://www.meetup.com/javascript-enthusiasts/') taipei javascript meetup
-        |  where I talk regularly about all things web.
-
-      p
-        | I'm a convinced linux user, workind daily with arch or ubuntu 
-        a(href='https://github.com/geekingfrog/configFiles') vim
-        |  and the awesome zsh.
-
-    if posts && posts.length
-      section(class='content blog')
-        h2
-          | Latest posts
-          a(class='right', href="http://blog.geekingfrog.com") all posts
-        ul
-          each post in posts
-            +post(post)
-
-    section(class='content lab')
-      h2 Projects
-      div(class='project')
-        // h3 
-        h3 FrogComplete (<a href='http://github.com/geekingfrog/frogComplete'>source</a> - Oct 2013)
-        div(class='preview')
-          img(src='./assets/frogComplete-preview.png')
-        p
-          | A small autocomplete widget asked by Mozilla Taiwan
-          | as a pre-interview question. Very simple,
-          | it works great in all modern browsers and on mobile.
-        p
-          | For this, I used vanilla javascript.
-          | It was required not to use any library, so no jquery
-          | or similar for this project. It is actually pretty easy,
-          | in modern browser, the dom API is much nicer
-          | than before thanks to document.querySelector and alike.
-
-      div(class='project')
-        h3 Ultimate tic-tac-toe (<a href='http://github.com/geekingfrog/ultimateTTT'> source</a> - Aug 2013)
-        div(class='preview')
-          img(src='./assets/ttt-preview.png')
-        p
-          | A welcome upgrade to one of the most boring
-          | game: the tic tac toe (Randall Munroe has
-          | a nice representation of
-          a(href='http://xkcd.com/832/')  the optimal strategy
-          |  for this game).
-
-        p
-          b Node.js with socket.io
-          |  This was the main focus of this project.
-          | Node.js really shine when it comes to bidirectional
-          | communication and a multiplayer game is the
-          | perfect occasion to try out this great library.
-
-        p
-          b Ember.js
-          |  At the beginning, I just used ember to take
-          | advantage of the goodness of two-way bindings. Since
-          | the board has a memory reprensation backed by regular
-          | array, it's a pain to keep the dom and the in-memory
-          | board in sync. Ember also make easy to get the
-          | state of each part of the board and apply
-          | the relevant css, thanks to the computed properties.
-
-      div(class='project')
-        h3 Web fractal (<a href='http://github.com/geekingfrog/webFractal'>source</a> - Jul 2013)
-        div(class='preview')
-          img(src='./assets/webFractal-preview.png')
-        p
-          | A small toy project to learn new things using
-          | the very well known Mandlebrot set.
-        p
-          b Canvas
-          |  I wanted to try out the 'new' canvas element in html5.
-          | The main goal was to become familiar with
-          | the basic api of the 2d context of canvas.
-        p
-          b Web workers
-          |  This was another technology I wanted to
-          | explore and become more familiar with. The main
-          | critic I hear about javascript is "javascript
-          | has only one thread to execute code, how can
-          | you scale ?. It's true that if you need to do
-          | cpu intensive tasks, javascript is not ideal,
-          | but not with web workers anymore! The
-          | computation of a fractal is very cpu
-          | intensive and this was the ideal case study for web workers.
-        p
-          b No third party library
-          |  Almost. I still use lodash to debounce a
-          | function or two, and Q to make promise and allow for
-          | easy cancellation. But there is no trace of jQuery or
-          | something similar here. In modern browser it's not
-          | that difficult (querySelector !) and I don't target
-          | old browsers (no web workers or canvas).
+    script(src='/geekingfrog.js')
