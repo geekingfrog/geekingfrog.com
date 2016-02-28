@@ -91,11 +91,6 @@ header::before {
   float: left;
 }
 
-.logo svg path,
-.logo svg circle {
-  stroke: #4CAF50;
-}
-
 nav {
   float: left;
   margin-left: 130px;
@@ -287,6 +282,11 @@ footer a {
   color: #81C784;
 }
 
+.home .logo svg path,
+.home .logo svg circle {
+  stroke: #4CAF50;
+}
+
 .home footer a,
 .home .post-overview .date,
 .home .nav-link::after {
@@ -316,6 +316,11 @@ footer a {
   color: #4fc3f7;
 }
 
+.blog .logo svg path,
+.blog .logo svg circle {
+  stroke: #0288d1;
+}
+
 .blog footer a,
 .blog .post-overview .date,
 .blog .nav-link::after {
@@ -343,6 +348,11 @@ footer a {
 
 .gpg .sub-title {
   color: #f06292;
+}
+
+.gpg .logo svg path,
+.gpg .logo svg circle {
+  stroke: #ffa000;
 }
 
 .gpg footer a,
