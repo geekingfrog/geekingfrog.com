@@ -1,0 +1,278 @@
+html {
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+  font-size: 100%;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+body * { box-sizing: inherit; }
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  margin: 0;
+  font-family: 'Fira Sans', Helvetica, Helvetica, sans-serif;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.6rem; }
+
+footer,
+header,
+hgroup,
+nav {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: auto;
+}
+
+.container::after {
+  clear: both;
+}
+
+.hero::after,
+header::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: transparent
+  linear-gradient(to right,
+                  transparent,
+                  #4caf50,
+                  #ffca28,
+                  #222);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-container::before,
+.header-container::after {
+  width: 2px;
+  height: 100%;
+  content: "";
+  display: block;
+  background-color: rgba(2, 2, 2, .4);
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+.header-container::before {
+  left: 120px;
+  transform-origin: bottom;
+  height: calc(100% + 30px);
+  bottom: 0
+}
+
+.header-container::after {
+  height: 200%;
+  right: 0;
+  top: 0;
+  transform-origin: top;
+  background-color: rgba(2, 2, 2, .2);
+}
+
+.logo {
+  display: inline-block;
+  width: 130px;
+  float: left;
+}
+
+.logo svg path,
+.logo svg circle {
+  stroke: #4CAF50;
+}
+
+nav {
+  float: left;
+  margin-left: 130px;
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  list-style-type: none;
+  margin-top: 2rem;
+}
+
+.nav-link {
+  display: inline-block;
+  margin-right: 4rem;
+}
+
+.nav-lin:last-child {
+  padding-right: 0;
+}
+
+.nav-link::after {
+  width: 0;
+  content: "";
+  border-bottom: 3px solid #222;
+  display: block;
+  transition: width .2s;
+}
+
+.nav-link__active::after,
+.nav-link:hover::after {
+  width: 100%;
+}
+
+
+.content {
+  padding-bottom: 100px;
+}
+
+.hero {
+  color: rgb(221, 221, 221);
+  background: #222 radial-gradient(circle, rgba(221, 221, 221, .2), rgba(221, 221, 221, .1));
+}
+
+.hero-container {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-container .main-title {
+  font-size: 6rem;
+}
+
+.sub-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.sub-title > * {
+  display: inline-block;
+}
+
+.lines {
+  content: "";
+  flex: 1 1 auto;
+  height: 1rem;
+  background-image: linear-gradient(transparent 1px, #90a4ae 1px, #90a4ae 2px, transparent 0);
+  background-repeat: repeat-y;
+  background-size: 100% 4px;
+  background-position: center;
+}
+
+.sub-title h2 {
+  padding: 0 1rem;
+  font-size: 2rem;
+}
+
+.content {
+  padding: 3rem 0 8rem;
+}
+
+.posts {
+  float: left;
+  width: 48%;
+}
+
+.misc {
+  float: right;
+  width: 40%;
+}
+
+.posts h2 {
+  font-size: 2.5rem;
+}
+
+.posts ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.posts .left {
+  float: left;
+  font-size: 1.5rem;
+  display: block;
+  padding-right: 10px;
+}
+
+.post-overview .right {
+  display: inline-block;
+  padding: 5px 0 0;
+  font-size: 1.4rem;
+}
+
+.blog-title {
+  display: block;
+}
+
+.blog-tags {
+  font-size: 1rem;
+}
+
+footer {
+  background-color: #222;
+  overflow: auto;
+  padding: 2rem 0;
+  color: rgb(221, 221, 221);
+}
+
+footer a {
+  font-weight: bold;
+}
+
+.panel {
+  float: left;
+  width: 30%;
+  padding-left: 3rem;
+  padding-right: 1rem;
+  border-left: 1px solid rgba(221, 221, 221, .3);
+}
+
+.panel:first-child {
+  border: none;
+}
+
+.panel-bio {
+  width: 40%;
+  position: relative;
+  padding-left: 150px;  /* must at least the same as bg size for profile image */
+}
+
+.panel-bio::before {
+  background: transparent url(/static/profile.jpg) no-repeat center / cover;
+  width: 130px;
+  height: 130px;
+  position: absolute;
+  left: 0;
+  content: "";
+  display: block;
+  border-radius: 50%;
+}
+
+
+/* Colors */
+.sub-title {
+  color: #81C784;
+}
+
+footer a,
+.nav-link::after {
+  border-color: #388E3C;
+  color: #388E3C;
+}
