@@ -26,6 +26,7 @@ import Control.Monad.Trans.Either (EitherT)
 import Network.Wai.Handler.Warp (run)
 
 import Index
+import Geekingfrog.Type
 
 main :: IO ()
 main = let port = 8080 in do
