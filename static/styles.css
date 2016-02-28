@@ -135,13 +135,24 @@ nav {
 }
 
 .hero {
-  color: rgb(221, 221, 221);
-  background: #222 radial-gradient(circle, rgba(221, 221, 221, .2), rgba(221, 221, 221, .1));
+  background-color: #222;
+  background-image: radial-gradient(circle farthest-corner at 0px, rgba(221, 221, 221, .2), rgba(221, 221, 221, .1));
+}
+
+.home .hero {
+  background-image: radial-gradient(circle farthest-corner at center, rgba(221, 221, 221, .2), rgba(221, 221, 221, .1));
 }
 
 .hero-container {
+  padding: 2rem 0;
+  color: white;
+}
+
+.home .hero-container {
+  /* center only for homepage */
   padding: 4rem 0;
   text-align: center;
+  color: rgb(221, 221, 221);
 }
 
 .hero-container .main-title {
