@@ -49,12 +49,6 @@ header::before {
   content: "";
   display: block;
   height: 4px;
-  background: transparent
-  linear-gradient(to right,
-                  transparent,
-                  #4caf50,
-                  #ffca28,
-                  #222);
 }
 
 .header-container {
@@ -194,7 +188,8 @@ nav {
   width: 40%;
 }
 
-.posts h2 {
+.posts h2,
+.misc h2 {
   font-size: 2.5rem;
 }
 
@@ -204,7 +199,7 @@ nav {
   margin: 0;
 }
 
-.posts .left {
+.posts .date {
   float: left;
   font-size: 1.5rem;
   display: block;
@@ -263,16 +258,96 @@ footer a {
   content: "";
   display: block;
   border-radius: 50%;
+  border: 4px solid white;
+  box-sizing: border-box;
 }
 
 
 /* Colors */
-.sub-title {
+
+/*****************************************/
+/*                  Home                 */
+/*****************************************/
+.home .post-overview .blog-tags {
+  color: #ffa000;
+}
+
+.home .sub-title {
   color: #81C784;
 }
 
-footer a,
-.nav-link::after {
+.home footer a,
+.home .post-overview .date,
+.home .nav-link::after {
   border-color: #388E3C;
   color: #388E3C;
+}
+
+.home .hero::after,
+.home header::before {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    #4caf50,
+    #ffca28,
+    #222
+  );
+}
+
+/*****************************************/
+/*                  Blog                 */
+/*****************************************/
+.blog .post-overview .blog-tags {
+  color: #7b1fa2;
+}
+
+.blog .sub-title {
+  color: #4fc3f7;
+}
+
+.blog footer a,
+.blog .post-overview .date,
+.blog .nav-link::after {
+  border-color: #0288d1;
+  color: #0288d1;
+}
+
+.blog .hero::after,
+.blog header::before {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    #03a9f4,
+    #9c27b0,
+    #222
+  );
+}
+
+/*****************************************/
+/*                   GPG                 */
+/*****************************************/
+.gpg .post-overview .blog-tags {
+  color: #c2185b;
+}
+
+.gpg .sub-title {
+  color: #f06292;
+}
+
+.gpg footer a,
+.gpg .post-overview .date,
+.gpg .nav-link::after {
+  border-color: #ffa000;
+  color: #ffa000;
+}
+
+.gpg .hero::after,
+.gpg header::before {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    #ffc107,
+    #e91e63,
+    #222
+  );
 }
