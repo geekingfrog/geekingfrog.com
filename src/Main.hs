@@ -28,6 +28,8 @@ import Network.Wai.Handler.Warp (run)
 import Index
 import Geekingfrog.Type
 
+import Geekingfrog.Import
+
 main :: IO ()
 main = let port = 8080 in do
   putStrLn $ "Listening on port " ++ show port ++ "..."

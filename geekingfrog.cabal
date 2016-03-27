@@ -26,6 +26,10 @@ executable geekingfrog
                        warp >= 3.2 && < 3.4,
                        text >= 1.2 && < 1.3,
                        blaze-html >= 0.8 && < 0.9,
+                       blaze-svg >= 0.3 && < 0.4,
                        bytestring >= 0.10 && < 0.11,
                        time >= 1.5 && < 1.6,
-                       datetime >= 0.3 && < 0.4
+                       datetime >= 0.3 && < 0.4,
+                       persistent >= 2.2 && < 2.3,
+                       persistent-sqlite >= 2.2 && < 2.3,
+                       persistent-template >= 2.1 && < 2.2
