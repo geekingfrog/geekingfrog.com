@@ -1,20 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Geekingfrog.Type where
+module Geekingfrog.Types where
 
 import GHC.Generics (Generic)
 
 import Prelude hiding (readFile)
 import Data.ByteString.Lazy (readFile)
 import Data.Aeson as A
-import Data.Aeson.Types (defaultOptions, fieldLabelModifier)
+-- import Data.Aeson.Types (defaultOptions, fieldLabelModifier)
+import Data.Aeson.Types
 import Control.Applicative (empty, liftA)
 import Data.Text (Text (..))
 import Data.Time.Clock (UTCTime)
 import Data.DateTime (fromSeconds)
 import Control.Monad (liftM)
 import Data.Char (isUpper, toLower)
+
+import Data.ByteString.Lazy.Internal (ByteString)
 
 -- A couple of fields are useless but kept for compat with ghost schemas
 data Post = Post {
@@ -29,8 +32,8 @@ data Post = Post {
   , postCreatedBy :: Int
   , postUpdatedAt :: UTCTime
   , postUpdatedBy :: Int
-  , postPublishedAt :: UTCTime
-  , postPublishedBy :: Int
+  , postPublishedAt :: Maybe UTCTime
+  , postPublishedBy :: Maybe Int
   , postLanguage :: Text
   , postHtml :: Text
   , postImage :: Maybe Text
@@ -53,7 +56,7 @@ instance FromJSON Post where
                      <*> v .: "created_by"
                      <*> liftA fromMiliseconds (v .: "updated_at")
                      <*> v .: "updated_by"
-                     <*> liftA fromMiliseconds (v .: "published_at")
+                     <*> (liftA . liftA) fromMiliseconds (v .: "published_at")
                      <*> v .: "published_by"
                      <*> v .: "language"
                      <*> v .: "html"
@@ -95,7 +98,7 @@ data User = User {
   , userLanguage :: Text
   , userMetaTitle :: Maybe Text
   , userMetaDescription :: Maybe Text
-  , userLastLogin :: UTCTime
+  , userLastLogin :: Maybe UTCTime
   , userCreatedAt :: UTCTime
   , userCreatedBy :: Int
   , userUpdatedAt :: UTCTime
@@ -121,7 +124,7 @@ instance FromJSON User where
                        <*> v .: "language"
                        <*> v .: "meta_title"
                        <*> v .: "meta_description"
-                       <*> liftA fromMiliseconds (v .: "last_login")
+                       <*> (liftA . liftA) fromMiliseconds (v .: "last_login")
                        <*> liftA fromMiliseconds (v .: "created_at")
                        <*> v .: "created_by"
                        <*> liftA fromMiliseconds (v .: "updated_at")
@@ -180,7 +183,7 @@ data PostTag = PostTag {
 
 instance FromJSON PostTag where
   parseJSON = A.genericParseJSON defaultOptions {
-    fieldLabelModifier = camelize . drop 7
+    fieldLabelModifier = camelize . drop 7 -- tag_id -> postTagTagId
     }
 
 -- super inneficient but I don't care about perf here
