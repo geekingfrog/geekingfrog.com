@@ -31,20 +31,6 @@ Tag
   description Text Maybe
   hidden Bool
   createdAt UTCTime default=CURRENT_TIME
-  createdBy Int
-  updatedAt UTCTime default=CURRENT_TIME
-  updatedBy Int
-  deriving Show
-
-User
-  Id Int
-  uuid Text
-  name Text
-  slug Text
-  password Text
-  email Text
-  lastLogin UTCTime Maybe
-  createdAt UTCTime
   deriving Show
 
 Post
@@ -55,11 +41,8 @@ Post
   UniquePost slug
   markdown Text
   html Text
-  authorId Int
   createdAt UTCTime default=CURRENT_TIME
-  createdBy Int
   updatedAt UTCTime default=CURRENT_TIME
-  updatedBy Int
   language Text
   isFeatured Bool
   deriving Show

@@ -31,7 +31,7 @@ import Data.Either (lefts, rights)
 import Index
 import Geekingfrog.Types
 
-import Geekingfrog.Import (testPersistent, importUsers)
+import Geekingfrog.Import (testPersistent, importData)
 import Geekingfrog.Parse (parseGhostExport)
 
 main :: IO ()
@@ -42,13 +42,12 @@ main = let port = 8080 in do
     Left err -> do
       putStrLn "Parse error when importing ghost archive"
       print err
-    Right (errors, (posts, users, tags, postTags)) -> do
+    Right (errors, (posts, tags, postTags)) -> do
       putStrLn $ "Got " ++ show (length posts) ++ " posts"
-      putStrLn $ "Got " ++ show (length users) ++ " users"
       putStrLn $ "Got " ++ show (length tags) ++ " tag"
       putStrLn $ "Got " ++ show (length postTags) ++ " posts & tags relations"
       putStrLn $ "And some errors: " ++ show errors
-      importUsers users
+      importData tags posts postTags
   putStrLn "all is well"
   -- testPersistent
   -- putStrLn $ "Listening on port " ++ show port ++ "..."

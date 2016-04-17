@@ -8,7 +8,6 @@ import GHC.Generics (Generic)
 import Prelude hiding (readFile)
 import Data.ByteString.Lazy (readFile)
 import Data.Aeson as A
--- import Data.Aeson.Types (defaultOptions, fieldLabelModifier)
 import Data.Aeson.Types
 import Control.Applicative (empty, liftA)
 import Data.Text (Text (..))
@@ -22,18 +21,14 @@ import Data.ByteString.Lazy.Internal (ByteString)
 -- A couple of fields are useless but kept for compat with ghost schemas
 data Post = Post {
     postId :: Int
-  , postStatus :: Status
+  , postStatus :: PostStatus
   , postUuid :: Text
   , postTitle :: Text
   , postSlug :: Text
   , postMarkdown :: Text
-  , postAuthorId :: Int  -- for the time being
   , postCreatedAt :: UTCTime
-  , postCreatedBy :: Int
   , postUpdatedAt :: UTCTime
-  , postUpdatedBy :: Int
   , postPublishedAt :: Maybe UTCTime
-  , postPublishedBy :: Maybe Int
   , postLanguage :: Text
   , postHtml :: Text
   , postImage :: Maybe Text
@@ -51,13 +46,9 @@ instance FromJSON Post where
                      <*> v .: "title"
                      <*> v .: "slug"
                      <*> v .: "markdown"
-                     <*> v .: "author_id"
                      <*> liftA fromMiliseconds (v .: "created_at")
-                     <*> v .: "created_by"
                      <*> liftA fromMiliseconds (v .: "updated_at")
-                     <*> v .: "updated_by"
                      <*> (liftA . liftA) fromMiliseconds (v .: "published_at")
-                     <*> v .: "published_by"
                      <*> v .: "language"
                      <*> v .: "html"
                      <*> v .: "image"
@@ -74,69 +65,12 @@ fromMiliseconds ms = fromSeconds (ms `div` 1000)
 boolFromInt :: Int -> Bool
 boolFromInt = (== 0)
 
-data Status = Published | Draft deriving (Show, Read)
+data PostStatus = Published | Draft deriving (Show, Read)
 
-instance FromJSON Status where
+instance FromJSON PostStatus where
   parseJSON (A.String "published") = pure Published
   parseJSON (A.String "draft") = pure Draft
   parseJSON _ = empty
-
-data User = User {
-    userId :: Int
-  , userUuid :: Text
-  , userName :: Text
-  , userSlug :: Text
-  , userPassword :: Text
-  , userEmail :: Text
-  , userImage :: Maybe Text
-  , userCover :: Maybe Text
-  , userBio :: Maybe Text
-  , userWebsite :: Maybe Text
-  , userLocation :: Maybe Text
-  , userAccessibility :: Maybe Text
-  , userStatus :: UserStatus
-  , userLanguage :: Text
-  , userMetaTitle :: Maybe Text
-  , userMetaDescription :: Maybe Text
-  , userLastLogin :: Maybe UTCTime
-  , userCreatedAt :: UTCTime
-  , userCreatedBy :: Int
-  , userUpdatedAt :: UTCTime
-  , userUpdatedBy :: Int
-  , tour :: Maybe Text -- no idea what's that
-  } deriving (Show)
-
-instance FromJSON User where
-  parseJSON (A.Object v) = User
-                       <$> v .: "id"
-                       <*> v .: "uuid"
-                       <*> v .: "name"
-                       <*> v .: "name"
-                       <*> v .: "password"
-                       <*> v .: "email"
-                       <*> v .: "image"
-                       <*> v .: "cover"
-                       <*> v .: "bio"
-                       <*> v .: "website"
-                       <*> v .: "location"
-                       <*> v .: "accessibility"
-                       <*> v .: "status"
-                       <*> v .: "language"
-                       <*> v .: "meta_title"
-                       <*> v .: "meta_description"
-                       <*> (liftA . liftA) fromMiliseconds (v .: "last_login")
-                       <*> liftA fromMiliseconds (v .: "created_at")
-                       <*> v .: "created_by"
-                       <*> liftA fromMiliseconds (v .: "updated_at")
-                       <*> v .: "updated_by"
-                       <*> v .: "tour"
-  parseJSON _ = empty
-
-data UserStatus = Active | Other deriving (Show) -- no idea what to put here :/
-
-instance FromJSON UserStatus where
-  parseJSON (A.String "active") = pure Active
-  parseJSON _ = pure Other
 
 data Tag = Tag {
     tagId :: Int
@@ -150,9 +84,6 @@ data Tag = Tag {
   , tagMetaTitle :: Maybe Text
   , tagMetaDescription :: Maybe Text
   , tagCreatedAt :: UTCTime
-  , tagCreatedBy :: Int
-  , tagUpdatedAt :: UTCTime
-  , tagUpdatedBy :: Int
   } deriving (Show)
 
 instance FromJSON Tag where
@@ -168,9 +99,6 @@ instance FromJSON Tag where
                        <*> v .: "meta_title"
                        <*> v .: "meta_description"
                        <*> liftA fromMiliseconds (v .: "created_at")
-                       <*> v .: "created_by"
-                       <*> liftA fromMiliseconds (v .: "updated_at")
-                       <*> v .: "updated_by"
 
   parseJSON _ = empty
 
