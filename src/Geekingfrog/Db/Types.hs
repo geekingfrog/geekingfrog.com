@@ -49,8 +49,8 @@ Post
 
 PostTag
   Id Int
-  tagId Int
-  postId Int
+  tagId TagId
+  postId PostId
   UniquePostTag tagId postId
   sortOrder Int
   deriving Show

@@ -34,12 +34,12 @@ testPersistent = runSqlite ":memory:" $ do
 
 importData :: [Tag] -> [Post] -> [PostTag] -> IO ()
 importData tags posts postTags = runNoLoggingT $  -- runStderrLoggingT
-  withSqlitePool ":memory:" 10 $ \pool -> liftIO $
+  withSqlitePool "testing.sqlite" 10 $ \pool -> liftIO $
     flip runSqlPersistMPool pool $ do
       runMigration DT.migrateAll
       importTags [head tags]
-      -- importPosts posts
-      -- importPostTags postTags
+      importPosts posts
+      importPostTags postTags
       liftIO . putStrLn $ "All imported"
 
 importTags :: (MonadIO m) => [Tag] -> ReaderT SqlBackend m ()
@@ -87,6 +87,6 @@ postToDb post = DT.Post (postStatusToDb $ postStatus post)
                         (postIsFeatured post)
 
 postTagToDb :: PostTag -> DT.PostTag
-postTagToDb pt = DT.PostTag (postTagTagId pt)
-                            (postTagPostId pt)
+postTagToDb pt = DT.PostTag (DT.TagKey $ postTagTagId pt)
+                            (DT.PostKey $ postTagPostId pt)
                             (postTagSortOrder pt)
