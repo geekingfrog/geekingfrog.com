@@ -19,11 +19,11 @@ import Data.Text (Text)
 import Data.Vector (head)
 import Control.Monad (join)
 import Data.Either (lefts, rights)
-import Control.Applicative (liftA, liftA3)
+import Control.Applicative (liftA)
 
-import Geekingfrog.Types (Post, User, Tag)
+import Geekingfrog.Types (Post, User, Tag, PostTag)
 
-parseGhostExport :: ByteString -> Either String ([String], ([Post], [User], [Tag]))
+parseGhostExport :: ByteString -> Either String ([String], ([Post], [User], [Tag], [PostTag]))
 parseGhostExport rawContent = do
   let eitherData = eitherDecodeStrict rawContent >>= parseEither parseData
 
@@ -31,19 +31,22 @@ parseGhostExport rawContent = do
   let eitherPosts = eitherData >>= parseEither verboseParseManyPosts
   let eitherUsers = eitherData >>= parseEither verboseParseManyUsers
   let eitherTags = eitherData >>= parseEither verboseParseManyTags
+  let eitherTags = eitherData >>= parseEither verboseParseManyTags
+  let eitherPostTags = eitherData >>= parseEither verboseParseManyPostTags
 
-  let grouped = liftA3 (,,) eitherPosts eitherUsers eitherTags
+  let grouped = do ps <- eitherPosts
+                   us <- eitherUsers
+                   ts <- eitherTags
+                   pts <- eitherPostTags
+                   return (ps, us, ts, pts)
 
   case grouped of
     Left err -> Left err
-    Right (posts, users, tags) -> do
-      let postCount = length $ rights posts
-      let userCount = length $ rights users
-      let tagCount = length $ rights tags
+    Right (posts, users, tags, postTags) -> do
       let errors = lefts posts ++ lefts users ++ lefts tags
-      Right (errors, (rights posts, rights users, rights tags))
+      Right (errors, (rights posts, rights users, rights tags, rights postTags))
 
-testParser :: IO (Either String ([String], ([Post], [User], [Tag])))
+testParser :: IO (Either String ([String], ([Post], [User], [Tag], [PostTag])))
 testParser = liftA parseGhostExport (readFile "geekingfrog.ghost.2016-02-21.json")
 
 verboseParseManyPosts :: Object -> Parser [Either String Post]
@@ -54,6 +57,9 @@ verboseParseManyUsers = verboseParseKey "users"
 
 verboseParseManyTags :: Object -> Parser [Either String Tag]
 verboseParseManyTags = verboseParseKey "tags"
+
+verboseParseManyPostTags :: Object -> Parser [Either String PostTag]
+verboseParseManyPostTags = verboseParseKey "posts_tags"
 
 verboseParseKey :: (FromJSON a) => Text -> Object -> Parser [Either String a]
 verboseParseKey key o = do

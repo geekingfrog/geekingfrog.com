@@ -1,0 +1,75 @@
+{-# LANGUAGE EmptyDataDecls             #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GADTs                      #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE QuasiQuotes                #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TypeFamilies               #-}
+
+module Geekingfrog.Db.Types where
+
+import Database.Persist
+import Database.Persist.Sqlite
+import Database.Persist.TH
+import Data.Text (Text(..))
+
+import Data.Time.Clock (UTCTime)
+import Control.Applicative (liftA)
+
+import Geekingfrog.Db.PostStatus (PostStatus)
+
+share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+
+Tag
+  Id Int
+  uuid Text
+  name Text
+  slug Text
+  UniqueSlug slug
+  description Text Maybe
+  hidden Bool
+  createdAt UTCTime default=CURRENT_TIME
+  createdBy Int
+  updatedAt UTCTime default=CURRENT_TIME
+  updatedBy Int
+  deriving Show
+
+User
+  Id Int
+  uuid Text
+  name Text
+  slug Text
+  password Text
+  email Text
+  lastLogin UTCTime Maybe
+  createdAt UTCTime
+  deriving Show
+
+Post
+  Id Int
+  status PostStatus
+  uuid Text
+  slug Text
+  UniquePost slug
+  markdown Text
+  html Text
+  authorId Int
+  createdAt UTCTime default=CURRENT_TIME
+  createdBy Int
+  updatedAt UTCTime default=CURRENT_TIME
+  updatedBy Int
+  language Text
+  isFeatured Bool
+  deriving Show
+
+PostTag
+  Id Int
+  tagId Int
+  postId Int
+  UniquePostTag tagId postId
+  sortOrder Int
+  deriving Show
+
+|]

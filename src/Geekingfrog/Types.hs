@@ -183,7 +183,7 @@ data PostTag = PostTag {
 
 instance FromJSON PostTag where
   parseJSON = A.genericParseJSON defaultOptions {
-    fieldLabelModifier = camelize . drop 7 -- tag_id -> postTagTagId
+    fieldLabelModifier = camelize . drop 7 -- tag_id -> postTagId
     }
 
 -- super inneficient but I don't care about perf here

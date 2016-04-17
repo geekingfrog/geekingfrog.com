@@ -26,11 +26,12 @@ import Control.Monad.Trans.Either (EitherT)
 import Network.Wai.Handler.Warp (run)
 
 import qualified Data.ByteString as B (readFile)
+import Data.Either (lefts, rights)
 
 import Index
 import Geekingfrog.Types
 
-import Geekingfrog.Import (testPersistent)
+import Geekingfrog.Import (testPersistent, importUsers)
 import Geekingfrog.Parse (parseGhostExport)
 
 main :: IO ()
@@ -41,12 +42,15 @@ main = let port = 8080 in do
     Left err -> do
       putStrLn "Parse error when importing ghost archive"
       print err
-    Right (errors, (posts, users, tags)) -> do
-      putStrLn $ "Got " ++ show postCount ++ " posts"
-      putStrLn $ "Got " ++ show userCount ++ " users"
-      putStrLn $ "Got " ++ show tagCount ++ " tag"
-      putStrLn $ "And some errors: " ++ show (lefts posts ++ lefts users ++ lefts tags)
+    Right (errors, (posts, users, tags, postTags)) -> do
+      putStrLn $ "Got " ++ show (length posts) ++ " posts"
+      putStrLn $ "Got " ++ show (length users) ++ " users"
+      putStrLn $ "Got " ++ show (length tags) ++ " tag"
+      putStrLn $ "Got " ++ show (length postTags) ++ " posts & tags relations"
+      putStrLn $ "And some errors: " ++ show errors
+      importUsers users
   putStrLn "all is well"
+  -- testPersistent
   -- putStrLn $ "Listening on port " ++ show port ++ "..."
   -- run port app
 
