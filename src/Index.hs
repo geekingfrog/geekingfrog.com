@@ -2,17 +2,24 @@
 
 module Index where
 
+import Data.Maybe (fromMaybe)
+import Control.Applicative (liftA)
+import Data.Text (pack)
+
+import Data.DateTime (toGregorian')
+
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
 import Svglogo (svglogo)
 
-import Geekingfrog.Types
+import Database.Persist (Entity(..))
+import Geekingfrog.Db.Types
 
-data Index = Index [Post]
+data Index = Index [Entity Post]
 
 instance H.ToMarkup Index where
-  toMarkup _ = docTypeHtml $ do
+  toMarkup (Index posts) = docTypeHtml $ do
 
     H.head $ do
         meta ! charset "utf-8"
@@ -66,11 +73,7 @@ instance H.ToMarkup Index where
                 H.div ! class_ "posts" $ do
                     h2 "Blog"
                     p "Some intro about my blog"
-                    ul $ li ! class_ "post-overview" $ a ! href "link1" $ do
-                        H.span ! class_ "date" $ "01/2015"
-                        H.span ! class_ "right" $ do
-                            H.span ! class_ "blog-title" $ "Much blog title"
-                            H.span ! class_ "blog-tags" $ "#Such, #tags"
+                    ul $ mapM_ (\p -> li ! class_ "post-overview" $ postOverview p) posts
                 H.div ! class_ "misc" $ do
                     h2 "Misc stuff"
                     p "Some banalities about me"
@@ -96,3 +99,14 @@ instance H.ToMarkup Index where
             H.div ! class_ "panel" $ do
                 h2 "SUBSCRIBE"
                 p "RSS feed coming soon!"
+
+
+postOverview :: Entity Post -> Html
+postOverview (Entity postId post) = a ! href "link" $ do
+  H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
+  H.span ! class_ "right" $ do
+    H.span ! class_ "blog-title" $ text $ postTitle post
+    H.span ! class_ "blog-tags" $ "#Such, #tags"
+  where
+    (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
+    paddedMonth = if month < 10 then "0" ++ show month else show month

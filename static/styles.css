@@ -205,7 +205,7 @@ nav {
   margin: 0;
 }
 
-.posts .date {
+.post-overview .date {
   float: left;
   font-size: 1.5rem;
   display: block;
@@ -214,8 +214,13 @@ nav {
 
 .post-overview .right {
   display: inline-block;
-  padding: 5px 0 0;
+  padding: 0;
   font-size: 1.4rem;
+}
+
+.post-overview .date,
+.post-overview .right {
+  padding-top: 5px;
 }
 
 .blog-title {

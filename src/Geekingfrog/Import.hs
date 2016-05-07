@@ -78,11 +78,13 @@ postStatusToDb Draft     = DT.Draft
 postToDb :: Post -> DT.Post
 postToDb post = DT.Post (postStatusToDb $ postStatus post)
                         (postUuid post)
+                        (postTitle post)
                         (postSlug post)
                         (postMarkdown post)
                         (postHtml post)
                         (postCreatedAt post)
                         (postUpdatedAt post)
+                        (postPublishedAt post)
                         (postLanguage post)
                         (postIsFeatured post)
 

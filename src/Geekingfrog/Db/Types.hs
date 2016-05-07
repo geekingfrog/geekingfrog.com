@@ -37,12 +37,14 @@ Post
   Id Int
   status PostStatus
   uuid Text
+  title Text
   slug Text
   UniquePost slug
   markdown Text
   html Text
   createdAt UTCTime default=CURRENT_TIME
   updatedAt UTCTime default=CURRENT_TIME
+  publishedAt UTCTime Maybe
   language Text
   isFeatured Bool
   deriving Show
