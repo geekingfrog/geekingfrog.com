@@ -216,6 +216,7 @@ nav {
   display: inline-block;
   padding: 0;
   font-size: 1.4rem;
+  max-width: calc(100% - 7rem);
 }
 
 .post-overview .date,

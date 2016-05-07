@@ -37,7 +37,7 @@ importData tags posts postTags = runNoLoggingT $  -- runStderrLoggingT
   withSqlitePool "testing.sqlite" 10 $ \pool -> liftIO $
     flip runSqlPersistMPool pool $ do
       runMigration DT.migrateAll
-      importTags [head tags]
+      importTags tags
       importPosts posts
       importPostTags postTags
       liftIO . putStrLn $ "All imported"
