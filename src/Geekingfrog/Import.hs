@@ -46,21 +46,21 @@ importTags :: (MonadIO m) => [Tag] -> ReaderT SqlBackend m ()
 importTags tags = do
   let tagIds = fmap (DT.TagKey . tagId) tags
   let dbTags = fmap tagToDb tags
-  zipWithM_ insertKey tagIds dbTags
+  zipWithM_ repsert tagIds dbTags
   liftIO . putStrLn $ "Successfully imported " ++ show (length tags) ++ " tags"
 
 importPosts :: (MonadIO m) => [Post] -> ReaderT SqlBackend m ()
 importPosts posts = do
   let postIds = fmap (DT.PostKey . postId) posts
   let dbPosts = fmap postToDb posts
-  zipWithM_ insertKey postIds dbPosts
+  zipWithM_ repsert postIds dbPosts
   liftIO . putStrLn $ "Successfully imported " ++ show (length posts) ++ " posts"
 
 importPostTags :: (MonadIO m) => [PostTag] -> ReaderT SqlBackend m ()
 importPostTags postTags = do
   let ids = fmap (DT.PostTagKey . postTagId) postTags
   let dbPostTags = fmap postTagToDb postTags
-  zipWithM_ insertKey ids dbPostTags
+  zipWithM_ repsert ids dbPostTags
   liftIO . putStrLn $ "Successfully imported " ++ show (length postTags) ++ " post-tags relations"
 
 tagToDb :: Tag -> DT.Tag

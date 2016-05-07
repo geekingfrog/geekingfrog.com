@@ -7,7 +7,9 @@ import Text.Blaze.Html5.Attributes as A
 
 import Svglogo (svglogo)
 
-data Index = Index
+import Geekingfrog.Types
+
+data Index = Index [Post]
 
 instance H.ToMarkup Index where
   toMarkup _ = docTypeHtml $ do

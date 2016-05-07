@@ -2,34 +2,30 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RankNTypes #-}
 
 module Main where
 
 import Data.Text (Text)
-import Servant (
-  Get,
-  JSON,
-  Proxy (..),
-  (:>),
-  (:<|>) (..),
-  Raw,
-  serve,
-  serveDirectory,
-  Server,
-  ServantErr
-  )
+import Servant
 
 import Servant.HTML.Blaze (HTML)
 import Text.Blaze (ToMarkup, toMarkup, text)
 import Network.Wai (Application)
-import Control.Monad.Trans.Either (EitherT)
 import Network.Wai.Handler.Warp (run)
 
 import qualified Data.ByteString as B (readFile)
 import Data.Either (lefts, rights)
+import Control.Monad.Trans.Reader
+import Control.Monad.Trans.Either
+import Control.Monad.Trans.Except
+import Control.Monad.IO.Class (liftIO, MonadIO)
+import Database.Persist
+import Database.Persist.Sqlite
 
 import Index
 import Geekingfrog.Types
+import qualified Geekingfrog.Db.Types as DB
 
 import Geekingfrog.Import (testPersistent, importData)
 import Geekingfrog.Parse (parseGhostExport)
@@ -50,19 +46,45 @@ main = let port = 8080 in do
       importData tags posts postTags
   putStrLn "all is well"
   -- testPersistent
-  -- putStrLn $ "Listening on port " ++ show port ++ "..."
-  -- run port app
+  putStrLn $ "Listening on port " ++ show port ++ "..."
+  run port app
 
 type WebsiteAPI =
       Get '[HTML] Index
-  :<|> "static" :> Raw -- staticServer
+      :<|> "static" :> Raw -- staticServer
 
 websiteApi :: Proxy WebsiteAPI
 websiteApi = Proxy
 
 websiteServer :: Server WebsiteAPI
-websiteServer = return Index
+websiteServer = makeIndex
            :<|> serveDirectory "./static"
 
 app :: Application
 app = serve websiteApi websiteServer
+-- app = serve websiteApi readerServer
+--   where readerServer = enter readerToHandler readerServerT
+
+
+makeIndex = do
+  posts <- liftIO $ runSqlite "testing.sqlite" $ do
+    -- post <- selectList [DB.PostUuid ==. "b5638535-7891-432e-9671-346811c30691"] []
+    post <- selectList ([] :: [Filter DB.Post]) []
+    return [post]
+  return $ Index []
+
+--------------------------------------------------------------------------------
+--  Servant 0.7 doesn't have a way to have Raw inside another monad
+--  So for the time being, just connect to the db on every connection
+--  instead of having a pool in a reader
+--------------------------------------------------------------------------------
+-- readerToHandler :: Reader String :~> Handler
+-- readerToHandler = Nat readerToHandler'
+--
+-- readerToHandler' :: forall a. Reader String a -> Handler a
+-- readerToHandler' r = return (runReader r "hi")
+--
+-- -- Change the Reader parameter to be what I need
+-- -- (something to hold db connections)
+-- readerServerT :: ServerT WebsiteAPI (Reader String)
+-- readerServerT = return Index :<|> serveDirectory "./static"
