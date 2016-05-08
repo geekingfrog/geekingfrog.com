@@ -80,16 +80,17 @@ makeIndex = do
 getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
 getLastPostTags = runSqlite "testing.sqlite" $ E.select $
     E.from $ \((post `E.InnerJoin` postTag) `E.InnerJoin` tag) -> do
-      E.where_ $ post ^. DB.PostId `E.in_` E.subList_select $ E.from (\p -> do
-        E.where_ (E.not_ $ E.isNothing $ p ^. DB.PostPublishedAt)
-        E.limit 5
-        E.orderBy [E.desc (p ^. DB.PostPublishedAt)]
-        return $ p ^. DB.PostId
-        )
+      E.where_ $ post ^. DB.PostId `E.in_` subPosts
       E.on $ tag ^. DB.TagId E.==. postTag ^. DB.PostTagTagId
       E.on $ post ^. DB.PostId E.==. postTag ^. DB.PostTagPostId
       E.orderBy [E.desc (post ^. DB.PostPublishedAt)]
       return (post, tag)
+    where subPosts = E.subList_select $ E.from $
+            \p -> do
+              E.where_ (E.not_ $ E.isNothing $ p ^. DB.PostPublishedAt)
+              E.limit 5
+              E.orderBy [E.desc (p ^. DB.PostPublishedAt)]
+              return $ p ^. DB.PostId
 
 -- assume sorted by DB.Post
 groupPostTags :: [(Entity DB.Post, Entity DB.Tag)] -> [(Entity DB.Post, [Entity DB.Tag])]
