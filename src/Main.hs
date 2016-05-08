@@ -3,6 +3,7 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Main where
 
@@ -24,6 +25,8 @@ import Control.Monad.IO.Class (liftIO, MonadIO)
 import Database.Persist
 import Database.Persist.Sqlite
 import Database.Persist.Class
+import qualified Database.Esqueleto as E
+import Database.Esqueleto ((^.))
 
 import Index
 import Geekingfrog.Types
@@ -70,49 +73,29 @@ app = serve websiteApi websiteServer
 
 
 makeIndex = do
-  posts <- liftIO $ runSqlite "testing.sqlite" $ selectList [DB.PostPublishedAt !=. Nothing] [
-      Desc DB.PostPublishedAt,
-      LimitTo 5
-    ]
-    -- post <- selectList [DB.PostUuid ==. "b5638535-7891-432e-9671-346811c30691"] []
-    -- post <- selectList ([] :: [Filter DB.Post]) []
-    -- return posts
-  return $ Index posts
+  postTags <- liftIO getLastPostTags
+  let grouped = groupPostTags postTags
+  return $ Index grouped
 
--- dbPostToPost :: DB.Post -> Post
--- dbPostToPost post = Post
---                 (keyToInt $ DB.unPostKey post)
---                 (toPostStatus $ DB.postStatus post)
---                 (DB.postUuid post)
---                 (DB.postTitle post)
---                 (DB.postSlug post)
---                 (DB.postMarkdown post)
---                 (DB.postCreatedAt post)
---                 (DB.postUpdatedAt post)
---                 (DB.postPublishedAt post)
---                 (DB.postLanguage post)
---                 (DB.postHtml post)
---                 (Nothing) -- image
---                 (False) -- isFeatured
---                 (1)
---                 (Nothing)
---                 (Nothing)
---
--- toPostStatus DB.Published = Published
--- toPostStatus _ = Draft
+getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
+getLastPostTags = runSqlite "testing.sqlite" $ E.select $
+    E.from $ \((post `E.InnerJoin` postTag) `E.InnerJoin` tag) -> do
+      E.where_ $ post ^. DB.PostId `E.in_` E.subList_select $ E.from (\p -> do
+        E.where_ (E.not_ $ E.isNothing $ p ^. DB.PostPublishedAt)
+        E.limit 5
+        E.orderBy [E.desc (p ^. DB.PostPublishedAt)]
+        return $ p ^. DB.PostId
+        )
+      E.on $ tag ^. DB.TagId E.==. postTag ^. DB.PostTagTagId
+      E.on $ post ^. DB.PostId E.==. postTag ^. DB.PostTagPostId
+      E.orderBy [E.desc (post ^. DB.PostPublishedAt)]
+      return (post, tag)
 
---------------------------------------------------------------------------------
---  Servant 0.7 doesn't have a way to have Raw inside another monad
---  So for the time being, just connect to the db on every connection
---  instead of having a pool in a reader
---------------------------------------------------------------------------------
--- readerToHandler :: Reader String :~> Handler
--- readerToHandler = Nat readerToHandler'
---
--- readerToHandler' :: forall a. Reader String a -> Handler a
--- readerToHandler' r = return (runReader r "hi")
---
--- -- Change the Reader parameter to be what I need
--- -- (something to hold db connections)
--- readerServerT :: ServerT WebsiteAPI (Reader String)
--- readerServerT = return Index :<|> serveDirectory "./static"
+-- assume sorted by DB.Post
+groupPostTags :: [(Entity DB.Post, Entity DB.Tag)] -> [(Entity DB.Post, [Entity DB.Tag])]
+groupPostTags = go []
+  where go acc [] = acc
+        go [] ((p, t):xs) = go [(p, [t])] xs
+        go ((p, tags):rest) ((post, tag):xs) = if entityKey p == entityKey post
+                                               then go ((p, tag:tags):rest) xs
+                                               else go ((post, [tag]):(p, tags):rest) xs

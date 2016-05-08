@@ -3,8 +3,9 @@
 module Index where
 
 import Data.Maybe (fromMaybe)
+import Data.List (intersperse)
 import Control.Applicative (liftA)
-import Data.Text (pack)
+import Data.Text as T (pack, concat, cons)
 
 import Data.DateTime (toGregorian')
 
@@ -14,9 +15,9 @@ import Text.Blaze.Html5.Attributes as A
 import Svglogo (svglogo)
 
 import Database.Persist (Entity(..))
-import Geekingfrog.Db.Types
+import Geekingfrog.Db.Types as DB
 
-data Index = Index [Entity Post]
+data Index = Index [(Entity DB.Post, [Entity DB.Tag])]
 
 instance H.ToMarkup Index where
   toMarkup (Index posts) = docTypeHtml $ do
@@ -73,13 +74,14 @@ instance H.ToMarkup Index where
                 H.div ! class_ "posts" $ do
                     h2 "Blog"
                     p "Some intro about my blog"
-                    ul $ mapM_ (\p -> li ! class_ "post-overview" $ postOverview p) posts
+                    ul $ mapM_ (li ! class_ "post-overview" . postOverview ) posts
                 H.div ! class_ "misc" $ do
                     h2 "Misc stuff"
                     p "Some banalities about me"
                     ul $ do
                         li "style items later"
                         li "another item"
+
         footer $ H.div ! class_ "container" $ do
             H.div ! class_ "panel panel-bio" $ do
                 h2 "HELLO!"
@@ -101,12 +103,13 @@ instance H.ToMarkup Index where
                 p "RSS feed coming soon!"
 
 
-postOverview :: Entity Post -> Html
-postOverview (Entity postId post) = a ! href "link" $ do
+postOverview :: (Entity Post, [Entity DB.Tag]) -> Html
+postOverview (Entity postId post, tags) = a ! href "link" $ do
   H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
   H.span ! class_ "right" $ do
     H.span ! class_ "blog-title" $ text $ postTitle post
-    H.span ! class_ "blog-tags" $ "#Such, #tags"
+    H.span ! class_ "blog-tags" $ textTag
   where
     (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
     paddedMonth = if month < 10 then "0" ++ show month else show month
+    textTag =  text . T.concat $ intersperse ", " $ fmap (cons '#' . DB.tagSlug . entityVal) tags
