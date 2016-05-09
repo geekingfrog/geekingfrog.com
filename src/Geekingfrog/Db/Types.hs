@@ -27,7 +27,7 @@ Tag
   uuid Text
   name Text
   slug Text
-  UniqueSlug slug
+  UniqueTagSlug slug
   description Text Maybe
   hidden Bool
   createdAt UTCTime default=CURRENT_TIME
@@ -39,7 +39,7 @@ Post
   uuid Text
   title Text
   slug Text
-  UniquePost slug
+  UniquePostSlug slug
   markdown Text
   html Text
   createdAt UTCTime default=CURRENT_TIME

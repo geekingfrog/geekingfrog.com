@@ -28,13 +28,15 @@ import Database.Persist.Class
 import qualified Database.Esqueleto as E
 import Database.Esqueleto ((^.))
 
-import Index
 import Geekingfrog.Types
 import qualified Geekingfrog.Db.Types as DB
 import qualified Geekingfrog.Db.PostStatus as DB
 
 import Geekingfrog.Import (testPersistent, importData)
 import Geekingfrog.Parse (parseGhostExport)
+
+import Geekingfrog.Views.Index (Index(..))
+import Geekingfrog.Views.Post (PostView(..))
 
 main :: IO ()
 main = let port = 8080 in do
@@ -56,14 +58,16 @@ main = let port = 8080 in do
   run port app
 
 type WebsiteAPI =
-      Get '[HTML] Index
-      :<|> "static" :> Raw -- staticServer
+       Get '[HTML] Index
+  :<|> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
+  :<|> ("static" :> Raw) -- staticServer
 
 websiteApi :: Proxy WebsiteAPI
 websiteApi = Proxy
 
 websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
+           :<|> makePost
            :<|> serveDirectory "./static"
 
 app :: Application
@@ -71,11 +75,19 @@ app = serve websiteApi websiteServer
 -- app = serve websiteApi readerServer
 --   where readerServer = enter readerToHandler readerServerT
 
-
+makeIndex :: Handler Index
 makeIndex = do
   postTags <- liftIO getLastPostTags
   let grouped = groupPostTags postTags
   return $ Index grouped
+
+-- makePost :: Text -> ExceptT ServantErr IO Index
+makePost :: Text -> Handler PostView
+makePost slug = do
+  post <- liftIO $ getPostBySlug slug
+  case post of
+    Nothing -> undefined -- TODO proper error handling
+    Just p -> return $ PostView p
 
 getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
 getLastPostTags = runSqlite "testing.sqlite" $ E.select $
@@ -83,7 +95,7 @@ getLastPostTags = runSqlite "testing.sqlite" $ E.select $
       E.where_ $ post ^. DB.PostId `E.in_` subPosts
       E.on $ tag ^. DB.TagId E.==. postTag ^. DB.PostTagTagId
       E.on $ post ^. DB.PostId E.==. postTag ^. DB.PostTagPostId
-      E.orderBy [E.desc (post ^. DB.PostPublishedAt)]
+      E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
       return (post, tag)
     where subPosts = E.subList_select $ E.from $
             \p -> do
@@ -91,6 +103,13 @@ getLastPostTags = runSqlite "testing.sqlite" $ E.select $
               E.limit 5
               E.orderBy [E.desc (p ^. DB.PostPublishedAt)]
               return $ p ^. DB.PostId
+
+-- getPostBySlug :: Text -> IO [Entity DB.Post]
+-- getPostBySlug slug = runSqlite "testing.sqlite" $ E.select $ E.from $ \p -> do
+--   E.where_ $ p ^. DB.PostSlug E.==. E.val slug
+--   return p
+
+getPostBySlug slug = runSqlite "testing.sqlite" $ getBy $ DB.UniquePostSlug slug
 
 -- assume sorted by DB.Post
 groupPostTags :: [(Entity DB.Post, Entity DB.Tag)] -> [(Entity DB.Post, [Entity DB.Tag])]

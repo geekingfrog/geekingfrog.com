@@ -189,6 +189,13 @@ nav {
   width: 48%;
 }
 
+.posts__fullpage {
+  float: none;
+  width: 80%;
+  margin: 0 auto;
+  overflow: auto;
+}
+
 .misc {
   float: right;
   width: 40%;
@@ -211,6 +218,19 @@ nav {
   display: block;
   padding-right: 10px;
 }
+
+.post-overview__fullpage {
+  width: 48%;
+}
+
+.post-overview__fullpage:nth-child(odd) {
+  float: left;
+}
+
+.post-overview__fullpage:nth-child(even) {
+  float: right;
+}
+
 
 .post-overview .right {
   display: inline-block;
