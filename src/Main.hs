@@ -27,6 +27,7 @@ import Database.Persist.Sqlite
 import Database.Persist.Class
 import qualified Database.Esqueleto as E
 import Database.Esqueleto ((^.))
+import Safe (headMay)
 
 import Geekingfrog.Types
 import qualified Geekingfrog.Db.Types as DB
@@ -81,11 +82,10 @@ makeIndex = do
   let grouped = groupPostTags postTags
   return $ Index grouped
 
--- makePost :: Text -> ExceptT ServantErr IO Index
 makePost :: Text -> Handler PostView
 makePost slug = do
-  post <- liftIO $ getPostBySlug slug
-  case post of
+  postAndTags <- liftIO $ getPostAndTags slug
+  case postAndTags of
     Nothing -> undefined -- TODO proper error handling
     Just p -> return $ PostView p
 
@@ -108,6 +108,20 @@ getLastPostTags = runSqlite "testing.sqlite" $ E.select $
 -- getPostBySlug slug = runSqlite "testing.sqlite" $ E.select $ E.from $ \p -> do
 --   E.where_ $ p ^. DB.PostSlug E.==. E.val slug
 --   return p
+
+getPostAndTags :: Text -> IO (Maybe (Entity DB.Post, [Entity DB.Tag]))
+getPostAndTags postSlug = do
+  postAndTags <- runSqlite "testing.sqlite" $ E.select $
+    E.from $ \((post `E.InnerJoin` postTag) `E.InnerJoin` tag) -> do
+      E.on $ tag ^. DB.TagId E.==. postTag ^. DB.PostTagTagId
+      E.on $ post ^. DB.PostId E.==. postTag ^. DB.PostTagPostId
+      E.where_ (post ^. DB.PostSlug E.==. E.val postSlug)
+      return (post, tag)
+  let tags = map snd postAndTags
+  case headMay postAndTags of
+    Nothing -> undefined  -- todo better error handling
+    Just (post, _) -> return $ Just (post, tags)
+
 
 getPostBySlug slug = runSqlite "testing.sqlite" $ getBy $ DB.UniquePostSlug slug
 

@@ -36,4 +36,5 @@ executable geekingfrog
                        esqueleto >= 2.4 && < 2.5,
                        transformers >= 0.4 && < 0.5,
                        vector >= 0.11 && < 0.12,
-                       monad-logger >= 0.3 && < 0.4
+                       monad-logger >= 0.3 && < 0.4,
+                       safe >= 0.3 && < 0.4
