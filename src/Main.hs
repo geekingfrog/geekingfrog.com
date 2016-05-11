@@ -4,6 +4,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Main where
 
@@ -12,8 +13,13 @@ import Servant hiding (Post)
 
 import Servant.HTML.Blaze (HTML)
 import Text.Blaze (ToMarkup, toMarkup, text)
-import Network.Wai (Application)
-import Network.Wai.Handler.Warp (run)
+import Network.Wai (Application, Response(..), responseLBS, Request)
+import Network.Wai.Handler.Warp (
+    run
+  , defaultSettings
+  , defaultOnExceptionResponse
+  )
+import Network.Wai.Handler.Warp.Internal
 
 import qualified Data.ByteString as B (readFile)
 import Data.Either (lefts, rights)
@@ -22,6 +28,7 @@ import Control.Monad.Trans.Reader
 import Control.Monad.Trans.Either
 import Control.Monad.Trans.Except
 import Control.Monad.IO.Class (liftIO, MonadIO)
+import Control.Exception (SomeException, fromException)
 import Database.Persist
 import Database.Persist.Sqlite
 import Database.Persist.Class
@@ -38,6 +45,9 @@ import Geekingfrog.Parse (parseGhostExport)
 
 import Geekingfrog.Views.Index (Index(..))
 import Geekingfrog.Views.Post (PostView(..))
+import Geekingfrog.Views.Errors (testErr)
+import Text.Blaze.Renderer.Utf8 (renderMarkup)
+
 
 main :: IO ()
 main = let port = 8080 in do
@@ -61,6 +71,7 @@ main = let port = 8080 in do
 type WebsiteAPI =
        Get '[HTML] Index
   :<|> "blog" :> Capture "postSlug" Text :> Get '[HTML] PostView
+  :<|> "boom" :> Get '[HTML] Index
   :<|> ("static" :> Raw) -- staticServer
 
 websiteApi :: Proxy WebsiteAPI
@@ -69,6 +80,7 @@ websiteApi = Proxy
 websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
            :<|> makePost
+           :<|> testing
            :<|> serveDirectory "./static"
 
 app :: Application
@@ -89,7 +101,7 @@ makePost slug = do
     Nothing -> throwError myerr
     Just p -> return $ PostView p
   where myerr :: ServantErr
-        myerr = err500 { errBody = "oops" }  -- TODO better error handling
+        myerr = err500 { errBody = renderMarkup testErr}  -- TODO better error handling
 
 getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
 getLastPostTags = runSqlite "testing.sqlite" $ E.select $
@@ -135,3 +147,6 @@ groupPostTags = go []
         go ((p, tags):rest) ((post, tag):xs) = if entityKey p == entityKey post
                                                then go ((p, tag:tags):rest) xs
                                                else go ((post, [tag]):(p, tags):rest) xs
+
+testing :: Handler Index
+testing = throwError (err500 {errBody = renderMarkup testErr})
