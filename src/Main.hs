@@ -60,7 +60,7 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
        Get '[HTML] Index
-  :<|> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
+  :<|> "blog" :> Capture "postSlug" Text :> Get '[HTML] PostView
   :<|> ("static" :> Raw) -- staticServer
 
 websiteApi :: Proxy WebsiteAPI
@@ -86,8 +86,10 @@ makePost :: Text -> Handler PostView
 makePost slug = do
   postAndTags <- liftIO $ getPostAndTags slug
   case postAndTags of
-    Nothing -> undefined -- TODO proper error handling
+    Nothing -> throwError myerr
     Just p -> return $ PostView p
+  where myerr :: ServantErr
+        myerr = err500 { errBody = "oops" }  -- TODO better error handling
 
 getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
 getLastPostTags = runSqlite "testing.sqlite" $ E.select $
@@ -119,7 +121,7 @@ getPostAndTags postSlug = do
       return (post, tag)
   let tags = map snd postAndTags
   case headMay postAndTags of
-    Nothing -> undefined  -- todo better error handling
+    Nothing -> return Nothing
     Just (post, _) -> return $ Just (post, tags)
 
 

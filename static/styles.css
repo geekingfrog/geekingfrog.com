@@ -50,11 +50,13 @@ a {
   max-width: 1100px;
   margin-left: auto;
   margin-right: auto;
-  overflow: visible;
   position: relative;
+  padding: 2rem 1rem;
 }
 
 .container::after {
+  content: "";
+  display: block;
   clear: both;
 }
 
@@ -68,7 +70,6 @@ header::before {
 .header-container {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
   position: relative;
   overflow: hidden;
 }
@@ -139,10 +140,6 @@ nav {
 }
 
 
-.content {
-  padding-bottom: 100px;
-}
-
 .hero {
   background-color: #222;
   background-image: radial-gradient(circle farthest-corner at 0px, rgba(221, 221, 221, .2), rgba(221, 221, 221, .1));
@@ -153,7 +150,6 @@ nav {
 }
 
 .hero-container {
-  padding: 2rem 0;
   color: white;
 }
 
@@ -169,6 +165,10 @@ nav {
 }
 
 .main-title {
+  width: 100%;
+}
+
+.main-title.main-title__blog {
   width: 70%;
 }
 
@@ -199,7 +199,8 @@ nav {
 }
 
 .content {
-  padding: 3rem 0 8rem;
+  padding: 3rem 2rem 100px;
+  position: relative;
 }
 
 .posts {
@@ -271,13 +272,14 @@ nav {
 }
 
 .blog-meta-container {
+  color: white;
   width: 30%;
   position: absolute;
-  bottom: 0;
-  right: 0;
-  transform: translateY(30%);
+  top: 0;
+  right: 1rem;
+  transform: translateY(-70%);
   background-color: #222;
-  z-index: 10;
+  z-index: 100;
   padding: 1rem;
   border-radius: 6px;
 }
