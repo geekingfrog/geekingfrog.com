@@ -31,7 +31,7 @@ instance H.ToMarkup Index where
     H.head pageHead
 
     body ! class_ "home" $ do
-        navHeader Home
+        navHeader (Just Home)
         section ! class_ "hero" $
             H.div ! class_ "container hero-container" $ h1 ! class_ "main-title main-title__huge" $ "The Geekingfrog"
 

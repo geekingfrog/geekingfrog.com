@@ -18,15 +18,16 @@ concatTags tags = T.concat $ intersperse ", " $ fmap (cons '#' . tagSlug . entit
 -- Later, make that more robust to link that with the route. Atm, a sum type is fine
 data NavItem = Home | Blog | Gpg deriving (Show, Eq)
 
-navHeader :: NavItem -> Markup
+navHeader :: Maybe NavItem -> Markup
 navHeader activeItem = header $ H.div ! class_ "container header-container" $ do
   H.div ! class_ "logo" $ svglogo
   nav $ ul ! class_ "nav-links" $ do
     li ! class_ (makeClass Home activeItem) $ a ! href "/" $ "HOME"
     li ! class_ (makeClass Blog activeItem) $ a ! href "/blog" $ "BLOG"
     li ! class_ (makeClass Gpg activeItem) $ a ! href "/gpg" $ "GPG"
-  where makeClass item target | item == target = "nav-link nav-link__active"
-                              | otherwise = "nav-link"
+  where makeClass item (Just target) | item == target = "nav-link nav-link__active"
+                                     | otherwise = "nav-link"
+        makeClass item Nothing = "nav-link"
 
 pageFooter = do
   footer $ H.div ! class_ "container" $ do

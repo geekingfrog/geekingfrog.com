@@ -13,13 +13,14 @@ import Servant hiding (Post)
 
 import Servant.HTML.Blaze (HTML)
 import Text.Blaze (ToMarkup, toMarkup, text)
-import Network.Wai (Application, Response(..), responseLBS, Request)
+import Network.Wai -- (Application, Response(..), responseLBS, Request)
 import Network.Wai.Handler.Warp (
     run
   , defaultSettings
   , defaultOnExceptionResponse
   )
 import Network.Wai.Handler.Warp.Internal
+import Network.HTTP.Types as H
 
 import qualified Data.ByteString as B (readFile)
 import Data.Either (lefts, rights)
@@ -45,7 +46,7 @@ import Geekingfrog.Parse (parseGhostExport)
 
 import Geekingfrog.Views.Index (Index(..))
 import Geekingfrog.Views.Post (PostView(..))
-import Geekingfrog.Views.Errors (testErr)
+import Geekingfrog.Views.Errors (testErr, notFound)
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
 
 
@@ -73,6 +74,7 @@ type WebsiteAPI =
   :<|> "blog" :> Capture "postSlug" Text :> Get '[HTML] PostView
   :<|> "boom" :> Get '[HTML] Index
   :<|> ("static" :> Raw) -- staticServer
+  :<|> Raw  -- catchall for custom 404
 
 websiteApi :: Proxy WebsiteAPI
 websiteApi = Proxy
@@ -82,6 +84,7 @@ websiteServer = makeIndex
            :<|> makePost
            :<|> testing
            :<|> serveDirectory "./static"
+           :<|> custom404
 
 app :: Application
 app = serve websiteApi websiteServer
@@ -150,3 +153,9 @@ groupPostTags = go []
 
 testing :: Handler Index
 testing = throwError (err500 {errBody = renderMarkup testErr})
+
+-- Request -> (Response -> IO ResponseReceived) -> ResponseReceived
+custom404 :: Application
+custom404 _ sendResponse = sendResponse $ responseLBS H.status404
+                             [("Content-Type", "text/html; charset=UTF-8")]
+                             (renderMarkup notFound)

@@ -28,7 +28,7 @@ instance H.ToMarkup PostView where
     H.head pageHead
 
     body ! class_ "blog" $ do
-      navHeader Blog
+      navHeader (Just Blog)
 
       section ! class_ "hero" $
         H.div ! class_ "container hero-container" $
@@ -54,7 +54,7 @@ instance H.ToMarkup PostsOverview where
     H.head pageHead
 
     body ! class_ "blog" $ do
-      navHeader Blog
+      navHeader (Just Blog)
 
       section $ do
         H.div ! class_ "hero" $ H.div ! class_ "container hero-container" $ h1 ! class_ "main-title" $ "Blog"
