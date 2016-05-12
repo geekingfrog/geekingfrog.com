@@ -33,7 +33,7 @@ frogWithText :: Text -> Text
 frogWithText text = let
   len = T.length text + 2
   line = append " " $ append (T.replicate len "-") "\n"
-  wrappedText = T.concat ["< ", text, " >\n"]
+  wrappedText = T.concat ["| ", text, " |\n"]
   in T.concat [line, wrappedText, line, frog]
 
 frog :: Text

@@ -46,7 +46,7 @@ import Geekingfrog.Parse (parseGhostExport)
 
 import Geekingfrog.Views.Index (Index(..))
 import Geekingfrog.Views.Post (PostView(..))
-import Geekingfrog.Views.Errors (testErr, notFound)
+import Geekingfrog.Views.Errors (testErr, notFound, genericError)
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
 
 
@@ -71,8 +71,7 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
        Get '[HTML] Index
-  :<|> "blog" :> Capture "postSlug" Text :> Get '[HTML] PostView
-  :<|> "boom" :> Get '[HTML] Index
+  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
   :<|> ("static" :> Raw) -- staticServer
   :<|> Raw  -- catchall for custom 404
 
@@ -82,7 +81,6 @@ websiteApi = Proxy
 websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
            :<|> makePost
-           :<|> testing
            :<|> serveDirectory "./static"
            :<|> custom404
 
@@ -101,10 +99,10 @@ makePost :: Text -> Handler PostView
 makePost slug = do
   postAndTags <- liftIO $ getPostAndTags slug
   case postAndTags of
-    Nothing -> throwError myerr
+    Nothing -> throwError postNotFound
     Just p -> return $ PostView p
-  where myerr :: ServantErr
-        myerr = err500 { errBody = renderMarkup testErr}  -- TODO better error handling
+    where postNotFound = err404 { errBody = renderMarkup errMsg}
+          errMsg = genericError "Not found" "No post found with this name :("
 
 getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
 getLastPostTags = runSqlite "testing.sqlite" $ E.select $
@@ -120,11 +118,6 @@ getLastPostTags = runSqlite "testing.sqlite" $ E.select $
               E.limit 5
               E.orderBy [E.desc (p ^. DB.PostPublishedAt)]
               return $ p ^. DB.PostId
-
--- getPostBySlug :: Text -> IO [Entity DB.Post]
--- getPostBySlug slug = runSqlite "testing.sqlite" $ E.select $ E.from $ \p -> do
---   E.where_ $ p ^. DB.PostSlug E.==. E.val slug
---   return p
 
 getPostAndTags :: Text -> IO (Maybe (Entity DB.Post, [Entity DB.Tag]))
 getPostAndTags postSlug = do
@@ -150,9 +143,6 @@ groupPostTags = go []
         go ((p, tags):rest) ((post, tag):xs) = if entityKey p == entityKey post
                                                then go ((p, tag:tags):rest) xs
                                                else go ((post, [tag]):(p, tags):rest) xs
-
-testing :: Handler Index
-testing = throwError (err500 {errBody = renderMarkup testErr})
 
 -- Request -> (Response -> IO ResponseReceived) -> ResponseReceived
 custom404 :: Application

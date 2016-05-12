@@ -72,4 +72,4 @@ postOverview (Entity postId post, tags) = a ! href (postLink post) $ do
     paddedMonth = if month < 10 then "0" ++ show month else show month
 
 postLink :: DB.Post -> H.AttributeValue
-postLink post = H.toValue $ append "/post/" (DB.postSlug post)
+postLink post = H.toValue $ append "/blog/post/" (DB.postSlug post)
