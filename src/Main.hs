@@ -12,6 +12,7 @@ import Data.Text (Text)
 import Servant hiding (Post)
 
 import Servant.HTML.Blaze (HTML)
+import Text.Blaze.Renderer.Utf8 (renderMarkup)
 import Text.Blaze (ToMarkup, toMarkup, text)
 import Network.Wai -- (Application, Response(..), responseLBS, Request)
 import Network.Wai.Handler.Warp (
@@ -25,6 +26,7 @@ import Network.HTTP.Types as H
 import qualified Data.ByteString as B (readFile)
 import Data.Either (lefts, rights)
 import Data.Maybe
+import Control.Applicative (liftA)
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.Either
 import Control.Monad.Trans.Except
@@ -45,9 +47,14 @@ import Geekingfrog.Import (testPersistent, importData)
 import Geekingfrog.Parse (parseGhostExport)
 
 import Geekingfrog.Views.Index (Index(..))
-import Geekingfrog.Views.Post (PostView(..))
+import Geekingfrog.Views.Post (PostView(..), PostsOverview(..))
 import Geekingfrog.Views.Errors (testErr, notFound, genericError)
-import Text.Blaze.Renderer.Utf8 (renderMarkup)
+import Geekingfrog.Queries (
+    getLastPostTags
+  , getPostsAndTags
+  , getOnePostAndTags
+  , getPostBySlug
+  )
 
 
 main :: IO ()
@@ -71,6 +78,7 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
        Get '[HTML] Index
+  :<|> "blog" :> Get '[HTML] PostsOverview
   :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
   :<|> ("static" :> Raw) -- staticServer
   :<|> Raw  -- catchall for custom 404
@@ -80,6 +88,7 @@ websiteApi = Proxy
 
 websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
+           :<|> makePostsIndex
            :<|> makePost
            :<|> serveDirectory "./static"
            :<|> custom404
@@ -95,45 +104,22 @@ makeIndex = do
   let grouped = groupPostTags postTags
   return $ Index grouped
 
+makePostsIndex :: Handler PostsOverview
+makePostsIndex = do
+  let query post _ _ = E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
+  postsAndTags <- liftIO $ liftA groupPostTags (getPostsAndTags query)
+  return $ PostsOverview postsAndTags
+
+
 makePost :: Text -> Handler PostView
 makePost slug = do
-  postAndTags <- liftIO $ getPostAndTags slug
+  postAndTags <- liftIO $ getOnePostAndTags slug
   case postAndTags of
     Nothing -> throwError postNotFound
     Just p -> return $ PostView p
     where postNotFound = err404 { errBody = renderMarkup errMsg}
           errMsg = genericError "Not found" "No post found with this name :("
 
-getLastPostTags :: IO [(Entity DB.Post, Entity DB.Tag)]
-getLastPostTags = runSqlite "testing.sqlite" $ E.select $
-    E.from $ \((post `E.InnerJoin` postTag) `E.InnerJoin` tag) -> do
-      E.where_ $ post ^. DB.PostId `E.in_` subPosts
-      E.on $ tag ^. DB.TagId E.==. postTag ^. DB.PostTagTagId
-      E.on $ post ^. DB.PostId E.==. postTag ^. DB.PostTagPostId
-      E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
-      return (post, tag)
-    where subPosts = E.subList_select $ E.from $
-            \p -> do
-              E.where_ (E.not_ $ E.isNothing $ p ^. DB.PostPublishedAt)
-              E.limit 5
-              E.orderBy [E.desc (p ^. DB.PostPublishedAt)]
-              return $ p ^. DB.PostId
-
-getPostAndTags :: Text -> IO (Maybe (Entity DB.Post, [Entity DB.Tag]))
-getPostAndTags postSlug = do
-  postAndTags <- runSqlite "testing.sqlite" $ E.select $
-    E.from $ \((post `E.InnerJoin` postTag) `E.InnerJoin` tag) -> do
-      E.on $ tag ^. DB.TagId E.==. postTag ^. DB.PostTagTagId
-      E.on $ post ^. DB.PostId E.==. postTag ^. DB.PostTagPostId
-      E.where_ (post ^. DB.PostSlug E.==. E.val postSlug)
-      return (post, tag)
-  let tags = map snd postAndTags
-  case headMay postAndTags of
-    Nothing -> return Nothing
-    Just (post, _) -> return $ Just (post, tags)
-
-
-getPostBySlug slug = runSqlite "testing.sqlite" $ getBy $ DB.UniquePostSlug slug
 
 -- assume sorted by DB.Post
 groupPostTags :: [(Entity DB.Post, Entity DB.Tag)] -> [(Entity DB.Post, [Entity DB.Tag])]

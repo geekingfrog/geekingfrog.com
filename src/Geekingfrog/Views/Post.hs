@@ -47,7 +47,7 @@ instance H.ToMarkup PostView where
 
       pageFooter
 
-data PostsOverview = PostsOverview [Entity DB.Post]
+data PostsOverview = PostsOverview [(Entity DB.Post, [Entity DB.Tag])]
 
 instance H.ToMarkup PostsOverview where
   toMarkup (PostsOverview posts) = docTypeHtml $ do

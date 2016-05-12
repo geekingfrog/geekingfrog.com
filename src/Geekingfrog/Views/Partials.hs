@@ -6,6 +6,9 @@ import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 import Data.Text as T (pack, append, concat, cons, Text(..))
 import Data.List (intersperse)
+import Data.DateTime (toGregorian')
+import Data.Maybe (fromMaybe)
+import Control.Applicative (liftA)
 import Database.Esqueleto
 
 import Geekingfrog.Db.Types as DB
@@ -28,6 +31,19 @@ navHeader activeItem = header $ H.div ! class_ "container header-container" $ do
   where makeClass item (Just target) | item == target = "nav-link nav-link__active"
                                      | otherwise = "nav-link"
         makeClass item Nothing = "nav-link"
+
+postOverview :: (Entity Post, [Entity DB.Tag]) -> Html
+postOverview (Entity postId post, tags) = a ! href (postLink post) $ do
+  H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
+  H.span ! class_ "right" $ do
+    H.span ! class_ "blog-title" $ text $ postTitle post
+    H.span ! class_ "blog-tags" $ text (concatTags tags)
+  where
+    (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
+    paddedMonth = if month < 10 then "0" ++ show month else show month
+    postLink :: DB.Post -> H.AttributeValue
+    postLink post = H.toValue $ append "/blog/post/" (DB.postSlug post)
+
 
 pageFooter = do
   footer $ H.div ! class_ "container" $ do

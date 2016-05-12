@@ -17,6 +17,7 @@ import Geekingfrog.Db.Types as DB
 
 import Geekingfrog.Views.Partials (
     concatTags
+  , postOverview
   , pageHead
   , navHeader
   , NavItem(..)
@@ -61,15 +62,15 @@ instance H.ToMarkup Index where
         pageFooter
 
 
-postOverview :: (Entity Post, [Entity DB.Tag]) -> Html
-postOverview (Entity postId post, tags) = a ! href (postLink post) $ do
-  H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
-  H.span ! class_ "right" $ do
-    H.span ! class_ "blog-title" $ text $ postTitle post
-    H.span ! class_ "blog-tags" $ text (concatTags tags)
-  where
-    (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
-    paddedMonth = if month < 10 then "0" ++ show month else show month
-
-postLink :: DB.Post -> H.AttributeValue
-postLink post = H.toValue $ append "/blog/post/" (DB.postSlug post)
+-- postOverview :: (Entity Post, [Entity DB.Tag]) -> Html
+-- postOverview (Entity postId post, tags) = a ! href (postLink post) $ do
+--   H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
+--   H.span ! class_ "right" $ do
+--     H.span ! class_ "blog-title" $ text $ postTitle post
+--     H.span ! class_ "blog-tags" $ text (concatTags tags)
+--   where
+--     (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
+--     paddedMonth = if month < 10 then "0" ++ show month else show month
+--
+-- postLink :: DB.Post -> H.AttributeValue
+-- postLink post = H.toValue $ append "/blog/post/" (DB.postSlug post)
