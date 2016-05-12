@@ -2,7 +2,7 @@
 
 module Geekingfrog.Views.Errors where
 
-import Data.Text
+import Data.Text as T
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
@@ -14,24 +14,30 @@ testErr = docTypeHtml $ do
 
   body $ text "generic error here!"
 
-notFound :: H.Markup
-notFound = docTypeHtml $ do
+genericError :: Text -> Text -> H.Markup
+genericError title msg = docTypeHtml $ do
   H.head pageHead
 
   body ! class_ "home" $ do
     navHeader Nothing
     section ! class_ "hero" $
       H.div ! class_ "container hero-container" $
-        h1 ! class_ "main-title main-title__huge" $ "Oh noooooes!"
+        h1 ! class_ "main-title main-title__huge" $ text title
     section ! class_ "container content" $
-      pre ! class_ "center" ! A.style "width: 50ch;" $ text frog
+      pre ! class_ "center" ! A.style "width: 50ch;" $ text (frogWithText msg)
     pageFooter
 
+notFound = genericError "Oh noooooes!" "Couldn't find what you were looking for."
+
+frogWithText :: Text -> Text
+frogWithText text = let
+  len = T.length text + 2
+  line = append " " $ append (T.replicate len "-") "\n"
+  wrappedText = T.concat ["< ", text, " >\n"]
+  in T.concat [line, wrappedText, line, frog]
+
 frog :: Text
-frog = "\n\
-\ ---------------------------------------- \n\
-  \< Couldn't find what you're looking for. >\n\
-\ ---------------------------------------- \n\
+frog = "\
 \              \\   .--._.--. \n\
 \               \\ ( x     x ) \n\
 \                 /   . .   \\ \n\
