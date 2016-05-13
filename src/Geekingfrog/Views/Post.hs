@@ -7,6 +7,7 @@ import Data.Text (unpack, pack)
 import Data.Maybe (fromMaybe)
 import Data.DateTime (toGregorian', formatDateTime)
 import Control.Applicative (liftA)
+import Control.Monad (mapM_)
 
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
@@ -14,6 +15,7 @@ import Text.Blaze.Html5.Attributes as A
 import Geekingfrog.Db.Types as DB
 import Geekingfrog.Views.Partials (
     concatTags
+  , postOverview
   , pageHead
   , navHeader
   , NavItem(..)
@@ -56,8 +58,11 @@ instance H.ToMarkup PostsOverview where
     body ! class_ "blog" $ do
       navHeader (Just Blog)
 
-      section $ do
-        H.div ! class_ "hero" $ H.div ! class_ "container hero-container" $ h1 ! class_ "main-title" $ "Blog"
+      section $
+        H.div ! class_ "hero" $ H.div ! class_ "container hero-container" $
+          h1 ! class_ "main-title" $ "Blog — Geek stuff by a batrachian"  -- this an emdash u+2014
 
-        text "moar stuff here"
+      section ! class_ "container content" $
+        H.ul ! class_ "posts-overview" $
+          mapM_ ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview) posts
       pageFooter

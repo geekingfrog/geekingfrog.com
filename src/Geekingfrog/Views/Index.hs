@@ -51,7 +51,8 @@ instance H.ToMarkup Index where
           H.div ! class_ "posts" $ do
             h2 "Blog"
             p "Some intro about my blog"
-            ul $ mapM_ ((li ! class_ "post-overview") . postOverview ) posts
+            ul ! class_ "posts-overview posts-overview__index" $
+              mapM_ ((li ! class_ "posts-overview--item") . postOverview ) posts
           H.div ! class_ "misc" $ do
             h2 "Misc stuff"
             p "Some banalities about me"

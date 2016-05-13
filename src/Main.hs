@@ -37,7 +37,6 @@ import Database.Persist.Sqlite
 import Database.Persist.Class
 import qualified Database.Esqueleto as E
 import Database.Esqueleto ((^.))
-import Safe (headMay)
 
 import Geekingfrog.Types
 import qualified Geekingfrog.Db.Types as DB
@@ -106,7 +105,9 @@ makeIndex = do
 
 makePostsIndex :: Handler PostsOverview
 makePostsIndex = do
-  let query post _ _ = E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
+  let query post _ _ = do
+        E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
+        E.where_ (E.not_ $ E.isNothing $ post ^. DB.PostPublishedAt)
   postsAndTags <- liftIO $ liftA groupPostTags (getPostsAndTags query)
   return $ PostsOverview postsAndTags
 
