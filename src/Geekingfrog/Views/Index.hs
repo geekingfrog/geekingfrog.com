@@ -2,13 +2,6 @@
 
 module Geekingfrog.Views.Index where
 
-import Data.Maybe (fromMaybe)
-import Data.List (intersperse)
-import Control.Applicative (liftA)
-import Data.Text as T (pack, append, concat, cons, Text(..))
-
-import Data.DateTime (toGregorian')
-
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
@@ -16,8 +9,7 @@ import Database.Persist (Entity(..))
 import Geekingfrog.Db.Types as DB
 
 import Geekingfrog.Views.Partials (
-    concatTags
-  , postOverview
+    postOverview
   , pageHead
   , navHeader
   , NavItem(..)
@@ -50,28 +42,20 @@ instance H.ToMarkup Index where
         section ! class_ "container content" $ do
           H.div ! class_ "posts" $ do
             h2 "Blog"
-            p "Some intro about my blog"
+            p "Some of my brain dump about various things, mostly coding, programming languages and open source projects"
             ul ! class_ "posts-overview posts-overview__index" $
               mapM_ ((li ! class_ "posts-overview--item") . postOverview ) posts
           H.div ! class_ "misc" $ do
-            h2 "Misc stuff"
-            p "Some banalities about me"
-            ul $ do
-              li "style items later"
-              li "another item"
+            h2 "About me"
+            p "I'm Greg, full stack software engineer."
+            ul ! class_ "misc-list" $ do
+              li ! class_ "misc-item" $ b "I'm from" >> H.span " France"
+              li ! class_ "misc-item" $ b "I currently work " >> H.span " in the UK"
+            p "I've built a tile server for Opensignal as well as various REST API in the past years."
+            p "I've also managed and automated the deployment and monitoring of these services on AWS."
+            p "On the front end, I've translated designer vision into beautiful websites, as \
+            \ well as complex single page application in ember and react."
+            p "I'm interested in complex challenges to solve especially those arising from \
+            \ scalability issues (amount of data or size of the code base)."
 
         pageFooter
-
-
--- postOverview :: (Entity Post, [Entity DB.Tag]) -> Html
--- postOverview (Entity postId post, tags) = a ! href (postLink post) $ do
---   H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
---   H.span ! class_ "right" $ do
---     H.span ! class_ "blog-title" $ text $ postTitle post
---     H.span ! class_ "blog-tags" $ text (concatTags tags)
---   where
---     (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
---     paddedMonth = if month < 10 then "0" ++ show month else show month
---
--- postLink :: DB.Post -> H.AttributeValue
--- postLink post = H.toValue $ append "/blog/post/" (DB.postSlug post)

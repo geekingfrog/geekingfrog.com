@@ -23,7 +23,7 @@ data NavItem = Home | Blog | Gpg deriving (Show, Eq)
 
 navHeader :: Maybe NavItem -> Markup
 navHeader activeItem = header $ H.div ! class_ "container header-container" $ do
-  H.div ! class_ "logo" $ svglogo
+  H.div ! class_ "logo" $ a ! href "/" $ svglogo
   nav $ ul ! class_ "nav-links" $ do
     li ! class_ (makeClass Home activeItem) $ a ! href "/" $ "HOME"
     li ! class_ (makeClass Blog activeItem) $ a ! href "/blog" $ "BLOG"
@@ -52,7 +52,7 @@ pageFooter = do
       p $ do
           "My name is Greg. I work at "
           a ! href "opensignal.com" $ "Opensignal"
-          "on the web and backend team."
+          " on the web and backend team."
       p "I build APIs to collect our crowdsourced data, implement designs and build the corresponding backends."
     H.div ! class_ "panel" $ do
       h2 "GET IN TOUCH"

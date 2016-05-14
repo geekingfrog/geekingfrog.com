@@ -13,41 +13,30 @@ import Servant hiding (Post)
 
 import Servant.HTML.Blaze (HTML)
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
-import Text.Blaze (ToMarkup, toMarkup, text)
-import Network.Wai -- (Application, Response(..), responseLBS, Request)
-import Network.Wai.Handler.Warp (
-    run
-  , defaultSettings
-  , defaultOnExceptionResponse
-  )
+import Network.Wai (Application, responseLBS)
+import Network.Wai.Handler.Warp (run)
+
 import Network.Wai.Handler.Warp.Internal
 import Network.HTTP.Types as H
 
 import qualified Data.ByteString as B (readFile)
-import Data.Either (lefts, rights)
-import Data.Maybe
 import Control.Applicative (liftA)
-import Control.Monad.Trans.Reader
-import Control.Monad.Trans.Either
-import Control.Monad.Trans.Except
-import Control.Monad.IO.Class (liftIO, MonadIO)
+import Control.Monad.IO.Class (liftIO)
 import Control.Exception (SomeException, fromException)
 import Database.Persist
-import Database.Persist.Sqlite
-import Database.Persist.Class
+import Database.Persist.Sqlite (runSqlite)
 import qualified Database.Esqueleto as E
 import Database.Esqueleto ((^.))
 
 import Geekingfrog.Types
 import qualified Geekingfrog.Db.Types as DB
-import qualified Geekingfrog.Db.PostStatus as DB
 
-import Geekingfrog.Import (testPersistent, importData)
+import Geekingfrog.Import (importData)
 import Geekingfrog.Parse (parseGhostExport)
 
 import Geekingfrog.Views.Index (Index(..))
 import Geekingfrog.Views.Post (PostView(..), PostsOverview(..))
-import Geekingfrog.Views.Errors (testErr, notFound, genericError)
+import Geekingfrog.Views.Errors (notFound, genericError)
 import Geekingfrog.Queries (
     getLastPostTags
   , getPostsAndTags
@@ -71,7 +60,6 @@ main = let port = 8080 in do
       putStrLn $ "And some errors: " ++ show errors
       importData tags posts postTags
   putStrLn "all is well"
-  -- testPersistent
   putStrLn $ "Listening on port " ++ show port ++ "..."
   run port app
 
@@ -131,7 +119,7 @@ groupPostTags = go []
                                                then go ((p, tag:tags):rest) xs
                                                else go ((post, [tag]):(p, tags):rest) xs
 
--- Request -> (Response -> IO ResponseReceived) -> ResponseReceived
+-- Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> ResponseReceived
 custom404 :: Application
 custom404 _ sendResponse = sendResponse $ responseLBS H.status404
                              [("Content-Type", "text/html; charset=UTF-8")]

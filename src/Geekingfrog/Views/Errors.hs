@@ -8,12 +8,6 @@ import Text.Blaze.Html5.Attributes as A
 
 import Geekingfrog.Views.Partials (pageHead, navHeader, pageFooter)
 
-testErr :: H.Markup
-testErr = docTypeHtml $ do
-  H.head pageHead
-
-  body $ text "generic error here!"
-
 genericError :: Text -> Text -> H.Markup
 genericError title msg = docTypeHtml $ do
   H.head pageHead

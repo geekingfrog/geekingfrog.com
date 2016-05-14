@@ -4,9 +4,7 @@ module Geekingfrog.Views.Post where
 
 import Database.Persist (Entity(..))
 import Data.Text (unpack, pack)
-import Data.Maybe (fromMaybe)
 import Data.DateTime (toGregorian', formatDateTime)
-import Control.Applicative (liftA)
 import Control.Monad (mapM_)
 
 import Text.Blaze.Html5 as H

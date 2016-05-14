@@ -233,11 +233,17 @@ nav {
   font-size: 2.5rem;
 }
 
-/* .posts ul { */
-/*   list-style-type: none; */
-/*   padding: 0; */
-/*   margin: 0; */
-/* } */
+.misc-list {
+  margin: 0;
+  padding: 0;
+}
+
+.misc-item {
+  margin: 0;
+  padding-left: 25px;
+  position: relative;
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTVweCIgaGVpZ2h0PSIxNXB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+DQogIDxwb2x5Z29uIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjZmZhMDAwIiBwb2ludHM9IjUwLDAgMTAwLDUxIDAsNTEiLz4NCiAgPHBvbHlnb24gZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiMzODhlM2MiIHBvaW50cz0iNTAsMTAwIDEwMCw0OSAwLDQ5Ii8+DQo8L3N2Zz4=") no-repeat left center;
+}
 
 .posts-overview {
   margin: 0;
