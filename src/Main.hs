@@ -37,6 +37,8 @@ import Geekingfrog.Parse (parseGhostExport)
 import Geekingfrog.Views.Index (Index(..))
 import Geekingfrog.Views.Post (PostView(..), PostsOverview(..))
 import Geekingfrog.Views.Errors (notFound, genericError)
+import Geekingfrog.Views.Gpg (GpgView(..))
+
 import Geekingfrog.Queries (
     getLastPostTags
   , getPostsAndTags
@@ -67,6 +69,7 @@ type WebsiteAPI =
        Get '[HTML] Index
   :<|> "blog" :> Get '[HTML] PostsOverview
   :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
+  :<|> "gpg" :> Get '[HTML] GpgView
   :<|> ("static" :> Raw) -- staticServer
   :<|> Raw  -- catchall for custom 404
 
@@ -77,6 +80,7 @@ websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
            :<|> makePostsIndex
            :<|> makePost
+           :<|> return GpgView
            :<|> serveDirectory "./static"
            :<|> custom404
 
