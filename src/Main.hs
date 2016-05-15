@@ -9,6 +9,7 @@
 module Main where
 
 import Data.Text (Text)
+import Data.DateTime (getCurrentTime)
 import Servant hiding (Post)
 
 import Servant.HTML.Blaze (HTML)
@@ -33,6 +34,8 @@ import qualified Geekingfrog.Db.Types as DB
 
 import Geekingfrog.Import (importData)
 import Geekingfrog.Parse (parseGhostExport)
+import Geekingfrog.AtomFeed (AtomFeed(..))
+import Geekingfrog.ContentType
 
 import Geekingfrog.Views.Index (Index(..))
 import Geekingfrog.Views.Post (PostView(..), PostsOverview(..))
@@ -70,6 +73,7 @@ type WebsiteAPI =
   :<|> "blog" :> Get '[HTML] PostsOverview
   :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
   :<|> "gpg" :> Get '[HTML] GpgView
+  :<|> "rss" :> Get '[XML] AtomFeed
   :<|> ("static" :> Raw) -- staticServer
   :<|> Raw  -- catchall for custom 404
 
@@ -81,6 +85,7 @@ websiteServer = makeIndex
            :<|> makePostsIndex
            :<|> makePost
            :<|> return GpgView
+           :<|> makeFeed
            :<|> serveDirectory "./static"
            :<|> custom404
 
@@ -113,6 +118,16 @@ makePost slug = do
     where postNotFound = err404 { errBody = renderMarkup errMsg}
           errMsg = genericError "Not found" "No post found with this name :("
 
+makeFeed :: Handler AtomFeed
+makeFeed = do
+  let query post _ _ = do
+        E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
+        E.where_ (E.not_ $ E.isNothing $ post ^. DB.PostPublishedAt)
+  postsAndTags <- liftIO $ liftA groupPostTags (getPostsAndTags query)
+  now <- liftIO getCurrentTime
+  -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-
+  -- For the moment, just fetch everything and use `Data.List.take`
+  return $ AtomFeed now (take 10 postsAndTags)
 
 -- assume sorted by DB.Post
 groupPostTags :: [(Entity DB.Post, Entity DB.Tag)] -> [(Entity DB.Post, [Entity DB.Tag])]

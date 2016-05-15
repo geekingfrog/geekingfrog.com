@@ -17,6 +17,7 @@ executable geekingfrog
   main-is:             Main.hs
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5,
+                       servant == 0.7.*,
                        servant-server == 0.7.*,
                        servant-blaze == 0.7.*,
                        blaze-markup >= 0.7 && < 0.8,
@@ -24,12 +25,14 @@ executable geekingfrog
                        wai >= 3.2 && < 3.3,
                        wai-app-static >= 3.1 && < 3.2,
                        http-types >= 0.9 && < 0.10,
+                       http-media >= 0.6 && < 0.7,
                        either >= 4.4 && < 4.5,
                        warp >= 3.2 && < 3.4,
                        text >= 1.2 && < 1.3,
                        blaze-html >= 0.8 && < 0.9,
                        blaze-svg >= 0.3 && < 0.4,
                        bytestring >= 0.10 && < 0.11,
+                       utf8-string == 1.0.*,
                        time >= 1.5 && < 1.6,
                        datetime >= 0.3 && < 0.4,
                        persistent >= 2.2 && < 2.3,
@@ -39,4 +42,6 @@ executable geekingfrog
                        transformers >= 0.4 && < 0.5,
                        vector >= 0.11 && < 0.12,
                        monad-logger >= 0.3 && < 0.4,
-                       safe >= 0.3 && < 0.4
+                       safe >= 0.3 && < 0.4,
+                       xml >= 1.3 && < 1.4,
+                       feed == 0.3.*
