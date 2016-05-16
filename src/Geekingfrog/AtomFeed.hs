@@ -5,7 +5,7 @@ module Geekingfrog.AtomFeed where
 import Control.Applicative (liftA)
 import Data.Text (unpack)
 import Data.ByteString.Lazy.UTF8 (fromString)
-import Servant hiding (Post)
+import Servant hiding (Post, Link)
 import Database.Persist.Types (entityVal)
 import Database.Esqueleto (Entity)
 import Data.DateTime
@@ -17,6 +17,7 @@ import Text.Atom.Feed.Export
 
 import Geekingfrog.Db.Types
 import Geekingfrog.ContentType
+import Geekingfrog.Urls
 
 data AtomFeed = AtomFeed DateTime [(Entity Post, [Entity Tag])]
 
@@ -44,14 +45,14 @@ postToFeedEntry (postEntity, tagsEntity) =
   let
     post = entityVal postEntity
     tags = fmap entityVal tagsEntity
-    entryId = siteUrl ++ "/blog/" ++ unpack (postSlug post)
+    entryId = siteUrl ++ unpack (urlFor post)
     entryTitle = TextString $ unpack $ postTitle post
     entryUpdated = toTimeRfc3339 $ postUpdatedAt post
     entryAuthors = [meAuthor]
     entryCategories = fmap tagToFeedCategory tags
     entryContent = Just $ HTMLContent (unpack $ postHtml post)
     entryContributor = []
-    entryLinks = []  -- TODO generate url from post
+    entryLinks = [link post]
     entryPublished = liftA toTimeRfc3339 $ postPublishedAt post
     entryRights = Nothing
     entrySource = Nothing
@@ -71,3 +72,6 @@ meAuthor = Person "Grégoire Charvet" (Just siteUrl) (Just "greg@geekingfrog.com
 
 toTimeRfc3339 :: DateTime -> String
 toTimeRfc3339 = formatDateTime "%Y-%m-%dT%TZ"
+
+link :: (Url a) => a -> Link
+link item = Link (siteUrl ++ unpack (urlFor item)) Nothing Nothing Nothing Nothing Nothing [] []

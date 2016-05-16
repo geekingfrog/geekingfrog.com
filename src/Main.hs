@@ -10,7 +10,7 @@ module Main where
 
 import Data.Text (Text)
 import Data.DateTime (getCurrentTime)
-import Servant hiding (Post)
+import Servant
 
 import Servant.HTML.Blaze (HTML)
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
@@ -37,10 +37,8 @@ import Geekingfrog.Parse (parseGhostExport)
 import Geekingfrog.AtomFeed (AtomFeed(..))
 import Geekingfrog.ContentType
 
-import Geekingfrog.Views.Index (Index(..))
-import Geekingfrog.Views.Post (PostView(..), PostsOverview(..))
 import Geekingfrog.Views.Errors (notFound, genericError)
-import Geekingfrog.Views.Gpg (GpgView(..))
+import qualified Geekingfrog.Urls as Urls
 
 import Geekingfrog.Queries (
     getLastPostTags
@@ -48,6 +46,8 @@ import Geekingfrog.Queries (
   , getOnePostAndTags
   , getPostBySlug
   )
+
+import qualified Geekingfrog.Views as Views
 
 
 main :: IO ()
@@ -69,10 +69,10 @@ main = let port = 8080 in do
   run port app
 
 type WebsiteAPI =
-       Get '[HTML] Index
-  :<|> "blog" :> Get '[HTML] PostsOverview
-  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] PostView
-  :<|> "gpg" :> Get '[HTML] GpgView
+       Get '[HTML] Views.Index
+  :<|> "blog" :> Get '[HTML] Views.PostsOverview
+  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] Views.PostView
+  :<|> "gpg" :> Get '[HTML] Views.GpgView
   :<|> "rss" :> Get '[XML] AtomFeed
   :<|> ("static" :> Raw) -- staticServer
   :<|> Raw  -- catchall for custom 404
@@ -84,7 +84,7 @@ websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
            :<|> makePostsIndex
            :<|> makePost
-           :<|> return GpgView
+           :<|> return Views.GpgView
            :<|> makeFeed
            :<|> serveDirectory "./static"
            :<|> custom404
@@ -94,27 +94,27 @@ app = serve websiteApi websiteServer
 -- app = serve websiteApi readerServer
 --   where readerServer = enter readerToHandler readerServerT
 
-makeIndex :: Handler Index
+makeIndex :: Handler Views.Index
 makeIndex = do
   postTags <- liftIO getLastPostTags
   let grouped = groupPostTags postTags
-  return $ Index grouped
+  return $ Views.Index grouped
 
-makePostsIndex :: Handler PostsOverview
+makePostsIndex :: Handler Views.PostsOverview
 makePostsIndex = do
   let query post _ _ = do
         E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
         E.where_ (E.not_ $ E.isNothing $ post ^. DB.PostPublishedAt)
   postsAndTags <- liftIO $ liftA groupPostTags (getPostsAndTags query)
-  return $ PostsOverview postsAndTags
+  return $ Views.PostsOverview postsAndTags
 
 
-makePost :: Text -> Handler PostView
+makePost :: Text -> Handler Views.PostView
 makePost slug = do
   postAndTags <- liftIO $ getOnePostAndTags slug
   case postAndTags of
     Nothing -> throwError postNotFound
-    Just p -> return $ PostView p
+    Just p -> return $ Views.PostView p
     where postNotFound = err404 { errBody = renderMarkup errMsg}
           errMsg = genericError "Not found" "No post found with this name :("
 
