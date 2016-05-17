@@ -18,6 +18,7 @@ import Text.Atom.Feed.Export
 import Geekingfrog.Db.Types
 import Geekingfrog.ContentType
 import Geekingfrog.Urls
+import Geekingfrog.Constants (siteUrl)
 
 data AtomFeed = AtomFeed DateTime [(Entity Post, [Entity Tag])]
 
@@ -28,7 +29,7 @@ toFeed :: AtomFeed -> Feed
 toFeed (AtomFeed genTime posts) =
   let
     feedTitle = TextString "feed title"
-    feedUrl = siteUrl ++ "/rss"
+    feedUrl = unpack siteUrl ++ "/rss"
     feedAuthors = [meAuthor]
     feedCategories = [Category "Programming" Nothing (Just "Programming") []]
     feedIcon = Nothing
@@ -45,7 +46,7 @@ postToFeedEntry (postEntity, tagsEntity) =
   let
     post = entityVal postEntity
     tags = fmap entityVal tagsEntity
-    entryId = siteUrl ++ unpack (urlFor post)
+    entryId = unpack siteUrl ++ unpack (urlFor post)
     entryTitle = TextString $ unpack $ postTitle post
     entryUpdated = toTimeRfc3339 $ postUpdatedAt post
     entryAuthors = [meAuthor]
@@ -67,11 +68,10 @@ postToFeedEntry (postEntity, tagsEntity) =
 tagToFeedCategory :: Tag -> Category
 tagToFeedCategory tag = Category (unpack $ tagName tag) Nothing Nothing []
 
-siteUrl = "https://geekingfrog.com"
-meAuthor = Person "Grégoire Charvet" (Just siteUrl) (Just "greg@geekingfrog.com") []
+meAuthor = Person "Grégoire Charvet" (Just $ unpack siteUrl) (Just "greg@geekingfrog.com") []
 
 toTimeRfc3339 :: DateTime -> String
 toTimeRfc3339 = formatDateTime "%Y-%m-%dT%TZ"
 
 link :: (Url a) => a -> Link
-link item = Link (siteUrl ++ unpack (urlFor item)) Nothing Nothing Nothing Nothing Nothing [] []
+link item = Link (unpack siteUrl ++ unpack (urlFor item)) Nothing Nothing Nothing Nothing Nothing [] []

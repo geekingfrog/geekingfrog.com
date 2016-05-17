@@ -6,6 +6,7 @@ module Geekingfrog.Queries where
 import Data.Text (Text(..))
 import Safe (headMay)
 import Control.Monad.IO.Class (liftIO)
+import Control.Applicative (liftA)
 
 import Database.Persist
 import Database.Persist.Sqlite (runSqlite)
@@ -27,12 +28,14 @@ getPostsAndTags query = runSqlite "testing.sqlite" $ select $
       return (post, tag)
 
 
-getAllPostsAndTags :: IO [(Entity Post, Entity Tag)]
+getAllPostsAndTags :: IO [(Entity Post, [Entity Tag])]
 getAllPostsAndTags = do
-  let query post _ _ = orderBy [asc (post ^. PostPublishedAt)]
-  liftIO $ getPostsAndTags query
+  let query post _ _ = do
+        E.orderBy [E.asc (post ^. PostPublishedAt)]
+        E.where_ (E.not_ $ E.isNothing $ post ^. PostPublishedAt)
+  liftIO $ liftA groupPostTags (getPostsAndTags query)
 
-getLastPostTags :: IO [(Entity Post, Entity Tag)]
+getLastPostTags :: IO [(Entity Post, [Entity Tag])]
 getLastPostTags = do
   let subPosts = subList_select $ from $ \p -> do
                     where_ (not_ $ isNothing $ p ^. PostPublishedAt)
@@ -44,7 +47,7 @@ getLastPostTags = do
         where_ $ post ^. PostId `in_` subPosts
         orderBy [asc (post ^. PostPublishedAt)]
 
-  getPostsAndTags query
+  liftA groupPostTags (getPostsAndTags query)
 
 getOnePostAndTags :: Text -> IO (Maybe (Entity Post, [Entity Tag]))
 getOnePostAndTags postSlug = do
@@ -56,3 +59,12 @@ getOnePostAndTags postSlug = do
   where query post _ _ = where_ (post ^. PostSlug E.==. val postSlug)
 
 getPostBySlug slug = runSqlite "testing.sqlite" $ getBy $ UniquePostSlug slug
+
+-- assume sorted by DB.Post
+groupPostTags :: [(Entity Post, Entity Tag)] -> [(Entity Post, [Entity Tag])]
+groupPostTags = go []
+  where go acc [] = acc
+        go [] ((p, t):xs) = go [(p, [t])] xs
+        go ((p, tags):rest) ((post, tag):xs) = if entityKey p == entityKey post
+                                               then go ((p, tag:tags):rest) xs
+                                               else go ((post, [tag]):(p, tags):rest) xs

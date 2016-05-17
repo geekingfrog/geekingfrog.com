@@ -10,3 +10,5 @@ logs/
 tags
 *.json
 *.sqlite
+
+sitemap.txt

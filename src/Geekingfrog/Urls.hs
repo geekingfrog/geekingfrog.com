@@ -24,4 +24,4 @@ instance Url Views.GpgView where
   urlFor _ = "/gpg"
 
 instance Url DB.Post where
-  urlFor post = append "/blog" (DB.postSlug post)
+  urlFor post = append "/blog/" (DB.postSlug post)
