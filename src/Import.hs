@@ -1,19 +1,49 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Geekingfrog.Import where
-
+import System.Environment (getArgs, getProgName)
+import System.Directory (doesFileExist)
+import System.Exit (die)
 import Database.Persist
 import Database.Persist.Sqlite as SQL
 
 import Control.Monad.IO.Class (liftIO, MonadIO)
-import Control.Monad (zipWithM_)
+import Control.Monad (zipWithM_, when)
 import Control.Monad.Logger --(runStderrLoggingT)
+import qualified Data.ByteString as B (readFile)
 
 import qualified Geekingfrog.Db.Types as DT
 import qualified Geekingfrog.Db.PostStatus as DT
 import Geekingfrog.Types
+import Geekingfrog.Parse (parseGhostExport)
 
 import Control.Monad.Trans.Reader (ReaderT)
+
+main = do
+  filename <- getImportFile
+  putStrLn $ "Importing ghost export from: " ++ show filename
+  rawContent <- B.readFile filename
+  let ghostExport = parseGhostExport rawContent
+  case ghostExport of
+    Left err -> do
+      putStrLn "Parse error when importing ghost archive"
+      print err
+    Right (errors, (posts, tags, postTags)) -> do
+      when (null errors) $ putStrLn ("got some (non fatal) errors while parsing: " ++ show errors)
+      importData tags posts postTags
+  putStrLn "Everything imported"
+
+getImportFile :: IO String
+getImportFile = do
+  args <- getArgs
+  progName <- getProgName
+  if null args
+  then die $ "usage: " ++ show progName ++ " <ghost-export.json>"
+  else do
+    let filename = head args
+    fileExists <- doesFileExist filename
+    if fileExists
+    then return filename
+    else die $ show filename ++ " not found"
 
 importData :: [Tag] -> [Post] -> [PostTag] -> IO ()
 importData tags posts postTags = runNoLoggingT $  -- runStderrLoggingT

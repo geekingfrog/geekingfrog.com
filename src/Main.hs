@@ -35,7 +35,6 @@ import Database.Esqueleto ((^.))
 import Geekingfrog.Types
 import qualified Geekingfrog.Db.Types as DB
 
-import Geekingfrog.Import (importData)
 import Geekingfrog.Parse (parseGhostExport)
 import Geekingfrog.AtomFeed (AtomFeed(..))
 import Geekingfrog.ContentType
@@ -56,19 +55,6 @@ import qualified Geekingfrog.Views as Views
 
 main :: IO ()
 main = let port = 8080 in do
-  rawContent <- B.readFile "geekingfrog.ghost.2016-04-10.json"
-  let ghostExport = parseGhostExport rawContent
-  case ghostExport of
-    Left err -> do
-      putStrLn "Parse error when importing ghost archive"
-      print err
-    Right (errors, (posts, tags, postTags)) -> do
-      putStrLn $ "Got " ++ show (length posts) ++ " posts"
-      putStrLn $ "Got " ++ show (length tags) ++ " tag"
-      putStrLn $ "Got " ++ show (length postTags) ++ " posts & tags relations"
-      putStrLn $ "And some errors: " ++ show errors
-      importData tags posts postTags
-  putStrLn "all is well"
   generateSitemap
   putStrLn $ "Listening on port " ++ show port ++ "..."
   run port app
