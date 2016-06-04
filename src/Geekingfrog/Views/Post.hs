@@ -29,7 +29,6 @@ import Geekingfrog.Views.Partials (
   )
 
 
--- this is going to be handy in a couple of places
 postTagsToJSON :: (Entity DB.Post, [Entity DB.Tag]) -> Value
 postTagsToJSON (post, tags) = Object [
     ("post", postWithTagIdsToJSON (post, tags)),

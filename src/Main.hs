@@ -48,6 +48,7 @@ import Geekingfrog.Queries (
   , getAllPostsAndTags
   , getOnePostAndTags
   , getPostBySlug
+  , getTags
   )
 
 import qualified Geekingfrog.Views as Views
@@ -63,6 +64,7 @@ type WebsiteAPI =
        Get '[HTML] Views.Index
   :<|> "blog" :> Get '[HTML, JSON] Views.PostsOverview
   :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML, JSON] Views.PostView
+  :<|> "blog" :> "tag" :> Get '[JSON] Views.TagsOverview
   :<|> "gpg" :> Get '[HTML] Views.GpgView
   :<|> "rss" :> Get '[XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
@@ -76,6 +78,7 @@ websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
            :<|> makePostsIndex
            :<|> makePost
+           :<|> makeTagsIndex
            :<|> return Views.GpgView
            :<|> makeFeed
            :<|> serveRobots
@@ -106,6 +109,11 @@ makePost slug = do
     Just p -> return $ Views.PostView p
     where postNotFound = err404 { errBody = renderMarkup errMsg}
           errMsg = genericError "Not found" "No post found with this name :("
+
+makeTagsIndex :: Handler Views.TagsOverview
+makeTagsIndex = do
+  tags <- liftIO getTags
+  return $ Views.TagsOverview tags
 
 makeFeed :: Handler AtomFeed
 makeFeed = do

@@ -89,3 +89,10 @@ instance ToJSON Post where
     , ("language", toJSON $ postLanguage p)
     , ("isFeatured", toJSON $ postIsFeatured p)
     ]
+
+instance ToJSON PostTag where
+  toJSON pt = Object $ fromList [
+      ("tagId", toJSON $ postTagTagId pt)
+    , ("postId", toJSON $ postTagPostId pt)
+    -- no sort order, may drop that later altogether
+    ]

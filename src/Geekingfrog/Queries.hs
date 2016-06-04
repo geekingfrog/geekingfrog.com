@@ -33,7 +33,7 @@ getAllPostsAndTags = do
   let query post _ _ = do
         E.orderBy [E.asc (post ^. PostPublishedAt)]
         E.where_ (E.not_ $ E.isNothing $ post ^. PostPublishedAt)
-  liftIO $ liftA groupPostTags (getPostsAndTags query)
+  liftIO $ liftA groupEntity (getPostsAndTags query)
 
 getLastPostTags :: IO [(Entity Post, [Entity Tag])]
 getLastPostTags = do
@@ -47,7 +47,7 @@ getLastPostTags = do
         where_ $ post ^. PostId `in_` subPosts
         orderBy [asc (post ^. PostPublishedAt)]
 
-  liftA groupPostTags (getPostsAndTags query)
+  liftA groupEntity (getPostsAndTags query)
 
 getOnePostAndTags :: Text -> IO (Maybe (Entity Post, [Entity Tag]))
 getOnePostAndTags postSlug = do
@@ -60,11 +60,20 @@ getOnePostAndTags postSlug = do
 
 getPostBySlug slug = runSqlite "testing.sqlite" $ getBy $ UniquePostSlug slug
 
--- assume sorted by DB.Post
-groupPostTags :: [(Entity Post, Entity Tag)] -> [(Entity Post, [Entity Tag])]
-groupPostTags = go []
+getTags :: IO [(Entity Tag, [Entity PostTag])]
+getTags = liftA groupEntity $ runSqlite "testing.sqlite" $ select $
+    from $ \(tag `InnerJoin` postTag) -> do
+      on $ tag ^. TagId E.==. postTag ^. PostTagTagId
+      E.orderBy [E.asc (tag ^. TagSlug), E.asc (tag ^. TagCreatedAt)]
+      return (tag, postTag)
+
+
+-- assume sorted by a
+groupEntity :: (Eq (Key a)) => [(Entity a, Entity b)] -> [(Entity a, [Entity b])]
+groupEntity = go []
   where go acc [] = acc
-        go [] ((p, t):xs) = go [(p, [t])] xs
-        go ((p, tags):rest) ((post, tag):xs) = if entityKey p == entityKey post
-                                               then go ((p, tag:tags):rest) xs
-                                               else go ((post, [tag]):(p, tags):rest) xs
+        go [] ((a, b):xs) = go [(a, [b])] xs
+        go ((a, bs):rest) ((a', b'):xs) =
+          if entityKey a == entityKey a'
+          then go ((a, b':bs):rest) xs
+          else go ((a', [b']):(a, bs):rest) xs
