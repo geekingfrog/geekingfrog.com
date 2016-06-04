@@ -58,7 +58,7 @@ pageFooter = do
       h2 "GET IN TOUCH"
       p $ do
           "On "
-          a ! href "https://www.linkedin.com/in/gr%C3%A9goire-charvet-b62440aa" $ "linkedin"
+          a ! href "https://www.linkedin.com/in/gr%C3%A9goire-charvet-b62440aa" $ " linkedin"
           "or at greg＠geekingfrog․com "
           a ! href "http://lea.verou.me/2009/11/yet-another-email-hiding-technique/" $ "(don't copy paste this email."
           ")"

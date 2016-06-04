@@ -507,9 +507,3 @@ footer a {
     #222
   );
 }
-
-/*   In case js is disabled, some minimal styling for code snippets */
-pre {
-  background-color: #f5f2f0;
-  padding: 1rem;
-}
