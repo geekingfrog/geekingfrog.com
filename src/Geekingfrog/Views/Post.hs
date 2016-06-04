@@ -1,11 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLists #-}
 
 module Geekingfrog.Views.Post where
 
-import Database.Persist (Entity(..))
+import Database.Persist (Entity(..), entityIdToJSON)
 import Data.Text (unpack, pack)
 import Data.DateTime (toGregorian', formatDateTime)
 import Control.Monad (mapM_)
+import Data.List (nubBy)
+
+import qualified Data.HashMap.Strict as Map
+
+import qualified Data.Vector as Vector
+import Data.Aeson as Aeson
+import Data.Aeson.Types as AT
 
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
@@ -19,6 +27,25 @@ import Geekingfrog.Views.Partials (
   , NavItem(..)
   , pageFooter
   )
+
+
+-- this is going to be handy in a couple of places
+postTagsToJSON :: (Entity DB.Post, [Entity DB.Tag]) -> Value
+postTagsToJSON (post, tags) = Object [
+    ("post", postWithTagIdsToJSON (post, tags)),
+    ("tags", Aeson.Array . Vector.fromList $ fmap entityKeyToJSON tags)
+  ]
+
+entityKeyToJSON (Entity key _) = toJSON key
+
+postWithTagIdsToJSON :: (Entity DB.Post, [Entity DB.Tag]) -> Value
+postWithTagIdsToJSON (post, tags) =
+  let
+    (Object jsonPost) = entityIdToJSON post
+    jsonTags = Aeson.Array . Vector.fromList $ fmap entityIdToJSON tags
+    tagIds = Aeson.Array . Vector.fromList $ fmap entityKeyToJSON tags
+  in
+    Object $ Map.insert "tagIds" tagIds jsonPost
 
 
 data PostView = PostView (Entity DB.Post, [Entity DB.Tag])
@@ -47,6 +74,9 @@ instance H.ToMarkup PostView where
 
       pageFooter
 
+instance ToJSON PostView where
+  toJSON (PostView (post, tags)) = postTagsToJSON (post, tags)
+
 data PostsOverview = PostsOverview [(Entity DB.Post, [Entity DB.Tag])]
 
 instance H.ToMarkup PostsOverview where
@@ -64,3 +94,15 @@ instance H.ToMarkup PostsOverview where
         H.ul ! class_ "posts-overview" $
           mapM_ ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview) posts
       pageFooter
+
+instance ToJSON PostsOverview where
+  toJSON (PostsOverview posts) = Aeson.object [
+      ("posts", Aeson.Array . Vector.fromList $ fmap postWithTagIdsToJSON posts),
+      ("tags", Aeson.Array . Vector.fromList $ fmap entityIdToJSON groupedTags)
+    ]
+    where
+      groupedTags = groupTags $ concatMap snd posts
+
+groupTags :: [Entity DB.Tag] -> [Entity DB.Tag]
+groupTags = nubBy compareKey
+  where compareKey (Entity key1 _) (Entity key2 _) = key1 == key2

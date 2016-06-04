@@ -61,8 +61,8 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
        Get '[HTML] Views.Index
-  :<|> "blog" :> Get '[HTML] Views.PostsOverview
-  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] Views.PostView
+  :<|> "blog" :> Get '[HTML, JSON] Views.PostsOverview
+  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML, JSON] Views.PostView
   :<|> "gpg" :> Get '[HTML] Views.GpgView
   :<|> "rss" :> Get '[XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
@@ -94,10 +94,6 @@ makeIndex = do
 
 makePostsIndex :: Handler Views.PostsOverview
 makePostsIndex = do
-  -- let query post _ _ = do
-  --       E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
-  --       E.where_ (E.not_ $ E.isNothing $ post ^. DB.PostPublishedAt)
-  -- postsAndTags <- liftIO $ liftA groupPostTags (getPostsAndTags query)
   postsAndTags <- liftIO getAllPostsAndTags
   return $ Views.PostsOverview postsAndTags
 
@@ -113,10 +109,6 @@ makePost slug = do
 
 makeFeed :: Handler AtomFeed
 makeFeed = do
-  -- let query post _ _ = do
-  --       E.orderBy [E.asc (post ^. DB.PostPublishedAt)]
-  --       E.where_ (E.not_ $ E.isNothing $ post ^. DB.PostPublishedAt)
-  -- postsAndTags <- liftIO $ liftA groupPostTags (getPostsAndTags query)
   postsAndTags <- liftIO getAllPostsAndTags
   now <- liftIO getCurrentTime
   -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-

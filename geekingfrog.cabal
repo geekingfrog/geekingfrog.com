@@ -17,6 +17,7 @@ executable geekingfrog
   main-is:             Main.hs
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5,
+                       unordered-containers == 0.2.*,
                        servant == 0.7.*,
                        servant-server == 0.7.*,
                        servant-blaze == 0.7.*,
@@ -52,6 +53,7 @@ executable geekingfrog-import
   main-is:             Import.hs
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5,
+                       unordered-containers == 0.2.*,
                        transformers >= 0.4 && < 0.5,
                        monad-logger >= 0.3 && < 0.4,
                        time >= 1.5 && < 1.6,
