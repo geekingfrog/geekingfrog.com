@@ -109,6 +109,13 @@ header::before {
   background-color: rgba(2, 2, 2, .2);
 }
 
+@media screen and (max-width: 800px) {
+  .header-container::before,
+  .header-container::after {
+    display: none;
+  }
+}
+
 .logo {
   display: inline-block;
   width: 130px;
@@ -147,6 +154,17 @@ nav {
   width: 100%;
 }
 
+@media screen and (max-width: 800px) {
+  nav {
+    margin-left: 3rem;
+    text-align: center;
+  }
+
+  .nav-link {
+    display: block;
+    margin: .5rem 0;
+  }
+}
 
 .hero {
   background-color: #222;
@@ -172,8 +190,15 @@ nav {
   font-size: 6rem;
 }
 
+@media screen and (max-width: 1024px) {
+  .hero-container .main-title.main-title__huge {
+    font-size: 4rem;
+  }
+}
+
 .main-title {
-  width: 100%;
+  display: block;
+  padding: 1rem;
 }
 
 .main-title.main-title__blog {
@@ -211,6 +236,12 @@ nav {
   position: relative;
 }
 
+@media screen and (max-width: 800px) {
+  .content {
+    padding: 1rem 1rem;
+  }
+}
+
 .posts {
   float: left;
   width: 48%;
@@ -226,6 +257,14 @@ nav {
 .misc {
   float: right;
   width: 48%;
+}
+
+@media screen and (max-width: 800px) {
+  .posts,
+  .misc {
+    float: none;
+    width: 100%;
+  }
 }
 
 .posts h2,
@@ -270,30 +309,15 @@ nav {
   height: 100%;
 }
 
-/* .post-overview a::after { */
-/*   /* avoid color below link on link overview */ */
-/*   /* background-color: transparent; */ */
-/* } */
+@media screen and (max-width: 800px) {
+  .posts-overview {
+    flex-direction: column;
+  }
 
-/* .post-overview__fullpage { */
-/*   width: 48%; */
-/*   height: 7rem; */
-/* } */
-/*  */
-/* .post-overview__fullpage:nth-child(odd) { */
-/*   float: left; */
-/* } */
-/*  */
-/* .post-overview__fullpage:nth-child(even) { */
-/*   float: right; */
-/* } */
-
-/* .posts-overview--item .right { */
-/*   display: inline-block; */
-/*   padding: 0; */
-/*   font-size: 1.4rem; */
-/*   max-width: calc(100% - 7rem); */
-/* } */
+  .posts-overview--item {
+    margin: 1rem 0;
+  }
+}
 
 .blog-title,
 .blog-tags {
@@ -303,6 +327,11 @@ nav {
 .blog-title {
   display: block;
   font-size: 1.2rem;
+}
+
+.posts-overview--item:hover .blog-title {
+  color: black;
+  font-weight: 500;
 }
 
 .blog-tags {
@@ -395,6 +424,16 @@ footer a {
   box-sizing: border-box;
 }
 
+
+@media screen and (max-width: 1024px) {
+  .panel {
+    width: 100%;
+    border-left: none;
+    border-bottom: 1px solid rgba(221, 221, 221, .3);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
 
 /* Colors */
 

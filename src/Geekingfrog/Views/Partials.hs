@@ -63,8 +63,8 @@ pageFooter = do
           a ! href "http://lea.verou.me/2009/11/yet-another-email-hiding-technique/" $ "(don't copy paste this email."
           ")"
     H.div ! class_ "panel" $ do
-      h2 "SUBSCRIBE"
-      p "RSS feed coming soon!"
+      a ! href "/rss" $ h2 "SUBSCRIBE"
+      p "RSS is love"
 
   H.script ! type_ "text/javascript" ! src "/static/prism.js" $ mempty
 
@@ -74,6 +74,7 @@ pageHead = do
     H.title "Geekingfrog"
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
     link ! rel "stylesheet" ! href "/static/prism.css" ! type_ "text/css"
+    link ! rel "alternate" ! href "/rss" ! type_ "application/rss+xml" ! A.title "Geek stuff by a batrachian"
     H.style ! type_ "text/css" $
       "@font-face{ \
       \ font-family: 'Fira Sans';\

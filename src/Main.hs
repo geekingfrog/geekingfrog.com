@@ -68,7 +68,8 @@ type WebsiteAPI =
   :<|> "gpg" :> Get '[HTML] Views.GpgView
   :<|> "rss" :> Get '[XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
-  :<|> ("static" :> Raw) -- staticServer
+  :<|> "static" :> Raw -- staticServer
+  :<|> "admin" :> Raw -- admin spa
   :<|> Raw  -- catchall for custom 404
 
 websiteApi :: Proxy WebsiteAPI
@@ -83,6 +84,7 @@ websiteServer = makeIndex
            :<|> makeFeed
            :<|> serveRobots
            :<|> serveDirectory "./static"
+           :<|> serveDirectory "./admin"
            :<|> custom404
 
 app :: Application

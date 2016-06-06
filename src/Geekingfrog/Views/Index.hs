@@ -28,21 +28,10 @@ instance H.ToMarkup Index where
         section ! class_ "hero" $
             H.div ! class_ "container hero-container" $ h1 ! class_ "main-title main-title__huge" $ "The Geekingfrog"
 
-            --  <div class="hero">
-            --    <div class="container hero&#45;container">
-            --      <h1 class="main&#45;title">Geekingfrog</h1>
-            --      <div class="sub&#45;title">
-            --        <div class="lines"></div>
-            --        <h2>Geek stuff by a batrachian.</h2>
-            --        <div class="lines"></div>
-            --      </div>
-            --    </div>
-            --  </div>
-
         section ! class_ "container content" $ do
           H.div ! class_ "posts" $ do
             h2 "Blog"
-            p "Some of my brain dump about various things, mostly coding, programming languages and open source projects"
+            p "Some of my brain dump about various things, mostly coding, programming languages and open source projects. Here are the most recent posts."
             ul ! class_ "posts-overview posts-overview__index" $
               mapM_ ((li ! class_ "posts-overview--item") . postOverview ) posts
           H.div ! class_ "misc" $ do
