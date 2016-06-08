@@ -63,7 +63,7 @@ fromMiliseconds :: Integer -> UTCTime
 fromMiliseconds ms = fromSeconds (ms `div` 1000)
 
 boolFromInt :: Int -> Bool
-boolFromInt = (== 0)
+boolFromInt = (/= 0)
 
 data PostStatus = Published | Draft deriving (Show, Read)
 

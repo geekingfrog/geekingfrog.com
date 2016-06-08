@@ -74,7 +74,7 @@ pageHead = do
     H.title "Geekingfrog"
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
     link ! rel "stylesheet" ! href "/static/prism.css" ! type_ "text/css"
-    link ! rel "alternate" ! href "/rss" ! type_ "application/rss+xml" ! A.title "Geek stuff by a batrachian"
+    link ! rel "alternate" ! href "/rss" ! type_ "application/atom+xml" ! A.title "Geek stuff by a batrachian"
     H.style ! type_ "text/css" $
       "@font-face{ \
       \ font-family: 'Fira Sans';\
