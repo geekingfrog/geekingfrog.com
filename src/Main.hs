@@ -8,51 +8,31 @@
 
 module Main where
 
-import Prelude hiding (unlines)
-import Data.Text (Text, unlines, append)
-import qualified Data.Text.IO as T (readFile, writeFile)
+import Data.Text (Text(..))
+import qualified Data.Text as Text
+import qualified Data.Text.IO as Text
 import Data.DateTime (getCurrentTime)
 import Servant
 
-import Servant.HTML.Blaze (HTML)
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
 import Network.Wai (Application, responseLBS)
 import Network.Wai.Handler.Warp (run)
 
-import Network.Wai.Handler.Warp.Internal
-import Network.HTTP.Types as H
+import Network.HTTP.Types (status404)
 
-import qualified Data.ByteString as B (readFile)
-import Control.Applicative (liftA)
 import Control.Monad.IO.Class (liftIO)
-import Control.Exception (SomeException, fromException)
 import System.Directory (doesFileExist)
-import Database.Persist
-import Database.Persist.Sqlite (runSqlite)
-import qualified Database.Esqueleto as E
-import Database.Esqueleto ((^.))
 
-import Geekingfrog.Types
-import qualified Geekingfrog.Db.Types as DB
-
-import Geekingfrog.Parse (parseGhostExport)
 import Geekingfrog.AtomFeed (AtomFeed(..))
-import Geekingfrog.ContentType
+import Geekingfrog.ContentType (XML)
 import Geekingfrog.Constants (siteUrl)
 
-import Geekingfrog.Views.Errors (notFound, genericError)
+import qualified Geekingfrog.Views.Errors as Errors
 import qualified Geekingfrog.Urls as Urls
-
-import Geekingfrog.Queries (
-    getLastPostTags
-  , getAllPostsAndTags
-  , getPublishedPostsAndTags
-  , getOnePostAndTags
-  , getPostBySlug
-  , getTags
-  )
+import qualified Geekingfrog.Queries as Queries
 
 import qualified Geekingfrog.Views as Views
+import qualified Geekingfrog.HtmlApi as HtmlApi
 import qualified Geekingfrog.JSONApi as JSONApi
 
 main :: IO ()
@@ -62,10 +42,7 @@ main = let port = 8080 in do
   run port app
 
 type WebsiteAPI =
-       Get '[HTML] Views.Index
-  :<|> "blog" :> Get '[HTML] Views.PostsOverview
-  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] Views.PostView
-  :<|> "gpg" :> Get '[HTML] Views.GpgView
+  HtmlApi.HtmlAPI
   :<|> "rss" :> Get '[XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
@@ -77,10 +54,7 @@ websiteApi :: Proxy WebsiteAPI
 websiteApi = Proxy
 
 websiteServer :: Server WebsiteAPI
-websiteServer = makeIndex
-           :<|> makePostsIndex
-           :<|> makePost
-           :<|> return Views.GpgView
+websiteServer = HtmlApi.htmlHandler
            :<|> makeFeed
            :<|> serveRobots
            :<|> serveDirectory "./static"
@@ -93,29 +67,9 @@ app = serve websiteApi websiteServer
 -- app = serve websiteApi readerServer
 --   where readerServer = enter readerToHandler readerServerT
 
-makeIndex :: Handler Views.Index
-makeIndex = do
-  postTags <- liftIO getLastPostTags
-  return $ Views.Index postTags
-
-makePostsIndex :: Handler Views.PostsOverview
-makePostsIndex = do
-  postsAndTags <- liftIO getPublishedPostsAndTags
-  return $ Views.PostsOverview postsAndTags
-
-
-makePost :: Text -> Handler Views.PostView
-makePost slug = do
-  postAndTags <- liftIO $ getOnePostAndTags slug
-  case postAndTags of
-    Nothing -> throwError postNotFound
-    Just p -> return $ Views.PostView p
-    where postNotFound = err404 { errBody = renderMarkup errMsg}
-          errMsg = genericError "Not found" "No post found with this name :("
-
 makeFeed :: Handler AtomFeed
 makeFeed = do
-  postsAndTags <- liftIO getPublishedPostsAndTags
+  postsAndTags <- liftIO Queries.getPublishedPostsAndTags
   now <- liftIO getCurrentTime
   -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-
   -- For the moment, just fetch everything and use `Data.List.take`
@@ -124,20 +78,20 @@ makeFeed = do
 
 -- Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> ResponseReceived
 custom404 :: Application
-custom404 _ sendResponse = sendResponse $ responseLBS H.status404
+custom404 _ sendResponse = sendResponse $ responseLBS status404
                              [("Content-Type", "text/html; charset=UTF-8")]
-                             (renderMarkup notFound)
+                             (renderMarkup Errors.notFound)
 
 serveRobots :: Handler Text
 serveRobots = do
   exists <- liftIO (doesFileExist "./robots.txt")
   if exists
-    then liftIO (T.readFile "./robots.txt")
+    then liftIO (Text.readFile "./robots.txt")
     else throwError err404
 
 generateSitemap :: IO ()
 generateSitemap = do
-  posts <- liftIO getPublishedPostsAndTags
+  posts <- liftIO Queries.getPublishedPostsAndTags
   let fixedUrls = [
             -- not completely accurate, but for urlFor this doesn't matter
             Urls.urlFor $ Views.Index posts
@@ -146,5 +100,5 @@ generateSitemap = do
           , Urls.urlFor Views.GpgView
         ]
   let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
-  let urls = fmap (append siteUrl) (fixedUrls ++ postsUrls)
-  T.writeFile "./sitemap.txt" (unlines urls)
+  let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
+  Text.writeFile "./sitemap.txt" (Text.unlines urls)

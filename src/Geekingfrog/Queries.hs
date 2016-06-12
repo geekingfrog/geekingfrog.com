@@ -45,8 +45,8 @@ getPublishedPostsAndTags = do
         E.where_ (post ^. PostStatus E.==. E.val Published)
   liftIO $ liftA groupEntity (getPostsAndTags query)
 
-getLastPostTags :: IO [(Entity Post, [Entity Tag])]
-getLastPostTags = do
+getLatestPostTags :: IO [(Entity Post, [Entity Tag])]
+getLatestPostTags = do
   let subPosts = subList_select $ from $ \p -> do
                     where_ (not_ $ isNothing $ p ^. PostPublishedAt)
                     limit 5
