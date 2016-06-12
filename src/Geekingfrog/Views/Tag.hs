@@ -22,7 +22,6 @@ instance ToJSON TagsOverview where
     in
       object [
           ("tags", Array . fromList $ fmap tagWithPostIdsToJSON tags)
-        -- , ("postIds", Array . fromList $ fmap (toJSON . entityKey) postTags)
         ]
 
 

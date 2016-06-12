@@ -8,7 +8,7 @@ import GHC.Generics
 
 import Database.Persist.TH
 
-data PostStatus = Published | Draft deriving (Show, Read, Enum, Generic)
+data PostStatus = Published | Draft deriving (Show, Read, Eq, Generic)
 
 instance ToJSON PostStatus where
 

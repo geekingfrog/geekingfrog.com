@@ -46,13 +46,14 @@ import qualified Geekingfrog.Urls as Urls
 import Geekingfrog.Queries (
     getLastPostTags
   , getAllPostsAndTags
+  , getPublishedPostsAndTags
   , getOnePostAndTags
   , getPostBySlug
   , getTags
   )
 
 import qualified Geekingfrog.Views as Views
-
+import qualified Geekingfrog.JSONApi as JSONApi
 
 main :: IO ()
 main = let port = 8080 in do
@@ -62,14 +63,14 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
        Get '[HTML] Views.Index
-  :<|> "blog" :> Get '[HTML, JSON] Views.PostsOverview
-  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML, JSON] Views.PostView
-  :<|> "blog" :> "tag" :> Get '[JSON] Views.TagsOverview
+  :<|> "blog" :> Get '[HTML] Views.PostsOverview
+  :<|> "blog" :> "post" :> Capture "postSlug" Text :> Get '[HTML] Views.PostView
   :<|> "gpg" :> Get '[HTML] Views.GpgView
   :<|> "rss" :> Get '[XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
   :<|> "admin" :> Raw -- admin spa
+  :<|> "api" :> JSONApi.JsonAPI
   :<|> Raw  -- catchall for custom 404
 
 websiteApi :: Proxy WebsiteAPI
@@ -79,12 +80,12 @@ websiteServer :: Server WebsiteAPI
 websiteServer = makeIndex
            :<|> makePostsIndex
            :<|> makePost
-           :<|> makeTagsIndex
            :<|> return Views.GpgView
            :<|> makeFeed
            :<|> serveRobots
            :<|> serveDirectory "./static"
            :<|> serveDirectory "./admin"
+           :<|> JSONApi.apiHandler
            :<|> custom404
 
 app :: Application
@@ -99,7 +100,7 @@ makeIndex = do
 
 makePostsIndex :: Handler Views.PostsOverview
 makePostsIndex = do
-  postsAndTags <- liftIO getAllPostsAndTags
+  postsAndTags <- liftIO getPublishedPostsAndTags
   return $ Views.PostsOverview postsAndTags
 
 
@@ -112,18 +113,14 @@ makePost slug = do
     where postNotFound = err404 { errBody = renderMarkup errMsg}
           errMsg = genericError "Not found" "No post found with this name :("
 
-makeTagsIndex :: Handler Views.TagsOverview
-makeTagsIndex = do
-  tags <- liftIO getTags
-  return $ Views.TagsOverview tags
-
 makeFeed :: Handler AtomFeed
 makeFeed = do
-  postsAndTags <- liftIO getAllPostsAndTags
+  postsAndTags <- liftIO getPublishedPostsAndTags
   now <- liftIO getCurrentTime
   -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-
   -- For the moment, just fetch everything and use `Data.List.take`
   return $ AtomFeed now (take 10 postsAndTags)
+
 
 -- Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> ResponseReceived
 custom404 :: Application
@@ -140,7 +137,7 @@ serveRobots = do
 
 generateSitemap :: IO ()
 generateSitemap = do
-  posts <- liftIO getAllPostsAndTags
+  posts <- liftIO getPublishedPostsAndTags
   let fixedUrls = [
             -- not completely accurate, but for urlFor this doesn't matter
             Urls.urlFor $ Views.Index posts
