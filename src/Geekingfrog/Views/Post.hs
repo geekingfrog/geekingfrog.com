@@ -44,12 +44,9 @@ instance H.ToMarkup PostView where
             H.span ! class_ "name" $ "TAGGED:"
             H.span ! class_ "value" $ text (concatTags tags)
 
-        preEscapedString (unpack $ DB.postHtml post)
+        H.div ! class_ "blog-content" $ preEscapedString (unpack $ DB.postHtml post)
 
       pageFooter
-
--- instance ToJSON PostView where
---   toJSON (PostView (post, tags)) = postTagsToJSON (post, tags)
 
 data PostsOverview = PostsOverview [(Entity DB.Post, [Entity DB.Tag])]
 
@@ -70,15 +67,3 @@ instance H.ToMarkup PostsOverview where
             ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview)
             posts
       pageFooter
-
--- instance ToJSON PostsOverview where
---   toJSON (PostsOverview posts) = Aeson.object [
---       ("posts", Aeson.Array . Vector.fromList $ fmap postWithTagIdsToJSON posts),
---       ("tags", Aeson.Array . Vector.fromList $ fmap entityIdToJSON groupedTags)
---     ]
---     where
---       groupedTags = groupTags $ concatMap snd posts
---
--- groupTags :: [Entity DB.Tag] -> [Entity DB.Tag]
--- groupTags = nubBy compareKey
---   where compareKey (Entity key1 _) (Entity key2 _) = key1 == key2
