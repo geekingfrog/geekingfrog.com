@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Geekingfrog.AtomFeed where
@@ -15,14 +16,22 @@ import Text.XML.Light.Output (showTopElement)
 import Text.Atom.Feed
 import Text.Atom.Feed.Export
 
+import Network.HTTP.Media ((//))
+
 import Geekingfrog.Db.Types
 import Geekingfrog.ContentType
 import Geekingfrog.Urls
 import Geekingfrog.Constants (siteUrl)
 
-data AtomFeed = AtomFeed DateTime [(Entity Post, [Entity Tag])]
+data AtomFeed = AtomFeed DateTime [(Entity Post, [Entity Tag])] deriving (Show)
 
 instance MimeRender XML AtomFeed where
+  mimeRender _ = fromString . showTopElement . xmlFeed . toFeed
+
+instance Accept AtomFeed where
+  contentType _ = "application" // "atom+xml"
+
+instance MimeRender AtomFeed AtomFeed where
   mimeRender _ = fromString . showTopElement . xmlFeed . toFeed
 
 toFeed :: AtomFeed -> Feed

@@ -43,7 +43,7 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
   HtmlApi.HtmlAPI
-  :<|> "rss" :> Get '[XML] AtomFeed
+  :<|> "rss" :> Get '[AtomFeed, XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
   :<|> "admin" :> Raw -- admin spa
