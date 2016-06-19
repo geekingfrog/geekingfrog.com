@@ -8,7 +8,10 @@ import Http as Http
 
 import Json.Decode as Json exposing (..)
 
-type alias Model = { posts : Maybe(Dict.Dict String Post) }
+type alias Model =
+  { posts : Maybe(Dict.Dict String Post)
+  , selectedPost : Maybe Post
+  }
 
 type alias Post =
   { slug : String
@@ -17,11 +20,13 @@ type alias Post =
   , html : String
   , markdown : String
   , publishedAt : Maybe(ISO.Time)
+  , updatedAt : ISO.Time
   }
 
 type Msg
   = FetchPosts
   | FetchPost String
   | GotPosts (List Post)
-  | GotPost Post
+  -- | GotPost Post
   | FetchFail Http.Error
+  | SelectPost Post

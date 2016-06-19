@@ -1,0 +1,57 @@
+html > * {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+}
+
+.admin-controls {
+  flex: 1 0 50px;
+}
+
+.admin-content {
+  flex: 1 1 auto;
+  display: flex;
+  height: 100%;
+  overflow: auto;
+}
+
+.posts-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  max-width: 20em;
+  font-size: 90%;
+}
+
+.posts-list-item {
+  border-top: 1px solid #999;
+  padding: 1rem;
+}
+
+.posts-list-item:hover {
+  cursor: pointer;
+  background-color: #f6f6f6;
+}
+
+.posts-list-item__selected {
+  border-left: 4px solid steelblue;
+}
+
+
+.posts-list-item--date {
+  font-size: 80%;
+}
+
+.posts-list-item--date__draft {
+  color: #e25440;
+}

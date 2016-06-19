@@ -12,3 +12,5 @@ tags
 *.sqlite
 
 sitemap.txt
+
+admin/.nvimrc

@@ -2,6 +2,7 @@ module Parse exposing (..)
 
 import Json.Decode as Json exposing (..)
 import ISO8601 as ISO
+import Time as Time
 
 import Types exposing (Post)
 
@@ -14,7 +15,7 @@ decodeOnePost = at ["post"] decodePost
 
 
 decodePost : Json.Decoder Post
-decodePost = Json.object6 Post
+decodePost = Json.object7 Post
     ("slug" := string)
     ("uuid" := string)
     ("title" := string)
@@ -24,6 +25,10 @@ decodePost = Json.object6 Post
       [ null Nothing
       , Json.map parseDate string
       ]
+    )
+    (Json.map
+      (parseDate >> (Maybe.withDefault (ISO.fromTime 0)))
+      ("updatedAt" := string)
     )
 
 
