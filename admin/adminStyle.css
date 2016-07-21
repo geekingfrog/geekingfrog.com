@@ -29,7 +29,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: auto;
-  max-width: 20em;
+  width: 20em;
   font-size: 90%;
 }
 
@@ -54,4 +54,9 @@ body {
 
 .posts-list-item--date__draft {
   color: #e25440;
+}
+
+.post-edit-container {
+  overflow: auto;
+  padding: 1rem;
 }

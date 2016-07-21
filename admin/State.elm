@@ -6,7 +6,7 @@ import List as List
 import Dict as Dict
 import Debug as Debug
 import Api as Api
-
+import Port as Port
 
 init : (Model, Cmd Msg)
 init = (
@@ -14,7 +14,6 @@ init = (
     , selectedPost = Nothing
     },
     Api.getAllPosts)
-
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -39,7 +38,7 @@ update msg model =
       let
         _ = Debug.log "selecting post " post.title
       in
-        ({model | selectedPost = Just post}, Cmd.none)
+        ({model | selectedPost = Just post}, Port.newPost ())
 
 headMay : List a -> Maybe a
 headMay l =

@@ -6,9 +6,9 @@ import Html exposing (..)
 import Html.Events exposing (onClick)
 import Html.Attributes as A
 import ISO8601 as ISO
+import Markdown as Markdown
 
 import Types as Types
-
 
 view model =
   div [A.class "admin-container"] [
@@ -81,7 +81,10 @@ renderPostEdit maybePost =
   let
     content = case maybePost of
       Nothing -> [text "No post selected"]
-      Just p -> [text ("editing: " ++ p.title)]
+      Just p ->
+        [ text ("editing: " ++ p.title)
+        , Markdown.toHtml [A.class "blog-content"] p.markdown
+        ]
   in
     div [A.class "post-edit-container"] content
 

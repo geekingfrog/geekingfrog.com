@@ -3,12 +3,19 @@
   <head>
     <meta charset="UTF-8">
     <link href="/admin/adminStyle.css" rel="stylesheet" />
+    <link href="/styles.css" rel="stylesheet" />
+    <link href="/static/prism.css" rel="stylesheet" />
   </head>
 
   <body>
     <script src="/admin/admin.js" type="text/javascript"></script>
     <script type="text/javascript">
-      Elm.Main.fullscreen();
+      var app = Elm.Main.fullscreen();
+      app.ports.newPost.subscribe(function() {
+        // TODO fix this ugly timeout
+        setTimeout(Prism.highlightAll, 100);
+      });
     </script>
+    <script src="/static/prism.js" type="text/javascript"></script>
   </body>
 </html>
