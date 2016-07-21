@@ -82,8 +82,10 @@ renderPostEdit maybePost =
     content = case maybePost of
       Nothing -> [text "No post selected"]
       Just p ->
-        [ text ("editing: " ++ p.title)
-        , Markdown.toHtml [A.class "blog-content"] p.markdown
+        [ div [ A.class "post-preview" ]
+          [ text ("editing: " ++ p.title)
+          , Markdown.toHtml [A.class "blog-content"] p.markdown
+          ]
         ]
   in
     div [A.class "post-edit-container"] content
