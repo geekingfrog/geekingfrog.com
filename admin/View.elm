@@ -25,14 +25,14 @@ controls = div [A.class "admin-controls"] [
 
 content : Types.Model -> Html Types.Msg
 content model = div [A.class "admin-content"] [
-      renderPostsList model.posts
+      renderPostsList model.posts model.selectedPost
     , renderPostEdit model.selectedPost
     -- , div [A.class "post-edit-container"] [text "post content here"]
   ]
 
 
-renderPostsList : Maybe(Dict String Types.Post) -> Html Types.Msg
-renderPostsList model =
+renderPostsList : Maybe(Dict String Types.Post) -> Maybe Types.Post -> Html Types.Msg
+renderPostsList model selectedPost =
   case model of
     Nothing -> text "No posts fetched yet"
     Just posts ->
@@ -41,16 +41,23 @@ renderPostsList model =
       in
         Html.ul
           [A.class "posts-list"]
-          (List.map renderPostHeader sortedPosts)
+          (List.map (renderPostHeader selectedPost) sortedPosts)
 
-renderPostHeader : Types.Post -> Html Types.Msg
-renderPostHeader post =
-  Html.li [A.class "posts-list-item posts-list-item__selected"] [
-      div
-        [
-            A.class "posts-list-item--title"
-          , onClick (Types.SelectPost post)
-        ]
+renderPostHeader : Maybe Types.Post -> Types.Post -> Html Types.Msg
+renderPostHeader selectedPost post =
+  let
+    isSelected =
+      case selectedPost of
+        Nothing -> False
+        Just p -> post == p
+  in
+  Html.li
+    [
+      onClick (Types.SelectPost post),
+      A.classList [("posts-list-item", True), ("posts-list-item__selected", isSelected)]
+    ]
+    [ div
+        [ A.class "posts-list-item--title" ]
         [text post.title]
     , div
         [

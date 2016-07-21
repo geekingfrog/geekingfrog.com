@@ -30,10 +30,11 @@ update msg model =
         modelPosts = Dict.fromList (List.map (\p -> (p.slug, p)) posts)
       in
         ({posts = Just modelPosts , selectedPost = Nothing} , Cmd.none)
-    -- GotPost post ->
-    --   case model.posts of
-    --     Nothing -> ({posts = Just (Dict.singleton post.slug post)}, Cmd.none)
-    --     Just posts -> ({model | posts = Just (Dict.insert post.slug post posts)}, Cmd.none)
+    GotPost post ->
+      ({model | posts = Nothing}, Cmd.none)
+      -- case model.posts of
+      --   Nothing -> ({posts = Just (Dict.singleton post.slug post)}, Cmd.none)
+      --   Just posts -> ({model | posts = Just (Dict.insert post.slug post posts)}, Cmd.none)
     SelectPost post ->
       let
         _ = Debug.log "selecting post " post.title

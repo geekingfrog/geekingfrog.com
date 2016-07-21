@@ -27,6 +27,6 @@ type Msg
   = FetchPosts
   | FetchPost String
   | GotPosts (List Post)
-  -- | GotPost Post
+  | GotPost Post
   | FetchFail Http.Error
   | SelectPost Post
