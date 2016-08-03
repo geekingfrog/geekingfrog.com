@@ -11,6 +11,7 @@ import Json.Decode as Json exposing (..)
 type alias Model =
   { posts : Maybe(Dict.Dict String Post)
   , selectedPost : Maybe Post
+  , activeView : ActiveView
   }
 
 type alias Post =
@@ -30,3 +31,8 @@ type Msg
   | GotPost Post
   | FetchFail Http.Error
   | SelectPost Post
+  | EditPost Post
+
+type ActiveView
+  = Index
+  | Edit

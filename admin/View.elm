@@ -19,16 +19,26 @@ view model =
 
 controls : Html Types.Msg
 controls = div [A.class "admin-controls"] [
-      text "controls coming"
+    text "controls coming"
   ]
 
 
 content : Types.Model -> Html Types.Msg
-content model = div [A.class "admin-content"] [
-      renderPostsList model.posts model.selectedPost
-    , renderPostEdit model.selectedPost
-    -- , div [A.class "post-edit-container"] [text "post content here"]
-  ]
+content model =
+  case model.activeView of
+    Types.Index ->
+      div [A.class "admin-content"] [
+        renderPostsList model.posts model.selectedPost
+      , renderPostPreview model.selectedPost
+      ]
+    Types.Edit ->
+      case model.selectedPost of
+        Nothing -> text "something went wrong, no selected post in edit?"
+        Just p ->
+          div [] [
+            button [onClick (Types.SelectPost p)] [text "back"]
+          , renderEditPost p
+          ]
 
 
 renderPostsList : Maybe(Dict String Types.Post) -> Maybe Types.Post -> Html Types.Msg
@@ -76,19 +86,19 @@ renderPost : Types.Post -> Html Types.Msg
 renderPost post = Html.li [] [text (toString post.publishedAt)]
 
 
-renderPostEdit : Maybe(Types.Post) -> Html Types.Msg
-renderPostEdit maybePost =
+renderPostPreview : Maybe(Types.Post) -> Html Types.Msg
+renderPostPreview maybePost =
   let
     content = case maybePost of
       Nothing -> [text "No post selected"]
       Just p ->
         [ div [ A.class "post-preview" ]
-          [ text ("editing: " ++ p.title)
+          [ button [onClick (Types.EditPost p)] [text "Edit"]
           , Markdown.toHtml [A.class "blog-content"] p.markdown
           ]
         ]
   in
-    div [A.class "post-edit-container"] content
+    div [A.class "post-preview-container"] content
 
 -- DRAFT firsts, then most recent to most ancient post
 sortPublishedAt : Types.Post -> Types.Post -> Order
@@ -108,3 +118,14 @@ isNothing : Maybe a -> Bool
 isNothing a = case a of
   Nothing -> True
   _ -> False
+
+
+renderEditPost : Types.Post -> Html Types.Msg
+renderEditPost p =
+  div [] [
+    text ("editting post" ++ p.title)
+  , div [A.class "edit-post-container"] [
+      textarea [A.class "edit-post--markdown"] [text p.markdown]
+    , div [A.class "edit-post--html"] [div [A.id "render-anchor"] [text "foo"]]
+    ]
+  ]

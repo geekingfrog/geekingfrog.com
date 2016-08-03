@@ -12,6 +12,7 @@ init : (Model, Cmd Msg)
 init = (
     { posts = Nothing
     , selectedPost = Nothing
+    , activeView = Index
     },
     Api.getAllPosts)
 
@@ -28,7 +29,7 @@ update msg model =
       let
         modelPosts = Dict.fromList (List.map (\p -> (p.slug, p)) posts)
       in
-        ({posts = Just modelPosts , selectedPost = Nothing} , Cmd.none)
+        ({model | posts = Just modelPosts , selectedPost = Nothing} , Cmd.none)
     GotPost post ->
       ({model | posts = Nothing}, Cmd.none)
       -- case model.posts of
@@ -38,7 +39,9 @@ update msg model =
       let
         _ = Debug.log "selecting post " post.title
       in
-        ({model | selectedPost = Just post}, Port.newPost ())
+        ({model | selectedPost = Just post, activeView = Index}, Port.newPost ())
+    EditPost post ->
+      ({model | selectedPost = Just post, activeView = Edit}, Cmd.none)
 
 headMay : List a -> Maybe a
 headMay l =
