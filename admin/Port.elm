@@ -1,3 +1,3 @@
 port module Port exposing (..)
 
-port newPost : () -> Cmd msg
+port highlight : () -> Cmd msg

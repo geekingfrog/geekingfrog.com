@@ -32,6 +32,7 @@ type Msg
   | FetchFail Http.Error
   | SelectPost Post
   | EditPost Post
+  | InputEditPost String
 
 type ActiveView
   = Index

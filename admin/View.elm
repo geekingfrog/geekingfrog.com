@@ -3,7 +3,7 @@ module View exposing (..)
 import String as String
 import Dict exposing (Dict)
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import Html.Attributes as A
 import ISO8601 as ISO
 import Markdown as Markdown
@@ -125,7 +125,10 @@ renderEditPost p =
   div [] [
     text ("editting post" ++ p.title)
   , div [A.class "edit-post-container"] [
-      textarea [A.class "edit-post--markdown"] [text p.markdown]
-    , div [A.class "edit-post--html"] [div [A.id "render-anchor"] [text "foo"]]
+      textarea
+        [ A.class "edit-post--markdown"
+        , onInput (\markdown -> Types.InputEditPost markdown)
+        ] [text p.markdown]
+    , div [A.class "edit-post--html"] [div [A.id "render-anchor"] [Markdown.toHtml [] p.markdown]]
     ]
   ]

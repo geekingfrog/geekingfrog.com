@@ -39,9 +39,24 @@ update msg model =
       let
         _ = Debug.log "selecting post " post.title
       in
-        ({model | selectedPost = Just post, activeView = Index}, Port.newPost ())
+        ({model | selectedPost = Just post, activeView = Index}, Port.highlight ())
     EditPost post ->
-      ({model | selectedPost = Just post, activeView = Edit}, Cmd.none)
+      ({model | selectedPost = Just post, activeView = Edit}, Port.highlight ())
+    InputEditPost updatedMarkdown ->
+        case (model.selectedPost, model.posts) of
+          (Nothing, _) -> (model, Cmd.none)
+          (_, Nothing) -> (model, Cmd.none)
+          (Just p, Just ps) ->
+            let
+              updatedSelectedPost = Just ({p | markdown=updatedMarkdown})
+              updatedPosts = Maybe.map (\p -> {p | markdown=updatedMarkdown}) (Dict.get p.slug ps)
+            in
+              case updatedPosts of
+                Nothing -> (model, Cmd.none)
+                Just p' -> (
+                  { model | posts = Just (Dict.insert p'.slug p' ps)
+                  , selectedPost = updatedSelectedPost
+                  }, Cmd.none)
 
 headMay : List a -> Maybe a
 headMay l =

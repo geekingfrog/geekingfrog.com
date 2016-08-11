@@ -81,4 +81,6 @@ body {
 .edit-post--html {
   flex: 1 0 auto;
   border: 1px solid black;
+  max-width: 50%;
+  overflow: auto;
 }
