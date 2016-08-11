@@ -41,7 +41,7 @@ update msg model =
       in
         ({model | selectedPost = Just post, activeView = Index}, Port.highlight ())
     EditPost post ->
-      ({model | selectedPost = Just post, activeView = Edit}, Port.highlight ())
+      ({model | selectedPost = Just post, activeView = Edit}, Port.setupEdit ())
     InputEditPost updatedMarkdown ->
         case (model.selectedPost, model.posts) of
           (Nothing, _) -> (model, Cmd.none)
