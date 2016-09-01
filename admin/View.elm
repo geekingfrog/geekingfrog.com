@@ -7,8 +7,10 @@ import Html.Events exposing (onClick, onInput)
 import Html.Attributes as A
 import ISO8601 as ISO
 import Markdown as Markdown
+import List exposing (foldr)
 
 import Types as Types
+import TagEditor.Main as TagEditor
 
 view model =
   div [A.class "admin-container"] [
@@ -32,14 +34,14 @@ content model =
       , renderPostPreview model.selectedPost
       ]
     Types.Edit ->
-      case model.selectedPost of
-        Nothing -> text "something went wrong, no selected post in edit?"
-        Just p ->
+      case (model.selectedPost, model.tags) of
+        (Nothing, _) -> text "something went wrong, no selected post in edit?"
+        (_, Nothing) -> text "No tag retrieved yet"
+        (Just p, Just tags) ->
           div [] [
             button [onClick (Types.SelectPost p)] [text "back"]
-          , renderEditPost p
+          , renderEditPost p tags
           ]
-
 
 renderPostsList : Maybe(Dict String Types.Post) -> Maybe Types.Post -> Html Types.Msg
 renderPostsList model selectedPost =
@@ -120,10 +122,12 @@ isNothing a = case a of
   _ -> False
 
 
-renderEditPost : Types.Post -> Html Types.Msg
-renderEditPost p =
+renderEditPost : Types.Post -> List Types.Tag -> Html Types.Msg
+renderEditPost p tags =
   div [] [
     text ("editting post" ++ p.title)
+  -- , editTagsView tags
+  , TagEditor.editTagsView tags
   , div [A.class "edit-post-container"] [
       textarea
         [ A.class "edit-post--markdown"
@@ -132,3 +136,10 @@ renderEditPost p =
     , div [A.class "edit-post--html"] [div [A.id "render-anchor"] [Markdown.toHtml [] p.markdown]]
     ]
   ]
+
+-- editTagsView : List Types.Tag -> Html Types.Msg
+-- editTagsView tags =
+--   let
+--     optionTag t = option [] [text t.name]
+--   in
+--     div [A.class "edit-tag-container"] [select [] (List.map optionTag tags)]

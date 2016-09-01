@@ -12,6 +12,7 @@ type alias Model =
   { posts : Maybe(Dict.Dict String Post)
   , selectedPost : Maybe Post
   , activeView : ActiveView
+  , tags : Maybe(List Tag)
   }
 
 type alias Post =
@@ -22,17 +23,28 @@ type alias Post =
   , markdown : String
   , publishedAt : Maybe(ISO.Time)
   , updatedAt : ISO.Time
+  , id : Int
+  }
+
+type alias Tag =
+  { name : String
+  , slug : String
+  , uuid : String
+  , postIds : List Int
+  , id : Int
+  , createdAt : ISO.Time
   }
 
 type Msg
-  = FetchPosts
-  | FetchPost String
-  | GotPosts (List Post)
+  -- = FetchPosts
+  = FetchPost String
   | GotPost Post
   | FetchFail Http.Error
   | SelectPost Post
   | EditPost Post
   | InputEditPost String
+  | GotTags (List Tag)
+  | GotInitialData (List Post, List Tag)
 
 type ActiveView
   = Index

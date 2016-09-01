@@ -8,28 +8,33 @@ import Debug as Debug
 import Api as Api
 import Port as Port
 
+import TagEditor.Main as TagEditor
+
 init : (Model, Cmd Msg)
 init = (
     { posts = Nothing
     , selectedPost = Nothing
     , activeView = Index
+    , tags = Nothing
     },
-    Api.getAllPosts)
+    Api.getInitialData)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    FetchPosts ->
-      (model, Api.getAllPosts)
     FetchFail err ->
       Debug.log (toString err) (model, Cmd.none)
     FetchPost postSlug ->
       (model, Api.getOnePost postSlug)
-    GotPosts posts ->
+    GotInitialData (posts, tags) ->
       let
         modelPosts = Dict.fromList (List.map (\p -> (p.slug, p)) posts)
       in
-        ({model | posts = Just modelPosts , selectedPost = Nothing} , Cmd.none)
+        ({model
+          | posts = Just modelPosts
+          , selectedPost = Nothing
+          , tags = Just tags
+        } , Cmd.none)
     GotPost post ->
       ({model | posts = Nothing}, Cmd.none)
       -- case model.posts of
@@ -57,6 +62,7 @@ update msg model =
                   { model | posts = Just (Dict.insert p'.slug p' ps)
                   , selectedPost = updatedSelectedPost
                   }, Cmd.none)
+    GotTags tags -> (model, Cmd.none)
 
 headMay : List a -> Maybe a
 headMay l =
