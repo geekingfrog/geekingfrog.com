@@ -5,6 +5,7 @@ bower_components
 dist
 npm-debug.log
 logs/
+posts/
 
 .critical
 tags

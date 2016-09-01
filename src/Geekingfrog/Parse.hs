@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Geekingfrog.Parse where
+module Geekingfrog.Parse (parseGhostExport) where
 
 import Prelude hiding (readFile, head)
 import Data.ByteString (readFile, ByteString)
