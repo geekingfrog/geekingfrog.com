@@ -23,8 +23,7 @@ main = do
   Dir.createDirectoryIfMissing False "posts/"
   case ghostExport of
     Left parseError -> putStrLn parseError
-    Right (errors, (posts, tags, _)) -> M.mapM_ (savePost tags) posts
-  -- M.mapM_ 
+    Right (errors, (posts, tags, postTags)) -> M.mapM_ (savePost tags postTags) posts
   print "yo"
 
 
@@ -41,22 +40,32 @@ getImportFile = do
     then return filename
     else Exit.die $ show filename ++ " not found"
 
-savePost :: [Types.Tag] -> Types.Post -> IO ()
-savePost tags post = do
+
+savePost :: [Types.Tag] -> [Types.PostTag] -> Types.Post -> IO ()
+savePost tags postTags post = do
   let (year, month, day) = D.toGregorian' $ Types.postCreatedAt post
+  let ts = getTagsForPost tags postTags post
   let prefix = T.pack (show year) <> "-" <> T.pack (show month) <> "-" <> T.pack (show day)
   let cleanPost = T.replace "`" "" (Types.postSlug post)
   let fileName = prefix <> "-" <> cleanPost
-  T.putStrLn fileName
-
-  putStrLn $ T.unpack fileName
   let filePath = "posts/" <> fileName
   let header = T.intercalate "\n"
         [ "---"
         , "title: " <> Types.postTitle post
         , "description: " <> fromMaybe "" (Types.postMetaDescription post)
-        , "tags: " <> " TODO put tags here"
+        , "tags: " <> T.intercalate ", " (map Types.tagSlug ts)
         , "---"
         , "\n"
         ]
-  T.writeFile (T.unpack filePath) header
+  let content = Types.postMarkdown post
+  T.writeFile (T.unpack filePath) (header <> content)
+
+
+getTagsForPost :: [Types.Tag] -> [Types.PostTag] -> Types.Post -> [Types.Tag]
+getTagsForPost tags postTags post =
+  let
+    postId = Types.postId post
+    pt = map Types.postTagTagId $ filter ((== postId) . Types.postTagPostId) postTags
+    filteredTags = filter (\t -> Types.tagId t `elem` pt) tags
+  in
+    filteredTags
