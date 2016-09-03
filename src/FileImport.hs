@@ -7,7 +7,7 @@ import qualified Data.ByteString as B
 import qualified Control.Monad as M
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust)
 import Data.Monoid ((<>))
 
 import qualified Data.DateTime as D
@@ -54,6 +54,7 @@ savePost tags postTags post = do
         , "title: " <> Types.postTitle post
         , "description: " <> fromMaybe "" (Types.postMetaDescription post)
         , "tags: " <> T.intercalate ", " (map Types.tagSlug ts)
+        , "status: " <> if isJust (Types.postPublishedAt post) then "published" else "draft"
         , "---"
         , "\n"
         ]
