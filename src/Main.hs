@@ -45,6 +45,7 @@ type WebsiteAPI =
   HtmlApi.HtmlAPI
   :<|> "rss" :> Get '[AtomFeed, XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
+  :<|> "sitemap.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
   :<|> "admin" :> Raw -- admin spa
   :<|> "api" :> JSONApi.JsonAPI
@@ -57,6 +58,7 @@ websiteServer :: Server WebsiteAPI
 websiteServer = HtmlApi.htmlHandler
            :<|> makeFeed
            :<|> serveRobots
+           :<|> serveSitemap
            :<|> serveDirectory "./static"
            :<|> serveDirectory "./admin"
            :<|> JSONApi.apiHandler
@@ -83,10 +85,16 @@ custom404 _ sendResponse = sendResponse $ responseLBS status404
                              (renderMarkup Errors.notFound)
 
 serveRobots :: Handler Text
-serveRobots = do
-  exists <- liftIO (doesFileExist "./robots.txt")
+serveRobots = serveFile "./robots.txt"
+
+serveSitemap :: Handler Text
+serveSitemap = serveFile "./sitemap.txt"
+
+serveFile :: FilePath -> Handler Text
+serveFile filepath = do
+  exists <- liftIO (doesFileExist filepath)
   if exists
-    then liftIO (Text.readFile "./robots.txt")
+    then liftIO (Text.readFile filepath)
     else throwError err404
 
 generateSitemap :: IO ()
