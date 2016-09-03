@@ -21,7 +21,7 @@ import Control.Monad (join)
 import Data.Either (lefts, rights)
 import Control.Applicative (liftA, liftA3)
 
-import Geekingfrog.Types (Post, Tag, PostTag)
+import Geekingfrog.GhostTypes (Post, Tag, PostTag)
 
 parseGhostExport :: ByteString -> Either String ([String], ([Post], [Tag], [PostTag]))
 parseGhostExport rawContent = do

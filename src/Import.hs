@@ -13,7 +13,7 @@ import qualified Data.ByteString as B (readFile)
 
 import qualified Geekingfrog.Db.Types as DT
 import qualified Geekingfrog.Db.PostStatus as DT
-import Geekingfrog.Types
+import Geekingfrog.GhostTypes
 import Geekingfrog.Parse (parseGhostExport)
 
 import Control.Monad.Trans.Reader (ReaderT)

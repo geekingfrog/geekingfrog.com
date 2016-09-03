@@ -13,7 +13,7 @@ import Data.Monoid ((<>))
 import qualified Data.DateTime as D
 
 import qualified Geekingfrog.Parse as Parse
-import qualified Geekingfrog.Types as Types --(Post, Tag, PostTag)
+import qualified Geekingfrog.GhostTypes as Types --(Post, Tag, PostTag)
 
 
 main = do
@@ -45,14 +45,13 @@ savePost :: [Types.Tag] -> [Types.PostTag] -> Types.Post -> IO ()
 savePost tags postTags post = do
   let (year, month, day) = D.toGregorian' $ Types.postCreatedAt post
   let ts = getTagsForPost tags postTags post
-  let prefix = T.pack (show year) <> "-" <> T.pack (show month) <> "-" <> T.pack (show day)
+  let prefix = T.pack (show year) <> "-" <> formatDate month <> "-" <> formatDate day
   let cleanPost = T.replace "`" "" (Types.postSlug post)
   let fileName = prefix <> "-" <> cleanPost
   let filePath = "posts/" <> fileName
   let header = T.intercalate "\n"
         [ "---"
         , "title: " <> Types.postTitle post
-        , "description: " <> fromMaybe "" (Types.postMetaDescription post)
         , "tags: " <> T.intercalate ", " (map Types.tagSlug ts)
         , "status: " <> if isJust (Types.postPublishedAt post) then "published" else "draft"
         , "---"
@@ -61,6 +60,9 @@ savePost tags postTags post = do
   let content = Types.postMarkdown post
   T.writeFile (T.unpack filePath) (header <> content)
 
+
+formatDate :: Int -> T.Text
+formatDate d = if d < 10 then "0" <> T.pack (show d) else T.pack (show d)
 
 getTagsForPost :: [Types.Tag] -> [Types.PostTag] -> Types.Post -> [Types.Tag]
 getTagsForPost tags postTags post =
