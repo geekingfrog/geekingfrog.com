@@ -105,7 +105,6 @@ generateSitemap = do
             Urls.urlFor $ Views.Index posts
           , Urls.urlFor Views.GpgView
           , Urls.urlFor $ Views.PostsOverview posts
-          , Urls.urlFor Views.GpgView
         ]
   let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
   let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
