@@ -58,7 +58,7 @@ savePost tags postTags post = do
         , "\n"
         ]
   let content = Types.postMarkdown post
-  T.writeFile (T.unpack filePath) (header <> content)
+  T.writeFile (T.unpack filePath <> ".md") (header <> content)
 
 
 formatDate :: Int -> T.Text

@@ -48,7 +48,6 @@ main :: IO ()
 main = let port = 8080 in do
   -- generateSitemap
   putStrLn $ "Listening on port " ++ show port ++ "..."
-  testingPost <- Text.readFile "./posts/2016-04-10-struggles-with-parsing-json-with-aeson"
   createHighlightCss highlightStyle
   postMap <- loadPosts
   case postMap of
@@ -139,7 +138,7 @@ loadPosts = do
 
 
 makePost :: MdParser.PostMeta -> MdParser.PostContent -> (Text, Types.Post)
-makePost (date, slug) (title, status, markdown, html, tags) = (slug, Types.Post {
+makePost (date, fileName) (title, status, markdown, html, tags) = (slug, Types.Post {
             Types.postStatus = status
           , Types.postTitle = title
           , Types.postSlug = slug
@@ -148,5 +147,8 @@ makePost (date, slug) (title, status, markdown, html, tags) = (slug, Types.Post 
           , Types.postCreatedAt = date
           , Types.postTags = tags
           })
+  where
+    -- drop the file extension (.md)
+    slug = Text.dropEnd 3 fileName
 
 createHighlightCss style = writeFile "static/highlight.css" (Highlighting.styleToCss style)
