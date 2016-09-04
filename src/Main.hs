@@ -29,7 +29,7 @@ import qualified Data.HashMap.Strict as Map
 
 import Geekingfrog.AtomFeed (AtomFeed(..))
 import Geekingfrog.ContentType (XML)
-import Geekingfrog.Constants (siteUrl, highlightStyle)
+import qualified Geekingfrog.Constants as Constants
 
 import qualified Geekingfrog.Views.Errors as Errors
 import qualified Geekingfrog.Urls as Urls
@@ -45,7 +45,7 @@ import qualified Text.Highlighting.Kate.Format.HTML as Highlighting
 main :: IO ()
 main = let port = 8080 in do
   putStrLn $ "Listening on port " ++ show port ++ "..."
-  createHighlightCss highlightStyle
+  createHighlightCss Constants.highlightStyle
   postMap <- loadPosts
   case postMap of
     Left err -> Exit.die (show err)
@@ -72,7 +72,7 @@ websiteServer postMap = HtmlApi.htmlHandler postMap
            :<|> serveRobots
            :<|> serveSitemap
            :<|> serveDirectory "./static"
-           :<|> serveDirectory "./admin"
+           :<|> serveDirectory "./blog/images"
            :<|> custom404
 
 app :: Types.PostMap -> Application
@@ -116,14 +116,14 @@ generateSitemap postMap = do
           , Urls.urlFor $ Views.PostsOverview posts
         ]
   let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
-  let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
+  let urls = fmap (Text.append Constants.siteUrl) (fixedUrls ++ postsUrls)
   Text.writeFile "./sitemap.txt" (Text.unlines urls)
 
 
 loadPosts :: IO (Either String (Map.HashMap Text Types.Post))
 loadPosts = do
-  postList <- Dir.listDirectory "posts"
-  contents <- M.forM postList (\filename -> Text.readFile ("posts/" ++ filename))
+  postList <- Dir.listDirectory Constants.postsLocation
+  contents <- M.forM postList (\filename -> Text.readFile (Constants.postsLocation ++ filename))
   let metas = M.mapM (MdParser.parsePostFileName . Text.pack) postList
   let postContents = M.mapM MdParser.parsePost (zip postList contents)
   case (metas, postContents) of

@@ -41,9 +41,6 @@ parseGhostExport rawContent = do
       let errors = lefts posts ++ lefts tags ++ lefts postTags
       Right (errors, (rights posts, rights tags, rights postTags))
 
-testParser :: IO (Either String ([String], ([Post], [Tag], [PostTag])))
-testParser = liftA parseGhostExport (readFile "geekingfrog.ghost.2016-02-21.json")
-
 verboseParseManyPosts :: Object -> Parser [Either String Post]
 verboseParseManyPosts = verboseParseKey "posts"
 

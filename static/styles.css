@@ -520,6 +520,12 @@ footer a {
   text-indent: 20px;
 }
 
+.blog-content img {
+  max-width: 90%;
+  margin: 0 auto;
+  display: block;
+}
+
 /*****************************************/
 /*                   GPG                 */
 /*****************************************/

@@ -9,3 +9,6 @@ siteUrl = pack "https://geekingfrog.com"
 
 highlightStyle :: H.Style
 highlightStyle = H.pygments
+
+postsLocation :: FilePath
+postsLocation = "./blog/posts/"

@@ -11,6 +11,7 @@ import Data.Maybe (fromMaybe, isJust)
 import Data.Monoid ((<>))
 
 import qualified Data.DateTime as D
+import qualified Geekingfrog.Constants as Constants
 
 import qualified Geekingfrog.Parse as Parse
 import qualified Geekingfrog.GhostTypes as Types --(Post, Tag, PostTag)
@@ -20,7 +21,7 @@ main = do
   filename <- getImportFile
   rawContent <- B.readFile filename
   let ghostExport = Parse.parseGhostExport rawContent
-  Dir.createDirectoryIfMissing False "posts/"
+  Dir.createDirectoryIfMissing True Constants.postsLocation
   case ghostExport of
     Left parseError -> putStrLn parseError
     Right (errors, (posts, tags, postTags)) -> M.mapM_ (savePost tags postTags) posts
@@ -46,8 +47,8 @@ savePost tags postTags post = do
   let ts = getTagsForPost tags postTags post
   let prefix = T.pack (show year) <> "-" <> formatDate month <> "-" <> formatDate day
   let cleanPost = T.replace "`" "" (Types.postSlug post)
-  let fileName = prefix <> "-" <> cleanPost
-  let filePath = "posts/" <> fileName
+  let fileName = prefix <> "-" <> cleanPost <> ".md"
+  let filePath = Constants.postsLocation ++ T.unpack fileName
   let header = T.intercalate "\n"
         [ "---"
         , "title: " <> Types.postTitle post
@@ -56,8 +57,9 @@ savePost tags postTags post = do
         , "---"
         , "\n"
         ]
-  let content = Types.postMarkdown post
-  T.writeFile (T.unpack filePath <> ".md") (header <> content)
+  -- fix images paths
+  let content = T.replace "/content/images/" "/static/images/" (Types.postMarkdown post)
+  T.writeFile filePath (header <> content)
 
 
 formatDate :: Int -> T.Text

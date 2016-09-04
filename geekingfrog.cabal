@@ -71,3 +71,4 @@ executable geekingfrog-file-import
                      , time == 1.5.*
                      , datetime == 0.3.*
                      , text == 1.2.*
+                     , highlighting-kate == 0.6.*
