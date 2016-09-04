@@ -16,6 +16,7 @@ import Database.Esqueleto as E
 import Geekingfrog.Db.Types
 import Geekingfrog.Db.PostStatus
 
+
 -- Generic type to restrict the query for the join query
 type PostTagQuery =
      SqlExpr (Entity Post)

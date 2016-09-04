@@ -9,7 +9,7 @@ import Data.ByteString.Lazy.Internal (ByteString)
 type PostMap = Map.HashMap Text Post
 
 type SimpleDate = (Integer, Int, Int) -- y, m, d
-data PostStatus = Published | Draft deriving (Show, Read)
+data PostStatus = Published | Draft deriving (Show, Read, Eq)
 
 data Post = Post {
     postStatus :: PostStatus

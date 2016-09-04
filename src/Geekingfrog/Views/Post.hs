@@ -5,7 +5,8 @@ module Geekingfrog.Views.Post where
 import Database.Persist (Entity(..), entityIdToJSON)
 import Data.Text (unpack, pack, Text)
 import Data.DateTime (toGregorian', fromGregorian', formatDateTime)
-import Control.Monad (mapM_)
+import Control.Monad (mapM_, guard)
+import qualified Data.List as List
 
 import qualified Text.Pandoc as Pandoc
 import Text.Blaze.Html5 as H
@@ -44,9 +45,11 @@ instance H.ToMarkup PostView where
             H.span ! class_ "name" $ "POSTED:"
             H.span ! class_ "value" $ text (formatDate $ Types.postCreatedAt post)
             -- H.span ! class_ "value" $ text (pack $ formatDate $ Types.postUpdatedAt post)
-          H.li ! class_ "blog-meta-section" $ do
-            H.span ! class_ "name" $ "TAGGED:"
-            H.span ! class_ "value" $ text (concatTags $ Types.postTags post)
+          if null $ Types.postTags post
+            then text ""
+            else H.li ! class_ "blog-meta-section" $ do
+              H.span ! class_ "name" $ "TAGGED:"
+              H.span ! class_ "value" $ text (concatTags $ Types.postTags post)
 
         H.div ! class_ "blog-content" $ Types.postHtml post
 
@@ -69,7 +72,10 @@ instance H.ToMarkup PostsOverview where
         H.ul ! class_ "posts-overview" $
           mapM_
             ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview)
-            posts
+            (reverse
+              $ List.sortOn Types.postCreatedAt
+              $ filter ((== Types.Published) . Types.postStatus) posts
+            )
       pageFooter
 
 

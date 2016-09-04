@@ -20,13 +20,14 @@ import Network.Wai.Handler.Warp (run)
 
 import Network.HTTP.Types (status404)
 
+import qualified Data.List as List
 import qualified Control.Monad as M
 import Control.Monad.IO.Class (liftIO)
 import qualified System.Directory as Dir
 import qualified System.Exit as Exit
 import qualified Data.HashMap.Strict as Map
 
--- import Geekingfrog.AtomFeed (AtomFeed(..))
+import Geekingfrog.AtomFeed (AtomFeed(..))
 import Geekingfrog.ContentType (XML)
 import Geekingfrog.Constants (siteUrl, highlightStyle)
 
@@ -57,7 +58,7 @@ main = let port = 8080 in do
 
 type WebsiteAPI =
   HtmlApi.HtmlAPI
-  -- :<|> "rss" :> Get '[AtomFeed, XML] AtomFeed
+  :<|> "rss" :> Get '[AtomFeed, XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
   :<|> "sitemap.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
@@ -70,7 +71,7 @@ websiteApi = Proxy
 
 websiteServer :: Types.PostMap -> Server WebsiteAPI
 websiteServer postMap = HtmlApi.htmlHandler postMap
-           -- :<|> makeFeed
+           :<|> makeFeed postMap
            :<|> serveRobots
            :<|> serveSitemap
            :<|> serveDirectory "./static"
@@ -80,16 +81,14 @@ websiteServer postMap = HtmlApi.htmlHandler postMap
 
 app :: Types.PostMap -> Application
 app postMap = serve websiteApi (websiteServer postMap)
--- app = serve websiteApi readerServer
---   where readerServer = enter readerToHandler readerServerT
 
--- makeFeed :: Handler AtomFeed
--- makeFeed = do
---   postsAndTags <- liftIO Queries.getPublishedPostsAndTags
---   now <- liftIO getCurrentTime
---   -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-
---   -- For the moment, just fetch everything and use `Data.List.take`
---   return $ AtomFeed now (take 10 postsAndTags)
+makeFeed :: Types.PostMap -> Handler AtomFeed
+makeFeed postMap = do
+  now <- liftIO getCurrentTime
+  let posts = Map.elems postMap
+  let publishedPost = filter ((==Types.Published) . Types.postStatus) posts
+  let sortedPosts = reverse $ List.sortOn Types.postCreatedAt publishedPost
+  return $ AtomFeed now (take 10 sortedPosts)
 
 
 -- Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> ResponseReceived
