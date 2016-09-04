@@ -72,10 +72,7 @@ instance H.ToMarkup PostsOverview where
         H.ul ! class_ "posts-overview" $
           mapM_
             ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview)
-            (reverse
-              $ List.sortOn Types.postCreatedAt
-              $ filter ((== Types.Published) . Types.postStatus) posts
-            )
+            posts
       pageFooter
 
 

@@ -46,7 +46,14 @@ indexHandler postMap =
 
 
 postIndexHandler :: Types.PostMap -> Handler Views.PostsOverview
-postIndexHandler postMap = return $ Views.PostsOverview (Map.elems postMap)
+postIndexHandler postMap =
+  let
+    posts = reverse
+      $ List.sortOn Types.postCreatedAt
+      $ filter ((== Types.Published) . Types.postStatus)
+      $ Map.elems postMap
+  in
+    return $ Views.PostsOverview posts
 
 
 postHandler :: Types.PostMap -> Text -> Handler Views.PostView

@@ -34,7 +34,7 @@ instance H.ToMarkup Index where
             h2 "Blog"
             p "Some of my brain dump about various things, mostly coding, programming languages and open source projects. Here are the most recent posts."
             ul ! class_ "posts-overview posts-overview__index" $
-              mapM_ ((li ! class_ "posts-overview--item") . postOverview) posts
+              mapM_ ((li ! class_ "posts-overview--item") . postOverview) (take 5 posts)
           H.div ! class_ "misc" $ do
             h2 "About me"
             p "I'm Greg, full stack software engineer."

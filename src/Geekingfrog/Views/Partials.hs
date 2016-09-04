@@ -47,13 +47,13 @@ postOverview post = a ! href (postLink post) $ do
     postLink post = H.toValue $ append "/blog/post/" (Types.postSlug post)
 
 
-pageFooter = do
-  footer $ H.div ! class_ "container" $ do
+pageFooter = footer $
+  H.div ! class_ "container" $ do
     H.div ! class_ "panel panel-bio" $ do
       h2 "HELLO!"
       p $ do
           "My name is Greg. I work at "
-          a ! href "opensignal.com" $ "Opensignal"
+          a ! href "//opensignal.com" $ "Opensignal"
           " on the web and backend team."
       p "I build APIs to collect our crowdsourced data, implement designs and build the corresponding backends."
     H.div ! class_ "panel" $ do
@@ -66,7 +66,7 @@ pageFooter = do
           ")"
     H.div ! class_ "panel" $ do
       a ! href "/rss" $ h2 "SUBSCRIBE"
-      p "RSS is love"
+      p "RSS is love ♥"
 
   -- H.script ! type_ "text/javascript" ! src "/static/prism.js" $ mempty
 
