@@ -1,13 +1,5 @@
 .stack-work
 
-node_modules
-bower_components
-dist
-npm-debug.log
-logs/
-posts/
-
-.critical
 tags
 *.json
 *.sqlite
