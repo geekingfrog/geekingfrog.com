@@ -7,8 +7,6 @@ import Control.Applicative (liftA)
 import Data.Text (unpack)
 import Data.ByteString.Lazy.UTF8 (fromString)
 import Servant hiding (Post, Link)
-import Database.Persist.Types (entityVal)
-import Database.Esqueleto (Entity)
 import Data.DateTime
 
 import Text.XML.Light.Output (showTopElement)
@@ -19,7 +17,6 @@ import Text.Atom.Feed.Export
 
 import Network.HTTP.Media ((//))
 
-import Geekingfrog.Db.Types
 import Geekingfrog.ContentType
 import Geekingfrog.Urls
 import Geekingfrog.Constants (siteUrl)

@@ -19,7 +19,6 @@ import qualified Data.HashMap.Strict as Map
 
 import qualified Geekingfrog.Views as Views
 import qualified Geekingfrog.Views.Errors as Views
-import qualified Geekingfrog.Queries as Queries
 import Geekingfrog.Types as Types
 
 type HtmlAPI =

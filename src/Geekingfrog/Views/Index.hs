@@ -5,8 +5,6 @@ module Geekingfrog.Views.Index where
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
-import Database.Persist (Entity(..))
-import Geekingfrog.Db.Types as DB
 import qualified Geekingfrog.Types as Types
 
 import Geekingfrog.Views.Partials (

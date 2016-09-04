@@ -3,9 +3,7 @@
 module Geekingfrog.Urls where
 
 import Data.Text
-import Database.Esqueleto (entityVal)
 
-import Geekingfrog.Db.Types as DB
 import Geekingfrog.Views as Views
 import Geekingfrog.Types as Types
 

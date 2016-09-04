@@ -2,7 +2,6 @@
 
 module Geekingfrog.Views.Post where
 
-import Database.Persist (Entity(..), entityIdToJSON)
 import Data.Text (unpack, pack, Text)
 import Data.DateTime (toGregorian', fromGregorian', formatDateTime)
 import Control.Monad (mapM_, guard)
@@ -12,8 +11,6 @@ import qualified Text.Pandoc as Pandoc
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
-import Geekingfrog.Db.PostStatus (PostStatus(..))
-import Geekingfrog.Db.Types as DB
 import Geekingfrog.Views.Partials (
     concatTags
   , postOverview

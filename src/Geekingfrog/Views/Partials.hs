@@ -9,9 +9,7 @@ import Data.List (intersperse)
 import Data.DateTime (toGregorian')
 import Data.Maybe (fromMaybe)
 import Control.Applicative (liftA)
-import Database.Esqueleto
 
-import Geekingfrog.Db.Types as DB
 import qualified Geekingfrog.Types as Types
 
 import Svglogo (svglogo)

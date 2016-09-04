@@ -4,7 +4,6 @@ import Data.HashMap.Strict as Map
 
 import Data.Text (Text)
 import Text.Blaze.Html (Html)
-import Data.ByteString.Lazy.Internal (ByteString)
 
 type PostMap = Map.HashMap Text Post
 

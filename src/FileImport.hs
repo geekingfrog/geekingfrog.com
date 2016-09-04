@@ -24,7 +24,6 @@ main = do
   case ghostExport of
     Left parseError -> putStrLn parseError
     Right (errors, (posts, tags, postTags)) -> M.mapM_ (savePost tags postTags) posts
-  print "yo"
 
 
 getImportFile :: IO String

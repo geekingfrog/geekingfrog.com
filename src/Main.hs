@@ -33,12 +33,10 @@ import Geekingfrog.Constants (siteUrl, highlightStyle)
 
 import qualified Geekingfrog.Views.Errors as Errors
 import qualified Geekingfrog.Urls as Urls
-import qualified Geekingfrog.Queries as Queries
 import qualified Geekingfrog.Types as Types
 
 import qualified Geekingfrog.Views as Views
 import qualified Geekingfrog.HtmlApi as HtmlApi
-import qualified Geekingfrog.JSONApi as JSONApi
 
 import qualified Geekingfrog.MarkdownParser as MdParser
 import qualified Text.Highlighting.Kate.Styles as Highlighting
@@ -63,7 +61,6 @@ type WebsiteAPI =
   :<|> "sitemap.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
   :<|> "admin" :> Raw -- admin spa
-  :<|> "api" :> JSONApi.JsonAPI
   :<|> Raw  -- catchall for custom 404
 
 websiteApi :: Proxy WebsiteAPI
@@ -76,7 +73,6 @@ websiteServer postMap = HtmlApi.htmlHandler postMap
            :<|> serveSitemap
            :<|> serveDirectory "./static"
            :<|> serveDirectory "./admin"
-           :<|> JSONApi.apiHandler
            :<|> custom404
 
 app :: Types.PostMap -> Application
