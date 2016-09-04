@@ -22,8 +22,9 @@ import Geekingfrog.Db.Types
 import Geekingfrog.ContentType
 import Geekingfrog.Urls
 import Geekingfrog.Constants (siteUrl)
+import qualified Geekingfrog.Types as Types
 
-data AtomFeed = AtomFeed DateTime [(Entity Post, [Entity Tag])] deriving (Show)
+data AtomFeed = AtomFeed DateTime [Types.Post] deriving (Show)
 
 instance MimeRender XML AtomFeed where
   mimeRender _ = fromString . showTopElement . xmlFeed . toFeed
@@ -50,11 +51,10 @@ toFeed (AtomFeed genTime posts) =
     feed = Feed feedUrl feedTitle (toTimeRfc3339 genTime) feedAuthors feedCategories [] Nothing feedIcon feedLinks Nothing Nothing Nothing feedEntries [] []
   in feed
 
-postToFeedEntry :: (Entity Post, [Entity Tag]) -> Entry
-postToFeedEntry (postEntity, tagsEntity) =
+postToFeedEntry :: Types.Post -> Entry
+postToFeedEntry post =
   let
-    post = entityVal postEntity
-    tags = fmap entityVal tagsEntity
+    tags = Types.postTags post
     entryId = unpack siteUrl ++ unpack (urlFor post)
     entryTitle = TextString $ unpack $ postTitle post
     entryUpdated = toTimeRfc3339 $ postUpdatedAt post

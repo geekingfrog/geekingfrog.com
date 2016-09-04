@@ -7,6 +7,7 @@ import Text.Blaze.Html5.Attributes as A
 
 import Database.Persist (Entity(..))
 import Geekingfrog.Db.Types as DB
+import qualified Geekingfrog.Types as Types
 
 import Geekingfrog.Views.Partials (
     postOverview
@@ -16,7 +17,7 @@ import Geekingfrog.Views.Partials (
   , pageFooter
   )
 
-data Index = Index [(Entity DB.Post, [Entity DB.Tag])]
+data Index = Index [Types.Post]
 
 instance H.ToMarkup Index where
   toMarkup (Index posts) = docTypeHtml $ do
@@ -33,7 +34,7 @@ instance H.ToMarkup Index where
             h2 "Blog"
             p "Some of my brain dump about various things, mostly coding, programming languages and open source projects. Here are the most recent posts."
             ul ! class_ "posts-overview posts-overview__index" $
-              mapM_ ((li ! class_ "posts-overview--item") . postOverview ) posts
+              mapM_ ((li ! class_ "posts-overview--item") . postOverview) posts
           H.div ! class_ "misc" $ do
             h2 "About me"
             p "I'm Greg, full stack software engineer."

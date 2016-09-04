@@ -23,9 +23,10 @@ import Network.HTTP.Types (status404)
 import qualified Control.Monad as M
 import Control.Monad.IO.Class (liftIO)
 import qualified System.Directory as Dir
+import qualified System.Exit as Exit
 import qualified Data.HashMap.Strict as Map
 
-import Geekingfrog.AtomFeed (AtomFeed(..))
+-- import Geekingfrog.AtomFeed (AtomFeed(..))
 import Geekingfrog.ContentType (XML)
 import Geekingfrog.Constants (siteUrl)
 
@@ -41,16 +42,21 @@ import qualified Geekingfrog.JSONApi as JSONApi
 import qualified Geekingfrog.MarkdownParser as MdParser
 import Text.Megaparsec (parseErrorPretty)
 
+
 main :: IO ()
 main = let port = 8080 in do
-  generateSitemap
+  -- generateSitemap
   putStrLn $ "Listening on port " ++ show port ++ "..."
   testingPost <- Text.readFile "./posts/2016-04-10-struggles-with-parsing-json-with-aeson"
-  run port app
+  postMap <- loadPosts
+  case postMap of
+    Left err -> Exit.die (show err)
+    Right postMap' -> run port (app postMap')
+
 
 type WebsiteAPI =
   HtmlApi.HtmlAPI
-  :<|> "rss" :> Get '[AtomFeed, XML] AtomFeed
+  -- :<|> "rss" :> Get '[AtomFeed, XML] AtomFeed
   :<|> "robots.txt" :> Get '[PlainText] Text
   :<|> "sitemap.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
@@ -61,9 +67,9 @@ type WebsiteAPI =
 websiteApi :: Proxy WebsiteAPI
 websiteApi = Proxy
 
-websiteServer :: Server WebsiteAPI
-websiteServer = HtmlApi.htmlHandler
-           :<|> makeFeed
+websiteServer :: Types.PostMap -> Server WebsiteAPI
+websiteServer postMap = HtmlApi.htmlHandler postMap
+           -- :<|> makeFeed
            :<|> serveRobots
            :<|> serveSitemap
            :<|> serveDirectory "./static"
@@ -71,18 +77,18 @@ websiteServer = HtmlApi.htmlHandler
            :<|> JSONApi.apiHandler
            :<|> custom404
 
-app :: Application
-app = serve websiteApi websiteServer
+app :: Types.PostMap -> Application
+app postMap = serve websiteApi (websiteServer postMap)
 -- app = serve websiteApi readerServer
 --   where readerServer = enter readerToHandler readerServerT
 
-makeFeed :: Handler AtomFeed
-makeFeed = do
-  postsAndTags <- liftIO Queries.getPublishedPostsAndTags
-  now <- liftIO getCurrentTime
-  -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-
-  -- For the moment, just fetch everything and use `Data.List.take`
-  return $ AtomFeed now (take 10 postsAndTags)
+-- makeFeed :: Handler AtomFeed
+-- makeFeed = do
+--   postsAndTags <- liftIO Queries.getPublishedPostsAndTags
+--   now <- liftIO getCurrentTime
+--   -- LIMIT in the query doesn't work since it intefere with the joins conditions -_-
+--   -- For the moment, just fetch everything and use `Data.List.take`
+--   return $ AtomFeed now (take 10 postsAndTags)
 
 
 -- Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> ResponseReceived
@@ -104,21 +110,21 @@ serveFile filepath = do
     then liftIO (Text.readFile filepath)
     else throwError err404
 
-generateSitemap :: IO ()
-generateSitemap = do
-  posts <- liftIO Queries.getPublishedPostsAndTags
-  let fixedUrls = [
-            -- not completely accurate, but for urlFor this doesn't matter
-            Urls.urlFor $ Views.Index posts
-          , Urls.urlFor Views.GpgView
-          , Urls.urlFor $ Views.PostsOverview posts
-        ]
-  let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
-  let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
-  Text.writeFile "./sitemap.txt" (Text.unlines urls)
+-- generateSitemap :: IO ()
+-- generateSitemap = do
+--   posts <- liftIO Queries.getPublishedPostsAndTags
+--   let fixedUrls = [
+--             -- not completely accurate, but for urlFor this doesn't matter
+--             Urls.urlFor $ Views.Index posts
+--           , Urls.urlFor Views.GpgView
+--           , Urls.urlFor $ Views.PostsOverview posts
+--         ]
+--   let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
+--   let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
+--   Text.writeFile "./sitemap.txt" (Text.unlines urls)
 
 
-loadPosts :: IO (Either String (Map.HashMap Text (Types.Post, [Types.Tag])))
+loadPosts :: IO (Either String (Map.HashMap Text Types.Post))
 loadPosts = do
   postList <- Dir.listDirectory "posts"
   contents <- M.forM postList (\filename -> Text.readFile ("posts/" ++ filename))
@@ -132,11 +138,12 @@ loadPosts = do
       return . Right $ Map.fromList posts
 
 
--- makePost :: Md.PostMeta -> Md.PostContent -> (Text, Types.Post)
-makePost (date, slug) ((title, status, markdown), tags) = (slug, (Types.Post {
+makePost :: MdParser.PostMeta -> MdParser.PostContent -> (Text, Types.Post)
+makePost (date, slug) (title, status, markdown, tags) = (slug, Types.Post {
             Types.postStatus = status
           , Types.postTitle = title
           , Types.postSlug = slug
           , Types.postMarkdown = markdown
           , Types.postCreatedAt = date
-          }, tags))
+          , Types.postTags = tags
+          })

@@ -10,14 +10,17 @@ module Geekingfrog.HtmlApi where
 
 import Control.Monad.IO.Class (liftIO)
 
+import qualified Data.List as List
 import Servant.HTML.Blaze (HTML)
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
 import Servant
 import Data.Text (Text(..))
+import qualified Data.HashMap.Strict as Map
 
 import qualified Geekingfrog.Views as Views
 import qualified Geekingfrog.Views.Errors as Views
 import qualified Geekingfrog.Queries as Queries
+import Geekingfrog.Types as Types
 
 type HtmlAPI =
        Get '[HTML] Views.Index
@@ -26,29 +29,29 @@ type HtmlAPI =
   :<|> "gpg" :> Get '[HTML] Views.GpgView
 
 
-htmlHandler =
-  indexHandler
-  :<|> postIndexHandler
-  :<|> postHandler
+htmlHandler postMap =
+  indexHandler postMap
+  :<|> postIndexHandler postMap
+  :<|> postHandler postMap
   :<|> gpgHandler
 
 
-indexHandler :: Handler Views.Index
-indexHandler = do
-  postTags <- liftIO Queries.getLatestPostTags
-  return $ Views.Index postTags
+indexHandler :: Types.PostMap -> Handler Views.Index
+indexHandler postMap =
+  let
+    posts = Map.elems postMap
+    sortedPosts = reverse $ List.sortOn Types.postCreatedAt posts
+  in
+    return $ Views.Index sortedPosts
 
 
-postIndexHandler :: Handler Views.PostsOverview
-postIndexHandler = do
-  postsAndTags <- liftIO Queries.getPublishedPostsAndTags
-  return $ Views.PostsOverview postsAndTags
+postIndexHandler :: Types.PostMap -> Handler Views.PostsOverview
+postIndexHandler postMap = return $ Views.PostsOverview (Map.elems postMap)
 
 
-postHandler :: Text -> Handler Views.PostView
-postHandler slug = do
-  postAndTags <- liftIO $ Queries.getOnePostAndTags slug
-  case postAndTags of
+postHandler :: Types.PostMap -> Text -> Handler Views.PostView
+postHandler postMap slug =
+  case Map.lookup slug postMap of
     Nothing -> throwError postNotFound
     Just p -> return $ Views.PostView p
     where postNotFound = err404 { errBody = renderMarkup errMsg}

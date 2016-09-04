@@ -12,11 +12,12 @@ import Control.Applicative (liftA)
 import Database.Esqueleto
 
 import Geekingfrog.Db.Types as DB
+import qualified Geekingfrog.Types as Types
 
 import Svglogo (svglogo)
 
-concatTags :: [Entity DB.Tag] -> Text
-concatTags tags = T.concat $ intersperse ", " $ fmap (cons '#' . tagSlug . entityVal) tags
+concatTags :: [Types.Tag] -> Text  -- TODO implement slugify from tagName
+concatTags tags = T.concat $ intersperse ", " $ fmap (cons '#' . Types.tagName) tags
 
 -- Later, make that more robust to link that with the route. Atm, a sum type is fine
 data NavItem = Home | Blog | Gpg deriving (Show, Eq)
@@ -32,17 +33,18 @@ navHeader activeItem = header $ H.div ! class_ "container header-container" $ do
                                      | otherwise = "nav-link"
         makeClass item Nothing = "nav-link"
 
-postOverview :: (Entity Post, [Entity DB.Tag]) -> Html
-postOverview (Entity postId post, tags) = a ! href (postLink post) $ do
+postOverview :: Types.Post -> Html
+postOverview post = a ! href (postLink post) $ do
   H.span ! class_ "date" $ text . pack $ paddedMonth ++ "/" ++ show year
   H.span ! class_ "right" $ do
-    H.span ! class_ "blog-title" $ text $ postTitle post
-    H.span ! class_ "blog-tags" $ text (concatTags tags)
+    H.span ! class_ "blog-title" $ text $ Types.postTitle post
+    H.span ! class_ "blog-tags" $ text (concatTags (Types.postTags post))
   where
-    (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
+    -- (year, month, day) = fromMaybe (0, 0, 0) (liftA toGregorian' $ postPublishedAt post)
+    (year, month, day) = Types.postCreatedAt post
     paddedMonth = if month < 10 then "0" ++ show month else show month
-    postLink :: DB.Post -> H.AttributeValue
-    postLink post = H.toValue $ append "/blog/post/" (DB.postSlug post)
+    postLink :: Types.Post -> H.AttributeValue
+    postLink post = H.toValue $ append "/blog/post/" (Types.postSlug post)
 
 
 pageFooter = do

@@ -21,11 +21,13 @@ import Geekingfrog.Views.Partials (
   , pageFooter
   )
 
+import qualified Geekingfrog.Types as Types
 
-data PostView = PostView (Entity DB.Post, [Entity DB.Tag])
+
+data PostView = PostView Types.Post
 
 instance H.ToMarkup PostView where
-  toMarkup (PostView (Entity postId post, tags)) = docTypeHtml $ do
+  toMarkup (PostView post) = docTypeHtml $ do
     H.head pageHead
 
     body ! class_ "blog" $ do
@@ -33,22 +35,22 @@ instance H.ToMarkup PostView where
 
       section ! class_ "hero" $
         H.div ! class_ "container hero-container" $
-          h1 ! class_ "main-title main-title__blog" $ text $ DB.postTitle post
+          h1 ! class_ "main-title main-title__blog" $ text $ Types.postTitle post
 
       section ! class_ "container content" $ do
-        H.div ! class_ "blog-meta-container" $ H.ul $ do
-          H.li ! class_ "blog-meta-section" $ do
-            H.span ! class_ "name" $ "LAST UPDATED:"
-            H.span ! class_ "value" $ text (pack $ formatDateTime "%d %b %Y" $ DB.postUpdatedAt post)
+        H.div ! class_ "blog-meta-container" $ H.ul $
+          -- H.li ! class_ "blog-meta-section" $ do
+          --   H.span ! class_ "name" $ "LAST UPDATED:"
+          --   H.span ! class_ "value" $ text (pack $ formatDateTime "%d %b %Y" $ DB.postUpdatedAt post)
           H.li ! class_ "blog-meta-section" $ do
             H.span ! class_ "name" $ "TAGGED:"
-            H.span ! class_ "value" $ text (concatTags tags)
+            H.span ! class_ "value" $ text (concatTags $ Types.postTags post)
 
-        H.div ! class_ "blog-content" $ preEscapedString (unpack $ DB.postHtml post)
+        H.div ! class_ "blog-content" $ preEscapedString (unpack $ Types.postMarkdown post)
 
       pageFooter
 
-data PostsOverview = PostsOverview [(Entity DB.Post, [Entity DB.Tag])]
+data PostsOverview = PostsOverview [Types.Post]
 
 instance H.ToMarkup PostsOverview where
   toMarkup (PostsOverview posts) = docTypeHtml $ do
