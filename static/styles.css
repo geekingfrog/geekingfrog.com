@@ -40,13 +40,6 @@ ul {
   list-style-type: none;
 }
 
-code {
-  background-color: #f5f2f0;
-  padding: .2rem;
-  display: inline-block;
-  border-radius: 2px;
-}
-
 .center {
   margin-left: auto;
   margin-right: auto;
@@ -559,4 +552,37 @@ footer a {
     #e91e63,
     #222
   );
+}
+
+
+/*****************************************/
+/*               Highlighting            */
+/*****************************************/
+code.sourceCode,
+pre.sourceCode {
+  color: black;
+  background-color: #f5f2f0;
+  text-shadow: 0 1px white;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  padding: .2rem;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+pre.sourceCode {
+  border-radius: 4px;
+  border: 1px solid rgba(32, 74, 135, .2)
 }

@@ -3,10 +3,11 @@
 module Geekingfrog.Views.Post where
 
 import Database.Persist (Entity(..), entityIdToJSON)
-import Data.Text (unpack, pack)
-import Data.DateTime (toGregorian', formatDateTime)
+import Data.Text (unpack, pack, Text)
+import Data.DateTime (toGregorian', fromGregorian', formatDateTime)
 import Control.Monad (mapM_)
 
+import qualified Text.Pandoc as Pandoc
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
@@ -38,15 +39,16 @@ instance H.ToMarkup PostView where
           h1 ! class_ "main-title main-title__blog" $ text $ Types.postTitle post
 
       section ! class_ "container content" $ do
-        H.div ! class_ "blog-meta-container" $ H.ul $
-          -- H.li ! class_ "blog-meta-section" $ do
-          --   H.span ! class_ "name" $ "LAST UPDATED:"
-          --   H.span ! class_ "value" $ text (pack $ formatDateTime "%d %b %Y" $ DB.postUpdatedAt post)
+        H.div ! class_ "blog-meta-container" $ H.ul $ do
+          H.li ! class_ "blog-meta-section" $ do
+            H.span ! class_ "name" $ "POSTED:"
+            H.span ! class_ "value" $ text (formatDate $ Types.postCreatedAt post)
+            -- H.span ! class_ "value" $ text (pack $ formatDate $ Types.postUpdatedAt post)
           H.li ! class_ "blog-meta-section" $ do
             H.span ! class_ "name" $ "TAGGED:"
             H.span ! class_ "value" $ text (concatTags $ Types.postTags post)
 
-        H.div ! class_ "blog-content" $ preEscapedString (unpack $ Types.postMarkdown post)
+        H.div ! class_ "blog-content" $ Types.postHtml post
 
       pageFooter
 
@@ -69,3 +71,7 @@ instance H.ToMarkup PostsOverview where
             ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview)
             posts
       pageFooter
+
+
+formatDate :: (Integer, Int, Int) -> Text
+formatDate (y, m, d) = pack $ formatDateTime "%d %b %Y" $ fromGregorian' y m d

@@ -28,7 +28,7 @@ import qualified Data.HashMap.Strict as Map
 
 -- import Geekingfrog.AtomFeed (AtomFeed(..))
 import Geekingfrog.ContentType (XML)
-import Geekingfrog.Constants (siteUrl)
+import Geekingfrog.Constants (siteUrl, highlightStyle)
 
 import qualified Geekingfrog.Views.Errors as Errors
 import qualified Geekingfrog.Urls as Urls
@@ -40,14 +40,15 @@ import qualified Geekingfrog.HtmlApi as HtmlApi
 import qualified Geekingfrog.JSONApi as JSONApi
 
 import qualified Geekingfrog.MarkdownParser as MdParser
-import Text.Megaparsec (parseErrorPretty)
-
+import qualified Text.Highlighting.Kate.Styles as Highlighting
+import qualified Text.Highlighting.Kate.Format.HTML as Highlighting
 
 main :: IO ()
 main = let port = 8080 in do
   -- generateSitemap
   putStrLn $ "Listening on port " ++ show port ++ "..."
   testingPost <- Text.readFile "./posts/2016-04-10-struggles-with-parsing-json-with-aeson"
+  createHighlightCss highlightStyle
   postMap <- loadPosts
   case postMap of
     Left err -> Exit.die (show err)
@@ -131,19 +132,22 @@ loadPosts = do
   let metas = M.mapM (MdParser.parsePostFileName . Text.pack) postList
   let postContents = M.mapM MdParser.parsePost (zip postList contents)
   case (metas, postContents) of
-    (Left err, _) -> return . Left $ parseErrorPretty err
-    (_, Left err) -> return . Left $ parseErrorPretty err
+    (Left err, _) -> return . Left $ err
+    (_, Left err) -> return . Left $ err
     (Right okMetas, Right okContents) -> do
       let posts = zipWith makePost okMetas okContents
       return . Right $ Map.fromList posts
 
 
 makePost :: MdParser.PostMeta -> MdParser.PostContent -> (Text, Types.Post)
-makePost (date, slug) (title, status, markdown, tags) = (slug, Types.Post {
+makePost (date, slug) (title, status, markdown, html, tags) = (slug, Types.Post {
             Types.postStatus = status
           , Types.postTitle = title
           , Types.postSlug = slug
           , Types.postMarkdown = markdown
+          , Types.postHtml = html
           , Types.postCreatedAt = date
           , Types.postTags = tags
           })
+
+createHighlightCss style = writeFile "static/highlight.css" (Highlighting.styleToCss style)

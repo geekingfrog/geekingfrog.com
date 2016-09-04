@@ -68,14 +68,16 @@ pageFooter = do
       a ! href "/rss" $ h2 "SUBSCRIBE"
       p "RSS is love"
 
-  H.script ! type_ "text/javascript" ! src "/static/prism.js" $ mempty
+  -- H.script ! type_ "text/javascript" ! src "/static/prism.js" $ mempty
 
 
 pageHead = do
     meta ! charset "utf-8"
     H.title "Geekingfrog"
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
-    link ! rel "stylesheet" ! href "/static/prism.css" ! type_ "text/css"
+    -- link ! rel "stylesheet" ! href "/static/prism.css" ! type_ "text/css"
+    -- link ! rel "stylesheet" ! href "/static/tango.css" ! type_ "text/css"
+    link ! rel "stylesheet" ! href "/static/highlight.css" ! type_ "text/css"
     link ! rel "alternate" ! href "/rss" ! type_ "application/atom+xml" ! A.title "Geek stuff by a batrachian"
     H.style ! type_ "text/css" $
       "@font-face{ \

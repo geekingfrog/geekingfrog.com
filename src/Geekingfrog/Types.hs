@@ -3,7 +3,7 @@ module Geekingfrog.Types where
 import Data.HashMap.Strict as Map
 
 import Data.Text (Text)
-
+import Text.Blaze.Html (Html)
 import Data.ByteString.Lazy.Internal (ByteString)
 
 type PostMap = Map.HashMap Text Post
@@ -16,9 +16,10 @@ data Post = Post {
   , postTitle :: Text
   , postSlug :: Text
   , postMarkdown :: Text
+  , postHtml :: Html
   , postCreatedAt :: SimpleDate
   , postTags :: [Tag]
-  } deriving (Show)
+  }
 
 data Tag = Tag {
     tagName :: Text
