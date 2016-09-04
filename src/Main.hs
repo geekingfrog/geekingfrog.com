@@ -46,13 +46,14 @@ import qualified Text.Highlighting.Kate.Format.HTML as Highlighting
 
 main :: IO ()
 main = let port = 8080 in do
-  -- generateSitemap
   putStrLn $ "Listening on port " ++ show port ++ "..."
   createHighlightCss highlightStyle
   postMap <- loadPosts
   case postMap of
     Left err -> Exit.die (show err)
-    Right postMap' -> run port (app postMap')
+    Right postMap' -> do
+      generateSitemap postMap'
+      run port (app postMap')
 
 
 type WebsiteAPI =
@@ -109,18 +110,18 @@ serveFile filepath = do
     then liftIO (Text.readFile filepath)
     else throwError err404
 
--- generateSitemap :: IO ()
--- generateSitemap = do
---   posts <- liftIO Queries.getPublishedPostsAndTags
---   let fixedUrls = [
---             -- not completely accurate, but for urlFor this doesn't matter
---             Urls.urlFor $ Views.Index posts
---           , Urls.urlFor Views.GpgView
---           , Urls.urlFor $ Views.PostsOverview posts
---         ]
---   let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
---   let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
---   Text.writeFile "./sitemap.txt" (Text.unlines urls)
+generateSitemap :: Types.PostMap -> IO ()
+generateSitemap postMap = do
+  let posts = reverse $ filter ((==) Types.Published . Types.postStatus) $ Map.elems postMap
+  let fixedUrls = [
+            -- not completely accurate, but for urlFor this doesn't matter
+            Urls.urlFor $ Views.Index posts
+          , Urls.urlFor Views.GpgView
+          , Urls.urlFor $ Views.PostsOverview posts
+        ]
+  let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
+  let urls = fmap (Text.append siteUrl) (fixedUrls ++ postsUrls)
+  Text.writeFile "./sitemap.txt" (Text.unlines urls)
 
 
 loadPosts :: IO (Either String (Map.HashMap Text Types.Post))
