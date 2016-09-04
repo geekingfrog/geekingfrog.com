@@ -24,6 +24,7 @@ import qualified Data.List as List
 import qualified Control.Monad as M
 import Control.Monad.IO.Class (liftIO)
 import qualified System.Directory as Dir
+import qualified System.Environment as Env
 import qualified System.Exit as Exit
 import qualified Data.HashMap.Strict as Map
 
@@ -43,7 +44,11 @@ import qualified Text.Highlighting.Kate.Styles as Highlighting
 import qualified Text.Highlighting.Kate.Format.HTML as Highlighting
 
 main :: IO ()
-main = let port = 8080 in do
+main = do
+  args <- Env.getArgs
+  progName <- Env.getProgName
+  M.when (null args) (Exit.die $ "Usage: " ++ progName ++ " <port>")
+  let port = read (head args)
   putStrLn $ "Listening on port " ++ show port ++ "..."
   createHighlightCss Constants.highlightStyle
   postMap <- loadPosts
