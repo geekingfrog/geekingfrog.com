@@ -1,7 +1,14 @@
-node_modules
-bower_components
-dist
-npm-debug.log
-logs/
+.stack-work
 
-.critical
+tags
+*.json
+*.sqlite
+
+sitemap.txt
+
+admin/.nvimrc
+static/highlight.css
+static/images/
+
+geekingfrog
+geekingfrog-file-import
