@@ -1,6 +1,6 @@
 ---
 title: Ruby and project euler
-tags: ruby, project euler
+tags: ruby, project-euler
 status: published
 ---
 
