@@ -1,6 +1,6 @@
 ---
 title: Javascript has a unicode problem
-tags: 
+tags: javascript
 status: published
 ---
 

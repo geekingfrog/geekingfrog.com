@@ -1,6 +1,6 @@
 ---
 title: git svn and perl bindings
-tags: 
+tags: svn, perl
 status: published
 ---
 
