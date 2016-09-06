@@ -36,7 +36,7 @@ instance MimeRender AtomFeed AtomFeed where
 toFeed :: AtomFeed -> Feed
 toFeed (AtomFeed genTime posts) =
   let
-    feedTitle = TextString "feed title"
+    feedTitle = TextString "Geekingfrog"
     feedUrl = unpack siteUrl ++ "/rss"
     feedAuthors = [meAuthor]
     feedCategories = [Category "Programming" Nothing (Just "Programming") []]
