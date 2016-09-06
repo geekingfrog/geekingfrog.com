@@ -564,8 +564,8 @@ footer a {
 /*****************************************/
 /*               Highlighting            */
 /*****************************************/
-code.sourceCode,
-pre.sourceCode {
+code,
+pre {
   color: black;
   background-color: #f5f2f0;
   text-shadow: 0 1px white;
