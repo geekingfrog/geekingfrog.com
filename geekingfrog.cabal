@@ -56,7 +56,7 @@ executable geekingfrog
                      , directory == 1.2.7.*
                      , megaparsec == 5.0.*
                      , semigroups == 0.18.*
-                     , pandoc == 1.16.*
+                     , pandoc == 1.17.*
                      , highlighting-kate == 0.6.*
 
 executable geekingfrog-file-import

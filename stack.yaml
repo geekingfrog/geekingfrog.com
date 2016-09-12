@@ -1,7 +1,7 @@
 # For more information, see: http://docs.haskellstack.org/en/stable/yaml_configuration.html
 
 # Specifies the GHC version and set of packages available (e.g., lts-3.5, nightly-2015-09-21, ghc-7.10.2)
-resolver: lts-5.11
+resolver: lts-6.7
 
 # Local packages, usually specified by relative directory name
 packages:
@@ -11,12 +11,8 @@ packages:
 extra-deps:
   - datetime-0.3.1
   - aeson-0.10.0.0
-  - servant-server-0.7
-  - servant-blaze-0.7
-  - servant-0.7
   - megaparsec-5.0.1
   - directory-1.2.7.0
-  - http-client-0.4.31  # pandoc dependency
 
 # Override default flag values for local packages and extra-deps
 flags: {}

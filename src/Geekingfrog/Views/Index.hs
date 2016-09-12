@@ -35,7 +35,7 @@ instance H.ToMarkup Index where
               mapM_ ((li ! class_ "posts-overview--item") . postOverview) (take 5 posts)
           H.div ! class_ "misc" $ do
             h2 "About me"
-            p "I'm Greg, full stack software engineer."
+            p "I'm Greg, polyglot backend developer."
             ul ! class_ "misc-list" $ do
               li ! class_ "misc-item" $ b "I'm from" >> H.span " France"
               li ! class_ "misc-item" $ b "I currently work " >> H.span " in the UK"
@@ -43,7 +43,6 @@ instance H.ToMarkup Index where
             p "I've also managed and automated the deployment and monitoring of these services on AWS."
             p "On the front end, I've translated designer vision into beautiful websites, as \
             \ well as complex single page application in ember and react."
-            p "I'm interested in complex challenges to solve especially those arising from \
-            \ scalability issues (amount of data or size of the code base)."
+            p "I'm interested in Functionnal programming and distributed systems."
 
         pageFooter

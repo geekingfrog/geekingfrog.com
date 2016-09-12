@@ -5,6 +5,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BangPatterns #-}
 
 module Main where
 
@@ -128,14 +129,14 @@ generateSitemap postMap = do
 loadPosts :: IO (Either String (Map.HashMap Text Types.Post))
 loadPosts = do
   postList <- Dir.listDirectory Constants.postsLocation
-  contents <- M.forM postList (\filename -> Text.readFile (Constants.postsLocation ++ filename))
+  !contents <- M.forM postList (\filename -> Text.readFile (Constants.postsLocation ++ filename))
   let metas = M.mapM (MdParser.parsePostFileName . Text.pack) postList
   let postContents = M.mapM MdParser.parsePost (zip postList contents)
   case (metas, postContents) of
     (Left err, _) -> return . Left $ err
     (_, Left err) -> return . Left $ err
     (Right okMetas, Right okContents) -> do
-      let posts = zipWith makePost okMetas okContents
+      let !posts = zipWith makePost okMetas okContents
       return . Right $ Map.fromList posts
 
 
