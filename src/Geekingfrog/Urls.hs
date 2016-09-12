@@ -3,6 +3,7 @@
 module Geekingfrog.Urls where
 
 import Data.Text
+import Data.Monoid ((<>))
 
 import Geekingfrog.Views as Views
 import Geekingfrog.Types as Types
@@ -23,4 +24,4 @@ instance Url Views.GpgView where
   urlFor _ = "/gpg"
 
 instance Url Types.Post where
-  urlFor post = append "/blog/" (Types.postSlug post)
+  urlFor post = "/blog/post/" <> Types.postSlug post
