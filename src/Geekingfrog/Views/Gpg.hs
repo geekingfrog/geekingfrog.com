@@ -18,7 +18,7 @@ data GpgView = GpgView deriving (Show)
 instance H.ToMarkup GpgView where
   toMarkup GpgView = docTypeHtml $ do
 
-    H.head pageHead
+    H.head $ pageHead (Just "GPG")
 
     body ! class_ "gpg" $ do
       navHeader (Just Gpg)

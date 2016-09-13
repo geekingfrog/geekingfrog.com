@@ -10,7 +10,7 @@ import Geekingfrog.Views.Partials (pageHead, navHeader, pageFooter)
 
 genericError :: Text -> Text -> H.Markup
 genericError title msg = docTypeHtml $ do
-  H.head pageHead
+  H.head $ pageHead Nothing
 
   body ! class_ "home" $ do
     navHeader Nothing

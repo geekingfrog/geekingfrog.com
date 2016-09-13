@@ -20,7 +20,7 @@ data Index = Index [Types.Post]
 instance H.ToMarkup Index where
   toMarkup (Index posts) = docTypeHtml $ do
 
-    H.head pageHead
+    H.head $ pageHead (Just "Geek stuff by a batrachian")
 
     body ! class_ "home" $ do
         navHeader (Just Home)

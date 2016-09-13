@@ -9,6 +9,7 @@ import Data.List (intersperse)
 import Data.DateTime (toGregorian')
 import Data.Maybe (fromMaybe)
 import Control.Applicative (liftA)
+import Data.Monoid ((<>))
 
 import qualified Geekingfrog.Types as Types
 
@@ -69,14 +70,13 @@ pageFooter = footer $
   -- H.script ! type_ "text/javascript" ! src "/static/prism.js" $ mempty
 
 
-pageHead = do
+pageHead :: Maybe Text -> Html
+pageHead mbTitle = do
     meta ! charset "utf-8"
-    H.title "Geekingfrog"
+    H.title $ "Geekingfrog" <> text (fromMaybe "" ((" — " <>) <$> mbTitle))
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
-    -- link ! rel "stylesheet" ! href "/static/prism.css" ! type_ "text/css"
-    -- link ! rel "stylesheet" ! href "/static/tango.css" ! type_ "text/css"
     link ! rel "stylesheet" ! href "/static/highlight.css" ! type_ "text/css"
-    link ! rel "alternate" ! href "/rss" ! type_ "application/atom+xml" ! A.title "Geek stuff by a batrachian"
+    link ! rel "alternate" ! href "/rss" ! type_ "application/atom+xml"
     H.style ! type_ "text/css" $
       "@font-face{ \
       \ font-family: 'Fira Sans';\

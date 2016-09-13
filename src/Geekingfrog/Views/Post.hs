@@ -27,7 +27,7 @@ data PostView = PostView Types.Post
 
 instance H.ToMarkup PostView where
   toMarkup (PostView post) = docTypeHtml $ do
-    H.head pageHead
+    H.head $ pageHead (Just $ Types.postTitle post)
 
     body ! class_ "blog" $ do
       navHeader (Just Blog)
@@ -56,7 +56,7 @@ data PostsOverview = PostsOverview [Types.Post]
 
 instance H.ToMarkup PostsOverview where
   toMarkup (PostsOverview posts) = docTypeHtml $ do
-    H.head pageHead
+    H.head $ pageHead (Just "blog")
 
     body ! class_ "blog" $ do
       navHeader (Just Blog)
