@@ -28,7 +28,7 @@ instance H.ToMarkup GpgView where
 
       section ! class_ "container content" $ do
         H.span "Fingerprint"
-        pre "8E64 5B47 AB7A D1E0 B090  2403 42BB 864E 4735 18AA"
+        pre "3950 BA31 E73E C09E 11DE  C89A 7A14 12D6 36E3 7E5C"
 
         H.span "Public key"
         pre $ text key
