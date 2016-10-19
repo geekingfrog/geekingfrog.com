@@ -88,6 +88,7 @@ import qualified System.Environment as Env
 import qualified Data.Aeson as JSON
 import Data.Aeson.Encode.Pretty (encodePretty', defConfig, confCompare)
 import qualified Data.HashMap.Strict as Map
+import qualified Data.HashSet as Set
 import qualified Data.Vector as Vector
 ```
 
@@ -149,24 +150,33 @@ convertToSchema (JSON.Object o) =
     JSON.Object $ Map.fromList [
       ("type", JSON.String "object")
     , ("properties", props)
-    , ("required", JSON.Array $ Vector.fromList keys)
+    , ("required", JSON.Array $ V.fromList keys)
     ]
 ```
 
-An array is very similar. The only difference is that the minimum number of items will be the
-number of items we got. This is somewhat arbitrary but it can always be changed later (manually if needs be)
+An array is very similar. The main difference is to chose which schema(s) to generate for the items.
+Also, the minimum number of items will be the
+number of items we got. This is somewhat arbitrary but it can always be changed later (manually if needs be).
+
 
 ```haskell
+-- utility to remove duplicates in a vector
+nubVector v = V.fromList $ Set.toList $ V.foldl' (flip Set.insert) Set.empty v
+
 convertToSchema (JSON.Array arr) =
-  let
-    items = JSON.Array $ convertToSchema <$> arr  -- recursive call here
-    minItems = fromIntegral (length arr)  -- Int -> Scientific
-  in
-    JSON.Object $ Map.fromList [
-      ("type", JSON.String "array")
-    , ("minItems", JSON.Number minItems)
-    , ("items", items)
-    ]
+    let
+        items = convertToSchema <$> arr
+        uniqueItems = nubVector items
+        innerSchema = if length uniqueItems == 1
+            then uniqueItems V.! 0
+            else JSON.Object $ Map.singleton "oneOf" (JSON.Array uniqueItems)
+        minItems = fromIntegral (length arr)
+    in
+        JSON.Object $ Map.fromList [
+        ("type", JSON.String "array")
+        , ("minItems", JSON.Number minItems)
+        , ("items", innerSchema)
+        ]
 ```
 
 
@@ -205,6 +215,7 @@ import qualified Data.Aeson as JSON
 import Data.Aeson.Encode.Pretty (encodePretty', defConfig, confCompare)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Vector as V
+import qualified Data.HashSet as Set
 
 main :: IO ()
 main = do
@@ -231,18 +242,25 @@ convertToSchema (JSON.Object o) =
     ]
 
 convertToSchema (JSON.Array arr) =
-  let
-    items = JSON.Array $ convertToSchema <$> arr
-    minItems = fromIntegral (length arr)
-  in
-    JSON.Object $ Map.fromList [
-      ("type", JSON.String "array")
-    , ("minItems", JSON.Number minItems)
-    , ("items", items)
-    ]
+    let
+        items = convertToSchema <$> arr
+        uniqueItems = nubVector items
+        innerSchema = if length uniqueItems == 1
+            then uniqueItems V.! 0
+            else JSON.Object $ Map.singleton "oneOf" (JSON.Array uniqueItems)
+        minItems = fromIntegral (length arr)
+    in
+        JSON.Object $ Map.fromList [
+        ("type", JSON.String "array")
+        , ("minItems", JSON.Number minItems)
+        , ("items", innerSchema)
+        ]
 
 convertToSchema (JSON.String _) = JSON.Object $ Map.singleton "type" (JSON.String "string")
 convertToSchema (JSON.Number _) = JSON.Object $ Map.singleton "type" (JSON.String "integer")
 convertToSchema (JSON.Bool _) = JSON.Object $ Map.singleton "type" (JSON.String "boolean")
 convertToSchema JSON.Null = JSON.Object $ Map.singleton "type" (JSON.String "null")
+
+-- remove duplicates in a vector
+nubVector v = V.fromList $ Set.toList $ V.foldl' (flip Set.insert) Set.empty v
 ```
