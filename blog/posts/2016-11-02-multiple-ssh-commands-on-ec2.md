@@ -1,7 +1,7 @@
 ---
 title: Run ssh commands on multiple ec2 instances
 tags: aws, geek
-status: draft
+status: published
 ---
 
 One of my recent task was to restart a service after a database migration. The "problem" was
@@ -41,7 +41,7 @@ aws ec2 describe-instances --filters Name=image-id,Values=ami-xxxx \
 | jq ".Reservations[].Instances[0].PrivateIpAddress" > ips
 ```
 
-## Execute a command for all instances
+# Execute a command for all instances
 Good old bash is perfect for this job:
 
 ```bash
