@@ -38,7 +38,7 @@ htmlHandler postMap =
 indexHandler :: Types.PostMap -> Handler Views.Index
 indexHandler postMap =
   let
-    posts = Map.elems postMap
+    posts = reverse $ filter ((==) Types.Published . Types.postStatus) $ Map.elems postMap
     sortedPosts = reverse $ List.sortOn Types.postCreatedAt posts
   in
     return $ Views.Index sortedPosts
