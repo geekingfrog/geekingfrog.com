@@ -73,6 +73,7 @@ pageFooter = footer $
 pageHead :: Maybe Text -> Html
 pageHead mbTitle = do
     meta ! charset "utf-8"
+    meta ! name "viewport" ! content "width=device-width, initial-scale=1"
     H.title $ "Geekingfrog" <> text (fromMaybe "" ((" — " <>) <$> mbTitle))
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
     link ! rel "stylesheet" ! href "/static/highlight.css" ! type_ "text/css"
