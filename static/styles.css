@@ -592,3 +592,7 @@ pre.sourceCode {
   border-radius: 4px;
   border: 1px solid rgba(32, 74, 135, .2)
 }
+
+pre.sourceCode code {
+  padding: 0;
+}
