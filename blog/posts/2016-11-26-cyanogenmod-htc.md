@@ -1,13 +1,13 @@
 ---
 title: Cyanogenmod and Htc
 tags: android, cyanogenmod, geek
-status: draft
+status: published
 ---
 
-After 5 years of good service, my phone was really too slow and I decided to change it.  Even with cyanogenmod which gave it a second life, doing anything would require seconds.  So with the new device, I also wanted to have cyanogenmod, an awesome custom rom. I thought the whole process would take me one or two hours, but I actually wasted 2 full days.  I believe I messed up everything I could, and almost bricked the phone twice.  Below is some sort of checklist for troubleshooting, should the need arise again in the future.
+After 5 years of good service, my phone was really too slow and I decided to change it.  Even with cyanogenmod which gave it a second life, doing anything would require seconds.  So with the new device (htc one a9), I also wanted to have cyanogenmod, an awesome custom rom. I thought the whole process would take me one or two hours, but I actually wasted 2 full days.  I believe I messed up everything I could, and almost bricked the phone twice.  Below is some sort of checklist for troubleshooting, should the need arise again in the future.
 
 # The right way
-I could have saved myself countless hours with this recommendation: **apply the OTA updates FIRST**. The OTA updates expect a stock rom, recovery and locked bootloader. Once I started tinkering with the phone, they would not install properly.
+I could have saved myself countless hours with this recommendation: **apply the OTA updates FIRST**. The OTA updates expect a stock rom, stock recovery and locked bootloader. Once I started tinkering with the phone, they would not install properly.
 
 Also, the cyanogenmod version available for my device requires a fairly recent kernel, and would refuse to be installed on older version. The original kernel was too old for cyanogenmod unfortunately.
 
@@ -23,7 +23,7 @@ When flashing the `Unlock_code.bin` file, the phone should be in the `download` 
 To reflash the stock rom and recovery, the bootloader must be locked. To do it, put the phone in download mode and use the command `fastboot oem lock`.
 
 ## S-OFF
-To completely unlock the bootloader, an optional step is to modify the `S-ON` flag to `S-OFF`. The way to do it is to install [Sunshine](http://theroot.ninja/) as a regular application, and follow the instruction. It costs $25, but it's worth it if you want full control on your phone. The process will wipe out any data you have on the phone, so do it on a fresh install. It will also **not** work on a cyanogen rom, so I recommend doing it on the stock rom, once all the OTA updates have been applied, just before installing TWRP and cyanogenmod.
+To completely unlock the bootloader, an optional step is to modify the `S-ON` flag to `S-OFF`. The way to do it is to install [Sunshine](http://theroot.ninja/) as a regular application. `adb install sunshine-latest.apk`. Afterwards, follow the instructions on the screen. It costs $25, but it's worth it if you want full control on your phone. The process will wipe out any data you have on the phone, so do it on a fresh install. It will also **not** work on a cyanogen rom, so I recommend doing it on the stock rom, once all the OTA updates have been applied, just before installing TWRP and cyanogenmod.
 
 
 # Restore stock system and recovery
@@ -50,10 +50,13 @@ invalid sparse file format at header magi
 
 The workaround is to use htc's executable to update the rom. I couldn't find the correct executable for my device so I downloaded a random one for an htc a9 [on the htc us site](http://www.htc.com/us/support/rom-downloads.html). (It's windows only unfortunately).
 
+* Relock the bootloader
 * Put the device in `download` mode
 * Start the `.exe` and stop at the screen with the `open README` button
-* Go to `Users/xxx/AppData/Local/Temp/` There should be a folder named with a UUID, with a subfolder with the same name. Inside, there is a file named `rom.zip`. That's the one you should replace with the correct RUU archive previously downloaded. See [this thread to locate the rom.zip from the ruu installer](http://forum.xda-developers.com/showthread.php?t=2534428)
-* Once the `rom.zip` file has been replaced, proceed with the installer. It will take a few minutes (~10 min in my case).
+* Go to `Users/xxx/AppData/Local/Temp/` There should be a folder named with a UUID, with a subfolder with the same name. Inside, there is a file named `rom.zip`. That's the one you should replace with the correct RUU archive previously downloaded. See [this thread to locate the rom.zip from the ruu installer](http://forum.xda-developers.com/showthread.php?t=2534428).
+* Once the `rom.zip` file has been replaced, proceed with the installer. It will take a few minutes (~10 min in my case) and reboot a few times.
+
+Tadaa! The phone is now fresh with a stock rom.
 
 
 # Install cyanogenmod and the openGapps
