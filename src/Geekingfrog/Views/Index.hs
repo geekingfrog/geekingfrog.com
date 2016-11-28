@@ -43,6 +43,6 @@ instance H.ToMarkup Index where
             p "I've also managed and automated the deployment and monitoring of these services on AWS."
             p "On the front end, I've translated designer vision into beautiful websites, as \
             \ well as complex single page application in ember and react."
-            p "I'm interested in Functionnal programming and distributed systems."
+            p "I'm interested in Functional programming and distributed systems."
 
         pageFooter
