@@ -79,7 +79,7 @@ parseMarkdown = do
 
 
 parsePostFileName :: Text -> Either String PostMeta
-parsePostFileName = liftLeft parseErrorPretty . runParser metaPostParser "rawMetaPost"
+parsePostFileName filename = liftLeft parseErrorPretty $ runParser metaPostParser ("rawMetaPost - " ++ T.unpack filename) filename
 
 metaPostParser :: Parsec Dec Text PostMeta
 metaPostParser = do
