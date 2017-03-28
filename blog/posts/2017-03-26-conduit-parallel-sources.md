@@ -1,7 +1,7 @@
 ---
 title: Concurrent sources with conduit
 tags: haskell, conduit
-status: draft
+status: published
 ---
 
 Recently I've been using quite a bit of [conduits](http://hackage.haskell.org/package/conduit). While building some tools to check for bugs in our dataset in dynamodb, I had to use the parallel scan feature. Since [amazonka](https://hackage.haskell.org/package/amazonka) (the haskell aws sdk) uses conduit when paging, I had to find a way to get multiple sources running concurrently and feeding into the next stage of the pipeline.
@@ -74,8 +74,8 @@ The tricky bit here is to correctly handle exceptions (and cancellation). Thankf
 
 First, the type signature:
 ```haskell
-parSource :: (C.MonadIO m, C.MonadResource m) => [C.ConduitM () o IO ()] -> C.ConduitM () o m ()
-parsource = error "work in progress"
+parSources :: (C.MonadIO m, C.MonadResource m) => [C.ConduitM () o IO ()] -> C.ConduitM () o m ()
+parSources = error "work in progress"
 ```
 
 Given a list of conduits, collapse all of them into one conduit, which will terminate when *all* sources are done.
@@ -83,8 +83,8 @@ The `MonadResource` constraint is a requirement of bracketP. This is what makes 
 
 
 ```haskell
-parSource :: (C.MonadIO m, C.MonadResource m) => [C.ConduitM () o IO ()] -> C.ConduitM () o m ()
-parSource sources = bracketP init cleanup finalSource
+parSources :: (C.MonadIO m, C.MonadResource m) => [C.ConduitM () o IO ()] -> C.ConduitM () o m ()
+parSources sources = bracketP init cleanup finalSource
   where
     init = do
         -- create the queue where all sources will put their items
@@ -128,7 +128,7 @@ Finally, to run everything:
 ```haskell
 main = do
     C.runResourceT $ C.runConduit $
-        parSource [source1, source2] .| C.mapMC logItem .| C.sinkNull
+        parSources [source1, source2] .| C.mapMC logItem .| C.sinkNull
     print "all done"
 ```
 
@@ -164,7 +164,7 @@ This can be used whenever lots of slow operations are done simultaneously and yo
 I'm still unsure how to get a more generic constraint for the sources:
 
 ```haskell
-parSource :: (C.MonadIO m, C.MonadResource m) => [C.ConduitM () o IO ()] -> C.ConduitM () o m ()
+parSources :: (C.MonadIO m, C.MonadResource m) => [C.ConduitM () o IO ()] -> C.ConduitM () o m ()
 
 -- ideally I'd like the sources to have a generic type not directly involving IO:
 MonadIO m => [C.ConduitM () o m ()] ...
