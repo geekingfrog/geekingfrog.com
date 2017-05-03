@@ -46,15 +46,16 @@ postOverview post = a ! href (postLink post) $ do
     postLink post = H.toValue $ append "/blog/post/" (Types.postSlug post)
 
 
+pageFooter :: Html
 pageFooter = footer $
   H.div ! class_ "container" $ do
     H.div ! class_ "panel panel-bio" $ do
       h2 "HELLO!"
       p $ do
           "My name is Greg. I work at "
-          a ! href "//opensignal.com" $ "Opensignal"
-          " on the web and backend team."
-      p "I build APIs to collect our crowdsourced data, implement designs and build the corresponding backends."
+          a ! href "https://www.youview.com" $ "Youview"
+          " as a cloud engineer."
+      p "I build APIs and microservices to support our 2M (and growing) user base watching and recording TV all over UK."
     H.div ! class_ "panel" $ do
       h2 "GET IN TOUCH"
       p $ do
