@@ -17,10 +17,7 @@ executable geekingfrog
   main-is:             Main.hs
   default-language:    Haskell2010
   ghc-options: -O2 -fwarn-incomplete-patterns
-  other-modules:       Geekingfrog.APIViews
-                     , Geekingfrog.APIViews.Post
-                     , Geekingfrog.APIViews.Tag
-                     , Geekingfrog.AtomFeed
+  other-modules:       Geekingfrog.AtomFeed
                      , Geekingfrog.Constants
                      , Geekingfrog.ContentType
                      , Geekingfrog.HtmlApi
@@ -36,29 +33,29 @@ executable geekingfrog
                      , Svglogo
 
   build-depends:       base >= 4.7 && < 5
-                     , unordered-containers == 0.2.*
-                     , servant == 0.7.*
-                     , servant-server == 0.7.*
-                     , servant-blaze == 0.7.*
-                     , blaze-markup >= 0.7 && < 0.8
-                     , wai >= 3.2 && < 3.3
-                     , wai-app-static >= 3.1 && < 3.2
-                     , http-types >= 0.9 && < 0.10
-                     , http-media >= 0.6 && < 0.7
-                     , warp >= 3.2 && < 3.4
-                     , text >= 1.2 && < 1.3
-                     , blaze-html >= 0.8 && < 0.9
-                     , blaze-svg >= 0.3 && < 0.4
-                     , utf8-string == 1.0.*
-                     , datetime >= 0.3 && < 0.4
-                     , transformers >= 0.4 && < 0.5
-                     , xml >= 1.3 && < 1.4
-                     , feed == 0.3.*
-                     , directory == 1.2.7.*
-                     , megaparsec == 5.0.*
-                     , semigroups == 0.18.*
-                     , pandoc == 1.17.*
-                     , highlighting-kate == 0.6.*
+                     , unordered-containers
+                     , servant
+                     , servant-server
+                     , servant-blaze
+                     , blaze-markup
+                     , wai
+                     , wai-app-static
+                     , http-types
+                     , http-media
+                     , warp
+                     , text
+                     , blaze-html
+                     , blaze-svg
+                     , utf8-string
+                     , datetime
+                     , transformers
+                     , xml
+                     , feed
+                     , directory
+                     , megaparsec
+                     , semigroups
+                     , pandoc
+                     , skylighting
 
 executable geekingfrog-file-import
   hs-source-dirs:      src
@@ -68,11 +65,11 @@ executable geekingfrog-file-import
                      , Geekingfrog.GhostTypes
                      , Geekingfrog.Parse
   build-depends:       base >= 4.7 && < 5
-                     , bytestring >= 0.10 && < 0.11
-                     , vector >= 0.11 && < 0.12
-                     , aeson == 0.10.*
-                     , directory == 1.2.*
-                     , time == 1.5.*
-                     , datetime == 0.3.*
-                     , text == 1.2.*
-                     , highlighting-kate == 0.6.*
+                     , bytestring
+                     , vector
+                     , aeson
+                     , directory
+                     , time
+                     , datetime
+                     , text
+                     , skylighting

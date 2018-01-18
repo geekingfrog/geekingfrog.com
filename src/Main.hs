@@ -41,8 +41,8 @@ import qualified Geekingfrog.Views as Views
 import qualified Geekingfrog.HtmlApi as HtmlApi
 
 import qualified Geekingfrog.MarkdownParser as MdParser
-import qualified Text.Highlighting.Kate.Styles as Highlighting
-import qualified Text.Highlighting.Kate.Format.HTML as Highlighting
+import qualified Skylighting.Format.HTML as Highlighting
+
 
 main :: IO ()
 main = do
@@ -66,7 +66,6 @@ type WebsiteAPI =
   :<|> "robots.txt" :> Get '[PlainText] Text
   :<|> "sitemap.txt" :> Get '[PlainText] Text
   :<|> "static" :> Raw -- staticServer
-  :<|> "admin" :> Raw -- admin spa
   :<|> Raw  -- catchall for custom 404
 
 websiteApi :: Proxy WebsiteAPI
@@ -77,8 +76,7 @@ websiteServer postMap = HtmlApi.htmlHandler postMap
            :<|> makeFeed postMap
            :<|> serveRobots
            :<|> serveSitemap
-           :<|> serveDirectory "./static"
-           :<|> serveDirectory "./blog/images"
+           :<|> serveDirectoryFileServer "./static"
            :<|> custom404
 
 app :: Types.PostMap -> Application
@@ -93,11 +91,11 @@ makeFeed postMap = do
   return $ AtomFeed now (take 10 sortedPosts)
 
 
--- Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> ResponseReceived
-custom404 :: Application
-custom404 _ sendResponse = sendResponse $ responseLBS status404
-                             [("Content-Type", "text/html; charset=UTF-8")]
-                             (renderMarkup Errors.notFound)
+custom404 :: Server Raw
+custom404 = return $ \_request sendResponse -> sendResponse $ responseLBS
+    status404
+    [("Content-Type", "text/html; charset=UTF-8")]
+    (renderMarkup Errors.notFound)
 
 serveRobots :: Handler Text
 serveRobots = serveFile "./robots.txt"

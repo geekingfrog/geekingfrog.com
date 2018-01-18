@@ -1,8 +1,8 @@
 module Geekingfrog.Constants where
 
 import Data.Text
-import qualified Text.Highlighting.Kate.Types as H
-import qualified Text.Highlighting.Kate.Styles as H
+import qualified Skylighting.Types as H
+import qualified Skylighting.Styles as H
 
 siteUrl :: Text
 siteUrl = pack "https://geekingfrog.com"

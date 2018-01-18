@@ -17,7 +17,8 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Text.Megaparsec
 import Text.Megaparsec.Text
-import qualified Text.Highlighting.Kate.Styles as Highlighting
+-- import qualified Text.Highlighting.Kate.Styles as Highlighting
+import Skylighting.Styles as Highlighting
 
 import qualified Geekingfrog.Types as Types
 
