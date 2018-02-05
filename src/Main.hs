@@ -18,6 +18,7 @@ import Servant
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
 import Network.Wai (Application, responseLBS)
 import Network.Wai.Handler.Warp (run)
+import Network.Wai.Application.Static
 
 import Network.HTTP.Types (status404)
 
@@ -76,7 +77,7 @@ websiteServer postMap = HtmlApi.htmlHandler postMap
            :<|> makeFeed postMap
            :<|> serveRobots
            :<|> serveSitemap
-           :<|> serveDirectoryFileServer "./static"
+           :<|> serveDirectoryWith ((defaultWebAppSettings "./static") {ssListing = Nothing})
            :<|> custom404
 
 app :: Types.PostMap -> Application
