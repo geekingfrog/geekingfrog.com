@@ -146,8 +146,12 @@ nav {
 
 @media screen and (max-width: 800px) {
   nav {
-    margin-left: 3rem;
+    margin: 0 auto;
     text-align: center;
+  }
+
+  nav ul {
+    padding: 0 0.5rem;
   }
 
   .nav-link {
@@ -182,13 +186,20 @@ nav {
 
 @media screen and (max-width: 1024px) {
   .hero-container .main-title.main-title__huge {
-    font-size: 4rem;
+    font-size: 3rem;
   }
 }
 
 .main-title {
   display: block;
   padding: 1rem;
+}
+
+
+@media screen and (max-width: 1024px) {
+  .main-title {
+    padding: 0;
+  }
 }
 
 .main-title.main-title__blog {
