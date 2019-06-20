@@ -4,16 +4,15 @@
 module Geekingfrog.AtomFeed where
 
 import Control.Applicative (liftA)
-import Data.Text (unpack)
+import Data.Text (Text, pack)
+import qualified Data.Text.Lazy.Encoding as Tx.Enc
 import Data.ByteString.Lazy.UTF8 (fromString)
 import Servant hiding (Post, Link)
 import Data.DateTime
 
-import Text.XML.Light.Output (showTopElement)
-
 import qualified Text.Blaze.Html.Renderer.String as Blaze
 import Text.Atom.Feed
-import Text.Atom.Feed.Export
+import qualified Text.Atom.Feed.Export as Export
 
 import Network.HTTP.Media ((//))
 
@@ -25,19 +24,21 @@ import qualified Geekingfrog.Types as Types
 data AtomFeed = AtomFeed DateTime [Types.Post]
 
 instance MimeRender XML AtomFeed where
-  mimeRender _ = fromString . showTopElement . xmlFeed . toFeed
+  mimeRender _ atom
+    = maybe (error "cannot generate feed") Tx.Enc.encodeUtf8 $ Export.textFeed $ toFeed atom
 
 instance Accept AtomFeed where
   contentType _ = "application" // "atom+xml"
 
 instance MimeRender AtomFeed AtomFeed where
-  mimeRender _ = fromString . showTopElement . xmlFeed . toFeed
+  mimeRender _ atom
+    = maybe (error "cannot generate feed") Tx.Enc.encodeUtf8 $ Export.textFeed $ toFeed atom
 
 toFeed :: AtomFeed -> Feed
 toFeed (AtomFeed genTime posts) =
   let
     feedTitle = TextString "Geekingfrog"
-    feedUrl = unpack siteUrl ++ "/rss"
+    feedUrl = siteUrl <> "/rss"
     feedAuthors = [meAuthor]
     feedCategories = [Category "Programming" Nothing (Just "Programming") []]
     feedIcon = Nothing
@@ -53,12 +54,12 @@ postToFeedEntry :: Types.Post -> Entry
 postToFeedEntry post =
   let
     tags = Types.postTags post
-    entryId = unpack siteUrl ++ unpack (urlFor post)
-    entryTitle = TextString $ unpack $ Types.postTitle post
+    entryId = siteUrl <> urlFor post
+    entryTitle = TextString $ Types.postTitle post
     entryUpdated = toTimeRfc3339 $ simpleDateToDateTime $ Types.postCreatedAt post
     entryAuthors = [meAuthor]
     entryCategories = fmap tagToFeedCategory tags
-    entryContent = Just $ HTMLContent (Blaze.renderHtml $ Types.postHtml post)
+    entryContent = Just $ HTMLContent (pack $ Blaze.renderHtml $ Types.postHtml post)
     entryContributor = []
     entryLinks = [link post]
     entryPublished = Just $ toTimeRfc3339 $ simpleDateToDateTime $ Types.postCreatedAt post
@@ -73,14 +74,14 @@ postToFeedEntry post =
     Entry entryId entryTitle entryUpdated entryAuthors entryCategories entryContent entryContributor entryLinks entryPublished entryRights entrySource entrySummary entryInReplyTo entryInReplyTotal entryAttrs entryOther
 
 tagToFeedCategory :: Types.Tag -> Category
-tagToFeedCategory tag = Category (unpack $ Types.tagName tag) Nothing Nothing []
+tagToFeedCategory tag = Category (Types.tagName tag) Nothing Nothing []
 
-meAuthor = Person "Grégoire Charvet" (Just $ unpack siteUrl) (Just "greg@geekingfrog.com") []
+meAuthor = Person "Grégoire Charvet" (Just siteUrl) (Just "greg@geekingfrog.com") []
 
 simpleDateToDateTime (y, m, d) = fromGregorian' y m d
 
-toTimeRfc3339 :: DateTime -> String
-toTimeRfc3339 = formatDateTime "%Y-%m-%dT%TZ"
+toTimeRfc3339 :: DateTime -> Text
+toTimeRfc3339 = pack . formatDateTime "%Y-%m-%dT%TZ"
 
 link :: (Url a) => a -> Link
-link item = Link (unpack siteUrl ++ unpack (urlFor item)) Nothing Nothing Nothing Nothing Nothing [] []
+link item = Link (siteUrl <> urlFor item) Nothing Nothing Nothing Nothing Nothing [] []

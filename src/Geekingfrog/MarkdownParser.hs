@@ -16,11 +16,13 @@ import Control.Applicative ((<*))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Text.Megaparsec
-import Text.Megaparsec.Text
--- import qualified Text.Highlighting.Kate.Styles as Highlighting
+import Text.Megaparsec.Char
+import Data.Void
 import Skylighting.Styles as Highlighting
 
 import qualified Geekingfrog.Types as Types
+
+type Parser = Parsec Void Text
 
 type PostMeta = (Types.SimpleDate, Text) -- date, slug
 -- title, status, markdown, html, tags
@@ -30,21 +32,21 @@ type PostHeader = (Text, Types.PostStatus, [Types.Tag])  -- title, status
 
 parsePost :: (FilePath, Text) -> Either String PostContent
 parsePost (fileName, raw) = case runParser postParser fileName raw of
-  Left err -> Left $ parseErrorPretty err
+  Left err -> Left $ errorBundlePretty err
   Right stuff -> postMarkdownToHtml stuff
 
 
-postParser :: Parsec Dec Text (Text, Types.PostStatus, Text, [Types.Tag])
+postParser :: Parser (Text, Types.PostStatus, Text, [Types.Tag])
 postParser = do
   (title, status, tags) <- parseHeader
   markdown <- parseMarkdown
   return (title, status, markdown, tags)
 
 
-parseHeader :: Parsec Dec Text PostHeader
+parseHeader :: Parser PostHeader
 parseHeader = do
   manyTill (char '-') eol
-  title <- T.pack <$> (string "title:" >> optional space >> manyTill anyChar eol)
+  title <- T.pack <$> (string "title:" >> optional space >> manyTill anySingle eol)
   tags <- parseTags
   many eol
   status <- parseStatus
@@ -64,7 +66,7 @@ tag = do
   return Types.Tag {Types.tagName = T.pack t}
 
 
-parseStatus :: Parsec Dec Text Types.PostStatus
+parseStatus :: Parser Types.PostStatus
 parseStatus = do
   string "status:" >> skipMany (char ' ')
   status <- (string "published" >> return Types.Published) <|> (string "draft" >> return Types.Draft)
@@ -72,40 +74,39 @@ parseStatus = do
   eol
   return status
 
-parseMarkdown :: Parsec Dec Text Text
+parseMarkdown :: Parser Text
 parseMarkdown = do
   skipMany spaceChar
-  T.pack <$> many anyChar
+  T.pack <$> many anySingle
 
 
 parsePostFileName :: Text -> Either String PostMeta
-parsePostFileName filename = liftLeft parseErrorPretty $ runParser metaPostParser ("rawMetaPost - " ++ T.unpack filename) filename
+parsePostFileName filename = liftLeft errorBundlePretty
+  $ runParser metaPostParser ("rawMetaPost - " ++ T.unpack filename) filename
 
-metaPostParser :: Parsec Dec Text PostMeta
+metaPostParser :: Parser PostMeta
 metaPostParser = do
   year <- read <$> someTill digitChar (char '-')
   month <- read <$> someTill digitChar (char '-')
   day <- read <$> someTill digitChar (char '-')
-  slug <- T.pack <$> someTill anyChar eof
+  slug <- T.pack <$> someTill anySingle eof
   return ((year, month, day), slug)
 
 
 postMarkdownToHtml :: (Text, Types.PostStatus, Text, [Types.Tag]) -> Either String PostContent
-postMarkdownToHtml (title, status, markdown, tags) = case markdownToHtml (T.unpack markdown) of
+postMarkdownToHtml (title, status, markdown, tags) = case markdownToHtml markdown of
   Left err -> Left err
   Right html -> Right (title, status, markdown, html, tags)
 
 
-markdownToHtml markdown = case Pandoc.readMarkdown options markdown of
-  Left pandocError -> Left (show pandocError)
-  Right doc -> Right $ Pandoc.writeHtml writeOptions doc
+markdownToHtml markdown = liftLeft show $ Pandoc.runPure
+  (Pandoc.readMarkdown options markdown >>= Pandoc.writeHtml5 writeOptions)
+
   where
     options = Pandoc.def {Pandoc.readerExtensions = Pandoc.githubMarkdownExtensions}
     writeOptions = Pandoc.def
-      { Pandoc.writerHighlight = True
-      , Pandoc.writerHighlightStyle = Highlighting.zenburn
+      { Pandoc.writerHighlightStyle = Just Highlighting.zenburn
       }
-
 
 liftLeft :: (a -> b) -> Either a c -> Either b c
 liftLeft f (Left err) = Left (f err)

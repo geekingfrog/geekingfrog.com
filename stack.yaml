@@ -1,13 +1,11 @@
 # For more information, see: http://docs.haskellstack.org/en/stable/yaml_configuration.html
-resolver: lts-9.21
+resolver: lts-13.26
 
 packages:
 - '.'
 
 extra-deps:
   - datetime-0.3.1
-  - megaparsec-5.0.1
-  - directory-1.2.7.0
 
 flags: {}
 

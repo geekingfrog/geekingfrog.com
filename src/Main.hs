@@ -22,6 +22,7 @@ import Network.Wai.Application.Static
 
 import Network.HTTP.Types (status404)
 
+import qualified Data.Ord as Ord
 import qualified Data.List as List
 import qualified Control.Monad as M
 import Control.Monad.IO.Class (liftIO)
@@ -88,7 +89,7 @@ makeFeed postMap = do
   now <- liftIO getCurrentTime
   let posts = Map.elems postMap
   let publishedPost = filter ((==Types.Published) . Types.postStatus) posts
-  let sortedPosts = reverse $ List.sortOn Types.postCreatedAt publishedPost
+  let sortedPosts = List.sortOn (Ord.Down . Types.postCreatedAt) publishedPost
   return $ AtomFeed now (take 10 sortedPosts)
 
 
