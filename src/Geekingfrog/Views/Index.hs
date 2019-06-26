@@ -15,7 +15,7 @@ import Geekingfrog.Views.Partials (
   , pageFooter
   )
 
-data Index = Index [Types.Post]
+newtype Index = Index [Types.Post]
 
 instance H.ToMarkup Index where
     toMarkup (Index posts) = docTypeHtml $ do

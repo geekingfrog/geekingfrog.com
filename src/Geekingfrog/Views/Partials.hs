@@ -53,9 +53,9 @@ pageFooter = footer $
       h2 "HELLO!"
       p $ do
           "My name is Greg. I work at "
-          a ! href "https://www.youview.com" $ "Youview"
-          " as a cloud engineer."
-      p "I build APIs and microservices to support our 2M (and growing) user base watching and recording TV all over UK."
+          a ! href "https://www.habito.com" $ "Habito"
+          " as a senior software engineer."
+      p "I build APIs and frontend for a new underwriting platform, providing new kinds of mortgage products for people in the UK."
     H.div ! class_ "panel" $ do
       h2 "GET IN TOUCH"
       p $ do
