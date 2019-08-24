@@ -243,7 +243,7 @@ nav {
 
 @media screen and (max-width: 800px) {
   .content {
-    padding: 1rem 1rem;
+    padding: 2rem 1rem;
   }
 }
 
@@ -406,7 +406,7 @@ footer a {
 }
 
 .panel:first-child {
-  border: none;
+  border-left: none;
 }
 
 .panel-bio {
