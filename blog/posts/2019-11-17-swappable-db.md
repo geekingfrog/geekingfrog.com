@@ -67,7 +67,7 @@ could also be a connection pool, or whatever is needed.
 Now, we need to declare an instance of `MonadDB` for this application.
 
 ```haskell
-instance (MonadIO m, Exc.MonadThrow m) => MonadDB (PostgresDB m) where
+instance (MonadIO m, Exc.MonadThrow m) => MonadDB (PostgresApp m) where
   countItems tableName = do
     conn <- Rdr.asks pgConn
     result <- liftIO $ PG.query conn "select * from ?" (PG.Only tableName)
@@ -84,8 +84,8 @@ main :: IO ()
 main = do
   -- connectToPostgresql is easy to write, we'll see later how to improve it
   connection <- connectToPostgresql
-  let PGEnv = PGEnv { pgConn = connection }
-  Rdr.runReaderT (runPostgresDB compareSweets) PGEnv
+  let pgEnv = PGEnv { pgConn = connection }
+  Rdr.runReaderT (runPostgresApp compareSweets) pgEnv
 ```
 
 
@@ -162,7 +162,7 @@ main = do
     Left err -> Exc.throwString $ "Cannot decode config file: " <> err
     Right x -> pure x
   env <- mkPGEnv config
-  Rdr.runReaderT (runPostgresDB compareSweets) env
+  Rdr.runReaderT (runPostgresApp compareSweets) env
 ```
 
 
@@ -200,7 +200,7 @@ main = do
   case config of
     DBConfigPostgres pgConf -> do
       env <- mkPGEnv pgConf
-      Rdr.runReaderT (runPostgresDB compareSweets) env
+      Rdr.runReaderT (runPostgresApp compareSweets) env
     DBConfigMem -> error "no backend for in memory db yet"
 ```
 
