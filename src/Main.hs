@@ -12,6 +12,8 @@ module Main where
 import Data.Text (Text(..))
 import qualified Data.Text as Text
 import qualified Data.Text.IO as Text
+import qualified Data.ByteString as BS
+import Data.Text.Encoding (decodeUtf8)
 import Data.DateTime (getCurrentTime)
 import Servant
 
@@ -129,7 +131,11 @@ generateSitemap postMap = do
 loadPosts :: IO (Either String (Map.HashMap Text Types.Post))
 loadPosts = do
   postList <- Dir.listDirectory Constants.postsLocation
-  !contents <- M.forM postList (\filename -> Text.readFile (Constants.postsLocation ++ filename))
+
+  -- When using a specific glibc, there is a problem with locale and file decoding on my server.
+  -- So instead of `Text.Read`, assume UTF-8 and ignore system locale
+  !contents <- M.forM postList
+    (\filename -> decodeUtf8 <$> BS.readFile (Constants.postsLocation ++ filename))
   let metas = M.mapM (MdParser.parsePostFileName . Text.pack) postList
   let postContents = M.mapM MdParser.parsePost (zip postList contents)
   case (metas, postContents) of

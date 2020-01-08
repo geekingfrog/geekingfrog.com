@@ -51,11 +51,8 @@ pageFooter = footer $
   H.div ! class_ "container" $ do
     H.div ! class_ "panel panel-bio" $ do
       h2 "HELLO!"
-      p $ do
-          "My name is Greg. I work at "
-          a ! href "https://www.habito.com" $ "Habito"
-          " as a senior software engineer."
-      p "I build APIs and frontend for a new underwriting platform, providing new kinds of mortgage products for people in the UK."
+      p "My name is Greg. I'm a full stack senior software engineer with a focus on functional programming"
+      p "I have designed, built and deployed in the cloud many kind of APIs and processing pipelines for various industries."
     H.div ! class_ "panel" $ do
       h2 "GET IN TOUCH"
       p $ do
@@ -68,14 +65,12 @@ pageFooter = footer $
       a ! href "/rss" $ h2 "SUBSCRIBE"
       p "RSS is love ♥"
 
-  -- H.script ! type_ "text/javascript" ! src "/static/prism.js" $ mempty
-
 
 pageHead :: Maybe Text -> Html
 pageHead mbTitle = do
     meta ! charset "utf-8"
     meta ! name "viewport" ! content "width=device-width, initial-scale=1"
-    H.title $ "Geekingfrog" <> text (fromMaybe "" ((" — " <>) <$> mbTitle))
+    H.title $ "Geekingfrog" <> text (maybe "" (" — " <>) mbTitle)
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
     link ! rel "stylesheet" ! href "/static/highlight.css" ! type_ "text/css"
     link ! rel "alternate" ! href "/rss" ! type_ "application/atom+xml"
