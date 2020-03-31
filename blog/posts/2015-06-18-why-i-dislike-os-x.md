@@ -13,7 +13,8 @@ OS X is also POSIX compliant which means most of my beloved cli tools work out o
 
 # The bad
 Upon setup, one has to setup an appleID in order to update any software. And for this, a valid **credit card number** is required. Seriously??? Just to update some free software, I need to hand over my credit card number? That's a giant no.
-The **finder** is pretty bad too. First, showing hidden file is [somewhate complex](http://osxdaily.com/2009/02/25/show-hidden-files-in-os-x/). But worse, even with this option enabled, popup to select files still won't show them. Which means, there is **no way** to upload a hidden file from a browser without first renaming it.
+
+The **finder** is pretty bad too. First, showing hidden file is [somewhat complex](http://osxdaily.com/2009/02/25/show-hidden-files-in-os-x/). But worse, even with this option enabled, popup to select files still won't show them. Which means, there is **no way** to upload a hidden file from a browser without first renaming it.
 
 # The ugly
 * Terrible keyboard support. This is a major pain for me. The trackpad is very good, but if one decides to minimize its use, it's a living hell. There is no `home/end` keys. Which is a major inconvenience. Sometimes some keybindings act like these keys, but they are inconsistent through applications.
