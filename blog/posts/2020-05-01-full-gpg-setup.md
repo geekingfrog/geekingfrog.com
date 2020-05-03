@@ -1,10 +1,10 @@
 ---
 title: Full GPG setup
-tags: 
-status: draft
+tags: gpg
+status: published
 ---
 
-If you care about security and encryption, gpg is very good. It's used by git and the amazon command line sdk whenever something needs to be signed. Pgp uses a system of public/private key, the same used for TLS/SSL.
+If you care about security and encryption, gpg is very good. It's used by git and the amazon command line sdk whenever something needs to be signed. PGP uses a system of public/private key, the same used for TLS/SSL.
 
 ## Quick intro about GPG
 Using gpg encryption, you can guarantee the authenticity and the identity of the author of a document. How does that work? You create two keys, a private key used for signing and decrypting document and a public key to encrypt document. As the name suggest, the public key is known for everyone who wants it. Using my public key, anyone can encrypt a document, and the result can only be decrypted by me, with my private key.
@@ -113,9 +113,20 @@ gpg --output revokeMaster.asc --gen-revoke <keyid>
 Store this revocation certificate away from your private key. If the key becomes compromised, you can publish this certificate to revoke it.
 
 ## Remove the private key from your hard drive
+With subkeys to sign and encrypt, the master private key can be removed from the computer and stored in an offline storage. `gpg --armor --output private-master.key --export-secret-keys <key-id>`. Once this file is safely stored somewhere, it's time to remove the master key from the computer. `gpg --delete-secret-keys <key-id>` when prompted, delete the secret key, but not the secret subkey. Afterward, running `gpg --list-secret-keys` should show `sec#` before the primary key.
+
 
 ## Last tips
-If you want to know what subkey is capable of doing what, you have to  `gpg --edit-key <key-id>` and you'll have the list of keys with the `usage` field. `S` means signing, `C` means certifying (not sure what it is) and `E` means encrypting.
+If you want to know what subkey is capable of doing what, you have to  `gpg --edit-key <key-id>` and you'll have the list of keys with the `usage` field. `S` means signing, `C` means certifying, the master key can do that, and `E` means encrypting.
+
+## Change key's expiration date
+
+`gpg --edit-key <key-id>`, then `expire`. This will change the expiration date for the primary key. To change it for other keys, select them with `key n`, with `n` a number. The selected key will have an asterisk after its type, like `ssb*`
+
+
+# Usage
+
+See [this cheatsheet](./gpg-cheatsheet)
 
 ---
 Sources:
@@ -123,3 +134,4 @@ Sources:
 * [subkey doc](https://wiki.debian.org/subkeys)
 * [Open PGP best practices](https://we.riseup.net/riseuplabs+paow/openpgp-best-practices)
 * [tutorial and overview](http://zacharyvoase.com/2009/08/20/openpgp/)
+* [use gpg to encrypt and sign](https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages)
