@@ -1,12 +1,12 @@
 ---
 title: Parse optional values in form-urlencoded
 tags: rust
-status: draft
+status: published
 ---
 
 # The setup
 
-I'm doing a bit of rust things here and there, and currently I'm looking into building a really simple web form to upload stuff. I hit a problem when I wanted to retrieve an optional value from the html form.
+I'm doing a bit of rust things here and there, and I'm currently looking into building a really simple web form to upload stuff. I hit a problem when I wanted to retrieve an optional value from the html form.
 
 A super basic project will do:
 
@@ -121,7 +121,7 @@ Now, the problem is that the html form needs to give the user a button for that.
 </div>
 ```
 
-However, when the user select this new option, the string we get looks like: `max-size=None`, and if we try to deserialize it like before, we get an error:
+However, when the user selects this new option, the string we get looks like: `max-size=None`, and if we try to deserialize it like before, we get an error:
 
 ```rust
 // in main()
@@ -215,7 +215,7 @@ gives `decoded form: Err(Error("Unexpected string 10"))` /o\ oops.
 
 # The bugs
 So something is amiss, we can decode `None` with the sentinel value, but the regular ones can't be deserialize anymore.
-For non self describing format like a query string or a url encoded form, the string `max-size=12` can be deserialized as String or a number. It seems it's [a serde limitation](https://github.com/nox/serde_urlencoded/issues/33) when using `serde(flatten)` or `serde(untagged)`. Thankfully, there is [a workaround](https://docs.rs/serde_qs/0.8.3/serde_qs/index.html#flatten-workaround).
+For non self-describing format like a query string or a url encoded form, the string `max-size=12` can be deserialized as String or a number. It seems it's [a serde limitation](https://github.com/nox/serde_urlencoded/issues/33) when using `serde(flatten)` or `serde(untagged)`. Thankfully, there is [a workaround](https://docs.rs/serde_qs/0.8.3/serde_qs/index.html#flatten-workaround).
 
 First, we need to specify a custom deserializing function for the variants of the enum:
 
@@ -294,3 +294,7 @@ And with this last fix we get:
 That was waaay more tricky than I expected. At least I learned a lot about serde in the process, and this solution seems general enough that I can bring it over to any other project if I need it.
 
 I'm also realising that doing web stuff with html forms in rust is nowhere near as nice as in other language, the ecosystem simply isn't there yet, contrary to what [are we web yet](https://www.arewewebyet.org/) pretends. For APIs it's probable better, but handling html forms is a pain.
+
+
+---
+Thanks to Chouartem for his proofreading.
