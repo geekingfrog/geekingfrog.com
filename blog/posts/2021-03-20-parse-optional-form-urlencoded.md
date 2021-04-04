@@ -297,4 +297,4 @@ I'm also realising that doing web stuff with html forms in rust is nowhere near 
 
 
 ---
-Thanks to Chouartem for his proofreading.
+Thanks to Chouhartem for his proofreading.
