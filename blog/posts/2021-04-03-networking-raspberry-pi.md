@@ -72,13 +72,13 @@ Now that the ethernet bridge works fine, let's disable the wifi and use `hostapd
 
 Grab this [default config file](https://wiki.archlinux.org/index.php/Software_access_point#Wi-Fi_link_layer) and edit the important bits: the `interface`, the `bridge`, the `ssid` and the `wpa_passphrase`. Also, don't forget to change the `country_code` to configure the access point with the right frequencies. In my case it's `GB`. No need to quote the passphrase if there are multiple words. There is a minimum length of 8 char for it. Passphrase under that limit will make `hostapd` fails with a cryptic error message.
 
-A first simple check is to manually run `hostapd` with this configuration and check that another device can connect to it and access the internet: `hostapd -S /etc/hostapd/wlan0-br0.conf`.
+A first simple check is to manually run `hostapd` with this configuration and check that another device can connect to it and access the internet: `hostapd -S /etc/hostapd/br0.conf`.
 
 When that's working, rename the systemd service and enable it:
 ```
-mv /lib/systemd/system/hostapd@.service /lib/systemd/system/hostapd@wlan0-br0.service
-sudo systemctl start hostapd@wlan0-br0.service
-sudo systemctl enable hostapd@wlan0-br0.service
+mv /lib/systemd/system/hostapd@.service /lib/systemd/system/hostapd@br0.service
+sudo systemctl start hostapd@br0.service
+sudo systemctl enable hostapd@br0.service
 ```
 
 And tadaaaa, everything is now working. Next, install [pi-hole](https://github.com/pi-hole/pi-hole/), but that's straightforward.
