@@ -571,6 +571,13 @@ footer a {
   );
 }
 
+.gpg-content a {
+  color: #ffa000;
+}
+
+.gpg-content a:hover {
+  color: #cc8000;
+}
 
 /*****************************************/
 /*               Highlighting            */
