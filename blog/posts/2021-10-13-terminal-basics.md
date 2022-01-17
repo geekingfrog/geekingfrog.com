@@ -70,6 +70,8 @@ $ ls /
 
 Some commands work directly on their own. For example:
 
+## Arguments
+
 ```
 $ date
 Wed Oct 13 02:17:48 PM BST 2021
@@ -81,12 +83,14 @@ $ ls / /tmp
 ```
 There, the command is `ls`, and it is given two arguments: `/` and `/tmp`.
 
-An option is anything starting with a single or double dash: `-` or `--`. The convention is that a single dash is followed by single letter options, and double dashes are used for longer options.
+## Options (and flags)
+
+An option is anything starting with a single or double dash: `-` or `--`. The convention is that a single dash is followed by single letter options, and double dashes are used for longer options. When the option doesn't expect any argument, it's called a (boolean) flag.
 
 ```
 $ ls -l --almost-all --directory
 ```
-This command has three options: `-l` and `--almost-all`.
+This command has three options: `-l`, `--almost-all` and `--directory`.
 
 It is also usually possible to merge multiple shorthand options together:
 
@@ -106,6 +110,27 @@ $ ls -w3
 ```
 
 
+## Repeating flags
+
+Some flags can be repeated. A usual one is `-v` to increase logging verbosity:
+
+```
+ssh      greg@geekingfrog.com # no logging
+ssh -v   greg@geekingfrog.com # info logs
+ssh -vv  greg@geekingfrog.com # more verbose logs
+ssh -vvv greg@geekingfrog.com # extra super verbose logs
+```
+
+## Interactive mode
+
+Some commands have an interactive mode, where they ask the user to confirm some actions before proceeding. For example:
+
+```
+$ Continue [Y/n]?█
+```
+You are then supposed to enter yes or no. In this case, usually `y`, `Y`, `n`, `N` work. The convention is to have the uppercase letter be the default option. So simply typing `enter` without anything will default to yes (`Y`).
+
+
 # Getting help
 
 There are three main ways to figure out what to do.
@@ -113,22 +138,6 @@ There are three main ways to figure out what to do.
 ## Asking the command itself for some help
 
 Pretty much every single command will accept `-h` and `--help` to display a help message, then exit. Whever you're faced with a new command, try these and see what happens.
-
-## Using manual pages
-
-Commands also come with a user manual. This is invoked with the command
-```
-$ man ls
-```
-
-The manual will be displayed through a command called a pager. By default, it's often a command called `less`. Here are a couple of useful things to know about `less`:
-
-* To exit it: press `q`
-* `pageDown` and `pageUp` for navigation. If your keyboard don't have these keys, `ctrl-f` and `ctrl-b` (standing for forward and backward) have the same effect.
-* Pressing `/` will allow you to enter a search term. Then, pressing `n` will jump to the next occurence, and `N` for the previous match. There is no wrapping for search, so no match may just mean all the matches are before your cursor position.
-* Pressing `g` jumps at the beggining of the document, while `G` jumps at the end.
-
-
 
 ## Discovering things with autocompletion
 
@@ -150,4 +159,23 @@ ls         lsappinfo  lskq       lsmp       lsvfs
 Whenever you're in doubt, try pressing `<tab>` and see what happens. Some shell like `zsh` or `fish` have really powerfull completions.
 
 
+## Using manual pages
 
+Commands also come with a user manual. This is invoked with the command
+```
+$ man ls
+```
+
+The manual will be displayed through a command called a pager. By default, it's often a command called `less`. Here are a couple of useful things to know about `less`:
+
+* To exit it: press `q`
+* `pageDown` and `pageUp` for navigation. If your keyboard don't have these keys, `ctrl-f` and `ctrl-b` (standing for forward and backward) have the same effect.
+* Pressing `/` will allow you to enter a search term. Then, pressing `n` will jump to the next occurence, and `N` for the previous match. There is no wrapping for search, so no match may just mean all the matches are before your cursor position.
+* Pressing `g` jumps at the beggining of the document, while `G` jumps at the end.
+
+
+
+# Conclusion
+
+Now you should have some basics to interact with command line tools, and more importantly, the means to discover more if you're stuck.
+Perhaps the best advice I can give is to notice what you're doing a lot, either consciously or by recording your screen and reviewing it later. And then, see if you can improve anything that seems repetitive or disruptive.
