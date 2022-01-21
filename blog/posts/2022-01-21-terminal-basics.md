@@ -1,7 +1,7 @@
 ---
 title: Terminal basics
 tags: linux, shell
-status: draft
+status: published
 ---
 
 # Unixy terminal basics
@@ -14,7 +14,13 @@ This post aims to describe some very basics, some general conventions, and how t
 
 # The shell and the terminal emulator
 
-A shell is an interactive program that allow the user to start and manage other programs. The terminal emulator is the software providing the GUI, handling input and displaying output. On macOS, a popular terminal is [iterm2](https://iterm2.com/). On linux, there are many terminal emulators, some popular ones are [urxvt](https://wiki.archlinux.org/title/Rxvt-unicode), [alacritty](https://github.com/alacritty/alacritty) or [kitty](https://sw.kovidgoyal.net/kitty/).
+A shell is an interactive program that allow the user to start and manage other programs. The terminal emulator is the software providing the graphical interface (GUI), handling input and displaying output. They are called so because they are reproducing the interface and features of ancient terminals:
+
+![pdp terminal](https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Televideo925Terminal.jpg/330px-Televideo925Terminal.jpg)
+
+These were the interface connected to the actual computer, a massive machine safely store in a dedicated room.
+
+On macOS, a popular terminal is [iterm2](https://iterm2.com/). On linux, there are many terminal emulators, some popular ones are [urxvt](https://wiki.archlinux.org/title/Rxvt-unicode), [alacritty](https://github.com/alacritty/alacritty) or [kitty](https://sw.kovidgoyal.net/kitty/).
 
 The shell is the default program run inside the terminal emulator.
 
@@ -23,7 +29,7 @@ When opening a terminal, you're faced with a prompt, where you can type commands
 $ █
 ```
 
-Where `█` indicate your cursor. This is the prompt of your shell, and this is where you can type any command. To know what shell you are using, you can type the following command:
+Where `█` indicates your cursor. This is the prompt of your shell, and this is where you can type any command. To know what shell you are using, you can type the following command:
 
 ```
 $ echo $SHELL
@@ -31,6 +37,8 @@ $ echo $SHELL
 ```
 
 The line `/bin/zsh` is the result of executing the command `echo $SHELL`. This means the shell I'm currently running is the [z shell](https://en.wikipedia.org/wiki/Z_shell). Other popular shells are [bash](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) and [fish](https://fishshell.com/).
+
+If you have no idea which one to choose, I'd recommend the z shell, as it has decent defaults and good compatibility. The difference between shells is around their own language for scripting, some utilities for completion, and how they run and execute commands. For this article, there shouldn't be any difference.
 
 
 # Navigating and editting the command line
@@ -141,7 +149,7 @@ Pretty much every single command will accept `-h` and `--help` to display a help
 
 ## Discovering things with autocompletion
 
-Whenever you are typing a command, you can autocomplete it by pressing <tab>. The completion behaviour will depend on your shell. For example:
+Whenever you are typing a command, you can autocomplete it by pressing `<tab>`. The completion behaviour will depend on your shell. For example:
 
 ```
 $ ls<tab>
@@ -156,7 +164,7 @@ LSCOLORS   lsa        lsbom      lsm        lsof
 ls         lsappinfo  lskq       lsmp       lsvfs
 ```
 
-Whenever you're in doubt, try pressing `<tab>` and see what happens. Some shell like `zsh` or `fish` have really powerfull completions.
+Whenever you're in doubt, try pressing `<tab>` and see what happens. Some shells like `zsh` or `fish` have really powerfull completions.
 
 
 ## Using manual pages
@@ -179,3 +187,8 @@ The manual will be displayed through a command called a pager. By default, it's 
 
 Now you should have some basics to interact with command line tools, and more importantly, the means to discover more if you're stuck.
 Perhaps the best advice I can give is to notice what you're doing a lot, either consciously or by recording your screen and reviewing it later. And then, see if you can improve anything that seems repetitive or disruptive.
+
+
+---
+
+Thanks to Alex for their proofreading and feedback.
