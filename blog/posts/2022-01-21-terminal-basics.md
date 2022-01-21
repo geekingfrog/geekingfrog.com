@@ -20,7 +20,7 @@ A shell is an interactive program that allow the user to start and manage other 
 
 These were the interface connected to the actual computer, a massive machine safely store in a dedicated room.
 
-On macOS, a popular terminal is [iterm2](https://iterm2.com/). On linux, there are many terminal emulators, some popular ones are [urxvt](https://wiki.archlinux.org/title/Rxvt-unicode), [alacritty](https://github.com/alacritty/alacritty) or [kitty](https://sw.kovidgoyal.net/kitty/).
+On macOS, a popular terminal is [iterm2](https://iterm2.com/). On linux, there are many terminal emulators, some popular ones are [urxvt](https://wiki.archlinux.org/title/Rxvt-unicode), [alacritty](https://github.com/alacritty/alacritty) or [kitty](https://sw.kovidgoyal.net/kitty/). I'm less familiar how things work on Windows, [PuTTY](https://en.wikipedia.org/wiki/PuTTY) was mentionned as relatively standard there.
 
 The shell is the default program run inside the terminal emulator.
 
