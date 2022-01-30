@@ -29,21 +29,21 @@ instance H.ToMarkup Index where
 
           section ! class_ "container content" $ do
               H.div ! class_ "posts" $ do
-                  h2 "Blog"
-                  p "Some brain dumps about various things, mostly coding, programming languages and open source projects. Here are the most recent posts."
-                  ul ! class_ "posts-overview posts-overview__index" $
-                      mapM_ ((li ! class_ "posts-overview--item") . postOverview) (take 5 posts)
-              H.div ! class_ "misc" $ do
                   h2 "About me"
-                  p "I'm Greg, polyglot backend developer."
+                  p "I'm Greg, polyglot backend & cloud developer."
                   ul ! class_ "misc-list" $ do
                       li ! class_ "misc-item" $ b "I'm from" >> H.span " France"
                       li ! class_ "misc-item" $ b "I currently work " >> H.span " in the UK"
-                      p "I've built various applications for different business and scales \
+                      p "In 10+ years, I've built various applications for different business and scales \
                       \ (from a few views per days to millions of requests per hour)."
                       p "I've also managed and automated the deployement and monitoring of these service on AWS."
                       p "On the front end, I've translated designer vision into beautiful websites, as \
                       \ well as complex single page application in ember and react."
-                      p "I'm interested in Functional programming (haskell and clojure) and distributed systems."
+
+              H.div ! class_ "misc" $ do
+                  h2 "Blog"
+                  p "Some brain dumps about various things, mostly coding, programming languages and open source projects. Here are the most recent posts."
+                  ul ! class_ "posts-overview posts-overview__index" $
+                      mapM_ ((li ! class_ "posts-overview--item") . postOverview) (take 5 posts)
 
           pageFooter

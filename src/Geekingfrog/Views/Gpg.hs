@@ -31,5 +31,6 @@ instance H.ToMarkup GpgView where
         H.p $ (a ! href "https://latacora.micro.blog/2019/07/16/the-pgp-problem.html" $ "This article") <> text " and the fact that I never use gpg conviced me it's not worth keeping a gpg key."
         H.p $ "If you really want to send me something encrypted, I recommend using " <> (a ! href "https://github.com/FiloSottile/age" $ "age") <> ", with the following ssh public key:"
         pre "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJG+Ud7QuiO+AT6hAnPPhJTpGVI9i833/hYAgN4fXL4A"
+        <> "Email address can be found in the footer."
 
       pageFooter

@@ -27,7 +27,7 @@ navHeader activeItem = header $ H.div ! class_ "container header-container" $ do
   nav $ ul ! class_ "nav-links" $ do
     li ! class_ (makeClass Home activeItem) $ a ! href "/" $ "HOME"
     li ! class_ (makeClass Blog activeItem) $ a ! href "/blog" $ "BLOG"
-    li ! class_ (makeClass Gpg activeItem) $ a ! href "/gpg" $ "GPG"
+    li ! class_ (makeClass Gpg activeItem) $ a ! href "/gpg" $ "GPG*"
   where makeClass item (Just target) | item == target = "nav-link nav-link__active"
                                      | otherwise = "nav-link"
         makeClass item Nothing = "nav-link"
@@ -51,7 +51,7 @@ pageFooter = footer $
   H.div ! class_ "container" $ do
     H.div ! class_ "panel panel-bio" $ do
       h2 "HELLO!"
-      p "My name is Greg. I'm a full stack senior software engineer with a focus on functional programming"
+      p "My name is Greg. I'm a senior software engineer with deep experience in cloud and distributed systems applications."
       p "I have designed, built and deployed in the cloud many kind of APIs and processing pipelines for various industries."
     H.div ! class_ "panel" $ do
       h2 "GET IN TOUCH"
