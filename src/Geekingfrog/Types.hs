@@ -23,3 +23,7 @@ data Post = Post {
 data Tag = Tag {
     tagName :: Text
   } deriving (Show)
+
+data WebsiteType
+    = WebsitePerso
+    | WebsiteCorpo

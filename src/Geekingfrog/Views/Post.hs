@@ -23,11 +23,11 @@ import Geekingfrog.Views.Partials (
 import qualified Geekingfrog.Types as Types
 
 
-data PostView = PostView Types.Post
+data PostView = PostView Types.WebsiteType Types.Post
 
 instance H.ToMarkup PostView where
-  toMarkup (PostView post) = docTypeHtml $ do
-    H.head $ pageHead (Just $ Types.postTitle post)
+  toMarkup (PostView wt post) = docTypeHtml $ do
+    H.head $ pageHead ("Geekingfrog − " <> Types.postTitle post)
 
     body ! class_ "blog" $ do
       navHeader (Just Blog)
@@ -50,13 +50,13 @@ instance H.ToMarkup PostView where
 
         H.div ! class_ "blog-content" $ Types.postHtml post
 
-      pageFooter
+      pageFooter wt
 
-data PostsOverview = PostsOverview [Types.Post]
+data PostsOverview = PostsOverview Types.WebsiteType [Types.Post]
 
 instance H.ToMarkup PostsOverview where
-  toMarkup (PostsOverview posts) = docTypeHtml $ do
-    H.head $ pageHead (Just "blog")
+  toMarkup (PostsOverview wt posts) = docTypeHtml $ do
+    H.head $ pageHead "Geekingfrog − blog"
 
     body ! class_ "blog" $ do
       navHeader (Just Blog)
@@ -70,7 +70,7 @@ instance H.ToMarkup PostsOverview where
           mapM_
             ((li ! class_ "posts-overview--item posts-overview--item__blog") . postOverview)
             posts
-      pageFooter
+      pageFooter wt
 
 
 formatDate :: (Integer, Int, Int) -> Text

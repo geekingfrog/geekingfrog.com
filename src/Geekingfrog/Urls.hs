@@ -2,6 +2,8 @@
 
 module Geekingfrog.Urls where
 
+import Geekingfrog.Types (WebsiteType(..))
+
 import Data.Text
 import Data.Monoid ((<>))
 
@@ -18,7 +20,7 @@ instance Url Views.PostsOverview where
   urlFor _ = "/blog"
 
 instance Url Views.PostView where
-  urlFor (PostView post) = urlFor post
+  urlFor (PostView _ post) = urlFor post
 
 instance Url Views.GpgView where
   urlFor _ = "/gpg"

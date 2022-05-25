@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Geekingfrog.Views.Partials where
@@ -45,9 +46,8 @@ postOverview post = a ! href (postLink post) $ do
     postLink :: Types.Post -> H.AttributeValue
     postLink post = H.toValue $ append "/blog/post/" (Types.postSlug post)
 
-
-pageFooter :: Html
-pageFooter = footer $
+pageFooter :: Types.WebsiteType -> Html
+pageFooter websiteType = footer $
   H.div ! class_ "container" $ do
     H.div ! class_ "panel panel-bio" $ do
       h2 "HELLO!"
@@ -58,19 +58,23 @@ pageFooter = footer $
       p $ do
           "On "
           a ! href "https://www.linkedin.com/in/gr%C3%A9goire-charvet-b62440aa" $ "linkedin"
-          " or at greg＠geekingfrog․com "
+          " or at " <> email websiteType <> " "-- greg＠geekingfrog․com "
           a ! href "http://lea.verou.me/2009/11/yet-another-email-hiding-technique/" $ "(don't copy paste this email."
           ")"
     H.div ! class_ "panel" $ do
       a ! href "/rss" $ h2 "SUBSCRIBE"
       p "RSS is love ♥"
 
+email = \case
+    Types.WebsitePerso -> "greg＠geekingfrog․com"
+    Types.WebsiteCorpo -> "greg＠geekinfrog․com"
 
-pageHead :: Maybe Text -> Html
-pageHead mbTitle = do
+
+pageHead :: Text -> Html
+pageHead title = do
     meta ! charset "utf-8"
     meta ! name "viewport" ! content "width=device-width, initial-scale=1"
-    H.title $ "Geekingfrog" <> text (maybe "" (" — " <>) mbTitle)
+    H.title $ text title
     link ! rel "stylesheet" ! href "/static/styles.css" ! type_ "text/css"
     link ! rel "stylesheet" ! href "/static/highlight.css" ! type_ "text/css"
     link ! rel "alternate" ! href "/rss" ! type_ "application/atom+xml"

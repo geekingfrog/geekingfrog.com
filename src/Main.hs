@@ -112,11 +112,11 @@ generateSitemap postMap = do
   let posts = reverse $ filter ((==) Types.Published . Types.postStatus) $ Map.elems postMap
   let fixedUrls =
         [ -- not completely accurate, but for urlFor this doesn't matter
-          Urls.urlFor $ Views.Index posts,
-          Urls.urlFor Views.GpgView,
-          Urls.urlFor $ Views.PostsOverview posts
+          Urls.urlFor $ Views.MyIndex posts, -- corpo index has the same url
+          Urls.urlFor $ Views.GpgView Types.WebsitePerso,
+          Urls.urlFor $ Views.PostsOverview Types.WebsitePerso posts
         ]
-  let postsUrls = fmap (Urls.urlFor . Views.PostView) posts
+  let postsUrls = fmap (Urls.urlFor . Views.PostView Types.WebsitePerso) posts
   let urls = fmap (Text.append Constants.siteUrl) (fixedUrls ++ postsUrls)
   Text.writeFile "./sitemap.txt" (Text.unlines urls)
 

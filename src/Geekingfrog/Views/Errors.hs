@@ -6,11 +6,12 @@ import Data.Text as T
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 
+import Geekingfrog.Types as Types
 import Geekingfrog.Views.Partials (pageHead, navHeader, pageFooter)
 
-genericError :: Text -> Text -> H.Markup
-genericError title msg = docTypeHtml $ do
-  H.head $ pageHead Nothing
+genericError :: Types.WebsiteType -> Text -> Text -> H.Markup
+genericError wt title msg = docTypeHtml $ do
+  H.head $ pageHead "Geekingfrog"
 
   body ! class_ "home" $ do
     navHeader Nothing
@@ -19,9 +20,10 @@ genericError title msg = docTypeHtml $ do
         h1 ! class_ "main-title main-title__huge" $ text title
     section ! class_ "container content" $
       pre ! class_ "center" ! A.style "width: 50ch;" $ text (frogWithText msg)
-    pageFooter
+    pageFooter wt
 
-notFound = genericError "Oh noooooes!" "Couldn't find what you were looking for."
+-- TODO don't hardcode the type of website corpo/perso
+notFound = genericError Types.WebsitePerso "Oh noooooes!" "Couldn't find what you were looking for."
 
 frogWithText :: Text -> Text
 frogWithText text = let
