@@ -36,7 +36,12 @@ use nom::{
 };
 use std::error::Error;
 
-use pulldown_cmark::{html, Parser};
+use pulldown_cmark::{html, CodeBlockKind, Event, Parser, Tag};
+use syntect::{
+    highlighting::ThemeSet,
+    html::{highlighted_html_for_file, highlighted_html_for_string},
+    parsing::SyntaxSet,
+};
 
 #[derive(Debug)]
 enum PostStatus {
@@ -103,20 +108,102 @@ impl<'a> Post<'a> {
     }
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // post_status("status: published\n")?;
-    // post_title("title: coucou\n")?;
-    // println!("{:?}", post_tags("tags: coucou, blah, moo\n")?);
+struct SyntectEvent<I> {
+    inner: I,
+    tok: Option<String>,
+    syntax_set: SyntaxSet,
+}
 
-    let raw = include_str!("../../blog/posts/2011-05-17-notes-on-ssh-agent.md");
+impl<'a, I> SyntectEvent<I> {
+    fn new(inner: I) -> Self {
+        Self {
+            inner,
+            tok: None,
+            syntax_set: SyntaxSet::load_defaults_newlines(),
+        }
+    }
+}
+
+impl<'a, I> Iterator for SyntectEvent<I>
+where
+    I: Iterator<Item = Event<'a>>,
+{
+    type Item = Event<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.inner.next() {
+            None => None,
+            Some(ev) => match ev {
+                Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(ref tok))) => {
+                    self.tok = Some(tok.to_string());
+                    Some(ev)
+                    // self.next()  // TODO check that, it's fishy, used to strip the <code> block
+                }
+                Event::Text(ref content) => {
+                    if let Some(tok) = &self.tok {
+                        let ts = ThemeSet::load_defaults();
+                        let theme = &ts.themes["Solarized (light)"];
+                        let s = self
+                            .syntax_set
+                            .find_syntax_by_token(&tok)
+                            .unwrap_or_else(|| self.syntax_set.find_syntax_plain_text());
+                        eprintln!("syntax found: {}", s.name);
+                        match highlighted_html_for_string(content, &self.syntax_set, &s, &theme) {
+                            Ok(res) => Some(Event::Html(res.into())),
+                            Err(err) => {
+                                eprintln!("error during html conversion: {:?}", err);
+                                Some(ev)
+                            }
+                        }
+                    } else {
+                        Some(ev)
+                    }
+                },
+                Event::End(Tag::CodeBlock(CodeBlockKind::Fenced(_))) => {
+                    self.tok = None;
+                    Some(ev)
+                },
+                _ => Some(ev),
+            },
+        }
+    }
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let raw = include_str!("../../test.md");
     let post = Post::from_str(raw)?;
     let parser = Parser::new(post.raw_content);
+
+    // let ts = ThemeSet::load_defaults();
+    // let ss = SyntaxSet::load_defaults_newlines();
+    // let theme = &ts.themes["Solarized (light)"];
+
+    // for event in &parser {
+    //     println!("{:?}", event);
+    //     // if let Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(tok))) = event {
+    //     //     println!("!!!!!!!!!!!!!! got a token {tok:?}");
+    //     //     let syn = ss.find_syntax_by_token(&tok).as_ref().map(|x| &*x.name);
+    //     //     println!("syntax? {:?}", syn);
+    //     // }
+    // }
+
+    let events = SyntectEvent::new(parser);
     let mut html_output = String::new();
-    html::push_html(&mut html_output, parser);
-    println!("title: {}", post.title);
-    println!("tags: {:?}", post.tags);
-    println!("status: {:?}", post.status);
+    html::push_html(&mut html_output, events);
     println!("{}", html_output);
+
+    // println!("title: {}", post.title);
+    // println!("tags: {:?}", post.tags);
+    // println!("status: {:?}", post.status);
+
+    // for sr in ss.syntaxes() {
+    //     println!("{} - {:?}", sr.name, sr.file_extensions);
+    // }
+
+    // let ts = ThemeSet::load_defaults();
+    // let theme = &ts.themes["Solarized (light)"];
+    // let html = highlighted_html_for_file("src/bin/geekingfrog.rs", &ss, theme).unwrap();
+    // println!("{}", html);
 
     Ok(())
 }
