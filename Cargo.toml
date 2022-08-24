@@ -6,14 +6,19 @@ edition = "2021"
 
 
 [dependencies]
-axum = { version = "0.5.4", features = ["headers"] }
+axum = { version = "0.6.0-rc.1" }
 hyper = { version = "0.14.18", features = ["full"] }
 liquid = "0.26.0"
 nom = "7.1.1"
+notify = "4.0.17"
+parking_lot = "0.12.1"
 pulldown-cmark = "0.9.1"
 syntect = "5.0.0"
+tera = "1.17.0"
+thiserror = "1.0.32"
 tokio = { version = "1.18.1", features = ["full"] }
 tower = "0.4.12"
+tower-http = { version="0.3.4", features = ["trace"] }
 tracing = "0.1.34"
 tracing-subscriber = { version = "0.3.11", features = ["env-filter"] }
 tracing-tree = "0.2.0"
