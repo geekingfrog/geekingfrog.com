@@ -218,22 +218,31 @@
 // Axum test
 //****************************************
 use axum::{
-    extract::State,
+    extract::{
+        ws::{Message, WebSocket},
+        State, WebSocketUpgrade,
+    },
     http::StatusCode,
     response::{Html, IntoResponse, Response},
-    routing::get,
+    routing::{get, get_service},
     BoxError, Router,
 };
-use notify::{watcher, RecursiveMode, Watcher};
+use notify::{watcher, RecursiveMode, Watcher, raw_watcher};
 use parking_lot::RwLock;
-use std::{net::SocketAddr, sync::Arc, time::Duration};
+use std::{
+    net::SocketAddr,
+    sync::{mpsc, Arc},
+    time::Duration,
+};
 use tera::Tera;
+use tokio::sync::watch::{self, Receiver, Sender};
 use tower::ServiceBuilder;
-use tower_http::trace::TraceLayer;
+use tower_http::{services::ServeDir, trace::TraceLayer};
 
 #[derive(Clone)]
 struct AppState {
     template: Arc<RwLock<Tera>>,
+    refresh_chan: Receiver<()>,
 }
 
 #[tokio::main]
@@ -243,20 +252,38 @@ async fn main() -> Result<(), BoxError> {
     let tera = Arc::new(RwLock::new(
         Tera::new("templates/**/*.html").expect("can get tera"),
     ));
+    let (refresh_tx, refresh_rx) = watch::channel(());
+
+    // force a new value from the initial one so that calling rx.watch
+    // is sure to return something.
+    refresh_tx.send(())?;
+
     let app_state = AppState {
         template: tera.clone(),
+        refresh_chan: refresh_rx,
     };
 
     let service = ServiceBuilder::new().layer(TraceLayer::new_for_http());
+    // .layer(ServeDir::new("templates"));
 
     let app = Router::with_state(app_state)
+        .layer(service)
         .route("/", get(root))
-        .layer(service);
+        .route("/ws/autorefresh", get(autorefresh_handler))
+        .nest(
+            "/static",
+            get_service(ServeDir::new("static")).handle_error(|err: std::io::Error| async move {
+                tracing::info!("Error serving static staff: {err:?}");
+                (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}"))
+            }),
+        );
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
 
     tokio::try_join!(
-        async { tokio::task::spawn_blocking(move || watch_templates_change(tera)).await? },
+        async {
+            tokio::task::spawn_blocking(move || watch_templates_change(tera, refresh_tx)).await?
+        },
         async {
             tracing::debug!("Listening on {addr}");
             axum::Server::bind(&addr)
@@ -277,6 +304,59 @@ async fn root(State(state): State<AppState>) -> Result<Html<String>, AppError> {
         .into())
 }
 
+async fn autorefresh_handler(
+    ws: WebSocketUpgrade,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    tracing::debug!("got a websocket upgrade request");
+    ws.on_upgrade(|socket| handle_socket(socket, state.refresh_chan))
+}
+
+async fn handle_socket(mut socket: WebSocket, mut refresh_tx: Receiver<()>) {
+    // There's this weird problem, if a watched file has changed at some point
+    // there will be a new value on the refresh_rx channel, and calling
+    // `changed` on it will return immediately, even if the change has happened
+    // before this call. So always ignore the first change on the channel.
+    // The sender will always send a new value after channel creation to avoid
+    // a different behavior between pages loaded before and after a change
+    // to a watched file.
+    let mut has_seen_one_change = false;
+    loop {
+        tokio::select! {
+            x = refresh_tx.changed() => {
+                tracing::debug!("refresh event!");
+                if !has_seen_one_change {
+                    has_seen_one_change = true;
+                    continue
+                }
+
+                match x {
+                    Ok(_) => if socket.send(Message::Text("refresh".to_string())).await.is_err() {
+                        tracing::debug!("cannot send stuff, socket probably disconnected");
+                        break;
+                    },
+                    Err(err) => {
+                        tracing::error!("Cannot read refresh chan??? {err:?}");
+                        break
+                    },
+                }
+            }
+            msg = socket.recv() => {
+                match msg {
+                    Some(_) => {
+                        tracing::debug!("received a websocket message, don't care");
+                    },
+                    None => {
+                        tracing::debug!("websocket disconnected");
+                        break
+                    },
+                }
+            }
+            else => break
+        }
+    }
+}
+
 #[derive(thiserror::Error, Debug)]
 enum AppError {
     #[error("Template error")]
@@ -295,17 +375,54 @@ impl IntoResponse for AppError {
     }
 }
 
-fn watch_templates_change(tera: Arc<RwLock<Tera>>) -> Result<(), BoxError> {
+fn watch_templates_change(tera: Arc<RwLock<Tera>>, refresh_tx: Sender<()>) -> Result<(), BoxError> {
     let (tx, rx) = std::sync::mpsc::channel();
-    let mut watcher = watcher(tx, Duration::from_secs(1))?;
+    let rx = Debounced {
+        rx,
+        d: Duration::from_millis(300),
+    };
+    let mut watcher = raw_watcher(tx)?;
     watcher.watch("templates", RecursiveMode::Recursive)?;
     loop {
-        match rx.recv_timeout(Duration::from_millis(200)) {
+        match rx.recv() {
             Ok(ev) => {
                 tracing::info!("debounced event {ev:?}");
                 tera.write().full_reload()?;
+                refresh_tx.send(())?;
             }
             Err(_timeout_error) => (),
+        }
+    }
+}
+
+/// wrap a Receiver<T> such that if many T are received between the given Duration
+/// then only the latest one will be kept and returned when calling recv
+struct Debounced<T> {
+    rx: mpsc::Receiver<T>,
+    d: Duration,
+}
+
+impl<T> Debounced<T> {
+    fn recv(&self) -> Result<T, mpsc::RecvError> {
+        let mut prev = None;
+
+        loop {
+            match prev {
+                Some(v) => match self.rx.recv_timeout(self.d) {
+                    Ok(newval) => {
+                        prev = Some(newval);
+                        continue;
+                    }
+                    Err(_) => break Ok(v),
+                },
+                None => match self.rx.recv() {
+                    Ok(val) => {
+                        prev = Some(val);
+                        continue;
+                    }
+                    Err(err) => break Err(err),
+                },
+            }
         }
     }
 }
