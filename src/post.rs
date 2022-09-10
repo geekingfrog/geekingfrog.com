@@ -1,15 +1,19 @@
+use std::ops::RangeFrom;
+
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till, take_until},
-    character::complete::{newline, space0, space1},
+    character::complete::{newline, space0},
     combinator::map,
+    error::ParseError,
     multi::separated_list0,
-    sequence::{delimited, pair, tuple},
-    Finish, IResult,
+    sequence::{delimited, pair, tuple, terminated},
+    AsChar, Compare, Finish, IResult, InputIter, InputLength, InputTake, InputTakeAtPosition,
+    Slice,
 };
 use time::Date;
 
-#[derive(Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub enum PostStatus {
     Draft,
     Published,
@@ -29,13 +33,28 @@ pub struct Post {
     pub raw_content: String,
 }
 
+fn header_key<T, Input, E: ParseError<Input>>(k: T) -> impl FnMut(Input) -> IResult<Input, (), E>
+where
+    Input:
+        InputTake + InputTakeAtPosition + Compare<T> + Clone + InputIter + Slice<RangeFrom<usize>>,
+    <Input as InputTakeAtPosition>::Item: AsChar + Clone,
+    <Input as InputIter>::Item: AsChar,
+    T: InputLength + Clone,
+    // ^ 😱 I was just following orders from rust-analyzer
+{
+    map(
+        tuple((tag(k), space0, nom::character::complete::char(':'), space0)),
+        |_| (),
+    )
+}
+
 fn post_title(input: &str) -> IResult<&str, &str> {
-    delimited(tag("title"), take_until("\n"), newline)(input)
+    delimited(header_key("title"), take_until("\n"), newline)(input)
 }
 
 fn post_tags(input: &str) -> IResult<&str, Vec<&str>> {
     delimited(
-        pair(tag("tags:"), space0),
+        header_key("tags"),
         separated_list0(
             tuple((space0, tag(","), space0)),
             take_till(|c| c == ',' || c == '\n'),
@@ -46,9 +65,8 @@ fn post_tags(input: &str) -> IResult<&str, Vec<&str>> {
 
 fn post_status(input: &str) -> IResult<&str, PostStatus> {
     delimited(
-        tag("status:"),
-        delimited(
-            space1,
+        header_key("status"),
+        terminated(
             alt((
                 map(tag("published"), |_| PostStatus::Published),
                 map(tag("draft"), |_| PostStatus::Draft),
@@ -77,7 +95,10 @@ impl Post {
         };
 
         let format = time::macros::format_description!("[year]-[month]-[day]");
-        let sub_str = filename.chars().take("YYYY-MM-DD".len()).collect::<String>();
+        let sub_str = filename
+            .chars()
+            .take("YYYY-MM-DD".len())
+            .collect::<String>();
         let date = Date::parse(&sub_str, &format)
             .map_err(|e| nom::error::make_error(format!("{e:?}"), nom::error::ErrorKind::Fail))?;
 
@@ -91,5 +112,52 @@ impl Post {
             status,
             raw_content: remaining.to_string(),
         })
+    }
+}
+
+#[cfg(test)]
+mod test {
+    type BoxResult<T> = Result<T, Box<dyn std::error::Error>>;
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn test_parse_title() -> BoxResult<()> {
+        assert_eq!(post_title("title: coucou\n"), Ok(("", "coucou")));
+        assert_eq!(post_title("title  : coucou\n"), Ok(("", "coucou")));
+        assert_eq!(post_title("title:coucou\n"), Ok(("", "coucou")));
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_status() -> BoxResult<()> {
+        assert_eq!(post_tags("tags: one, two\n"), Ok(("", vec!["one", "two"])));
+        assert_eq!(
+            post_tags("tags  : one, two\n"),
+            Ok(("", vec!["one", "two"]))
+        );
+        assert_eq!(post_tags("tags:one, two\n"), Ok(("", vec!["one", "two"])));
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_tags() -> BoxResult<()> {
+        assert_eq!(
+            post_status("status: published\n"),
+            Ok(("", PostStatus::Published))
+        );
+        assert_eq!(
+            post_status("status  : published\n"),
+            Ok(("", PostStatus::Published))
+        );
+        assert_eq!(
+            post_status("status:published\n"),
+            Ok(("", PostStatus::Published))
+        );
+        assert_eq!(
+            post_status("status: draft\n"),
+            Ok(("", PostStatus::Draft))
+        );
+        Ok(())
     }
 }

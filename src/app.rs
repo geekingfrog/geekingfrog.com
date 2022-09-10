@@ -1,15 +1,15 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use axum::extract::ws::{WebSocket, Message};
-use axum::extract::{WebSocketUpgrade, State};
+use axum::extract::ws::{Message, WebSocket};
+use axum::extract::{State, WebSocketUpgrade};
 use axum::response::IntoResponse;
 use axum::{routing, BoxError, Router};
 use hyper::StatusCode;
 use notify::Watcher;
 use parking_lot::RwLock;
 use tera::Tera;
-use tokio::sync::watch::{Sender, Receiver};
+use tokio::sync::watch::{Receiver, Sender};
 use tower::ServiceBuilder;
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
@@ -87,8 +87,10 @@ async fn handle_socket(mut socket: WebSocket, mut refresh_tx: Receiver<()>) {
     }
 }
 
-
-pub fn watch_templates_change(tera: Arc<RwLock<Tera>>, refresh_tx: Sender<()>) -> Result<(), BoxError> {
+pub fn watch_templates_change(
+    tera: Arc<RwLock<Tera>>,
+    refresh_tx: Sender<()>,
+) -> Result<(), BoxError> {
     let (tx, rx) = std::sync::mpsc::channel();
     let rx = Debounced {
         rx,
@@ -105,8 +107,10 @@ pub fn watch_templates_change(tera: Arc<RwLock<Tera>>, refresh_tx: Sender<()>) -
         match rx.recv() {
             Ok(ev) => {
                 tracing::info!("debounced event {ev:?}");
-                tera.write().full_reload()?;
-                refresh_tx.send(())?;
+                match tera.write().full_reload() {
+                    Ok(_) => refresh_tx.send(())?,
+                    Err(err) => tracing::error!("failed to reload templates: {err:?}"),
+                }
             }
             Err(_timeout_error) => (),
         }

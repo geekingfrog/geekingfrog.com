@@ -16,6 +16,7 @@ notify = "4.0.17"
 parking_lot = "0.12.1"
 pulldown-cmark = "0.9.1"
 rayon = "1.5.3"
+serde = { version = "1.0.144", features = ["derive"] }
 syntect = "5.0.0"
 tera = "1.17.0"
 thiserror = "1.0.32"
@@ -34,3 +35,6 @@ path = "src/bin/geekingfrog.rs"
 [[bin]]
 name = "testingfrog"
 path = "src/bin/testingfrog.rs"
+
+[dev-dependencies]
+pretty_assertions = "1.3.0"

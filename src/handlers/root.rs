@@ -5,25 +5,45 @@ use crate::post::{Post, PostStatus};
 use crate::state::AppState;
 use tokio::fs;
 
+#[derive(serde::Serialize)]
+struct PostHeader {
+    date: String,
+    title: String,
+    tags: Vec<String>,
+}
+
+impl From<Post> for PostHeader {
+    fn from(p: Post) -> Self {
+        let format = time::macros::format_description!("[month]-[year]");
+        Self {
+            date: p.date.format(&format).unwrap(),
+            title: p.title,
+            tags: p.tags,
+        }
+    }
+}
+
 #[tracing::instrument]
 pub async fn get(State(state): State<AppState>) -> Result<Html<String>> {
     let mut posts = read_all_posts().await?;
     posts.sort_unstable_by_key(|p| p.date);
     let posts = posts;
 
-    for p in posts
-        .iter()
+    let top_headers = posts
+        .into_iter()
         .rev()
         .filter(|p| matches!(p.status, PostStatus::Published))
         .take(5)
-    {
-        println!("{} - {}", p.date, p.title);
-    }
+        .map(|p| p.into())
+        .collect::<Vec<PostHeader>>();
+
+    let mut tpl_context = tera::Context::new();
+    tpl_context.insert("top_posts_headers", &top_headers);
 
     Ok(state
         .template
         .read()
-        .render("index.html", &tera::Context::new())?
+        .render("index.html", &tpl_context)?
         .into())
 }
 

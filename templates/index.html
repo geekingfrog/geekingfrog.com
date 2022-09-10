@@ -61,51 +61,23 @@
         <h2>Blog</h2>
         <p>Some brain dumps about various things, mostly coding, programming languages and open source projects. Here are the most recent posts.</p>
         <ul class="posts-overview posts-overview__index">
-          <li class="posts-overview--item">
+          {% for post_header in top_posts_headers %}
+            <li class="posts-overview--item">
+            <!-- TODO fix the url -->
             <a href="/blog/post/clojure-context-logging">
-              <span class="date">06/2022</span>
+              <span class="date">{{ post_header.date }}</span>
               <span class="right">
-                <span class="blog-title">Contextual logging in clojure with timbre</span>
-                <span class="blog-tags">#clojure, #logging</span>
+                <span class="blog-title">{{ post_header.title }}</span>
+                <span class="blog-tags">
+                  {% for tag in post_header.tags %}
+                  #{{tag}}
+                  {%- if not loop.last -%} , {% endif %}
+                  {% endfor %}
+                </span>
               </span>
             </a>
           </li>
-          <li class="posts-overview--item">
-            <a href="/blog/post/terminal-basics">
-              <span class="date">01/2022</span>
-              <span class="right">
-                <span class="blog-title">Terminal basics</span>
-                <span class="blog-tags">#linux, #shell</span>
-              </span>
-            </a>
-          </li>
-          <li class="posts-overview--item">
-            <a href="/blog/post/advent-of-code-2021-1s">
-              <span class="date">01/2022</span>
-              <span class="right">
-                <span class="blog-title">Advent of code 2021 under 1 second</span>
-                <span class="blog-tags">#rust</span>
-              </span>
-            </a>
-          </li>
-          <li class="posts-overview--item">
-            <a href="/blog/post/pihole-dropping-dns-requests">
-              <span class="date">09/2021</span>
-              <span class="right">
-                <span class="blog-title">Investigating dropped DNS requests with pi-hole</span>
-                <span class="blog-tags">#networking</span>
-              </span>
-            </a>
-          </li>
-          <li class="posts-overview--item">
-            <a href="/blog/post/leaddev-conference">
-              <span class="date">09/2021</span>
-              <span class="right">
-                <span class="blog-title">Leaddev virtual conference</span>
-                <span class="blog-tags">#conference, #career</span>
-              </span>
-            </a>
-          </li>
+          {% endfor %}
         </ul>
       </div>
     </section>
