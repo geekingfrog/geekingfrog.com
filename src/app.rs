@@ -14,14 +14,15 @@ use tower::ServiceBuilder;
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
 
-use crate::handlers::root;
+use crate::handlers;
 use crate::state::AppState;
 
 pub fn build(app_state: AppState) -> Router<AppState> {
     let service = ServiceBuilder::new().layer(TraceLayer::new_for_http());
     Router::with_state(app_state)
         .layer(service)
-        .route("/", routing::get(root::get))
+        .route("/", routing::get(handlers::root::get))
+        .route("/blog", routing::get(handlers::blog::get_all_posts))
         .route("/ws/autorefresh", routing::get(autorefresh_handler))
         .nest(
             "/static",

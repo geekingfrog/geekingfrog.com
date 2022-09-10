@@ -1,0 +1,17 @@
+{% macro post_header(post, more_classes="") %}
+<li class="posts-overview--item {{more_classes}}">
+<!-- TODO fix the url -->
+<a href="/blog/post/clojure-context-logging">
+  <span class="date">{{ post.date }}</span>
+  <span class="right">
+    <span class="blog-title">{{ post.title }}</span>
+    <span class="blog-tags">
+      {% for tag in post.tags %}
+      #{{tag}}
+      {%- if not loop.last -%} , {% endif %}
+      {% endfor %}
+    </span>
+  </span>
+</a>
+</li>
+{% endmacro post_header %}

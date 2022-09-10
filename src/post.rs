@@ -1,4 +1,5 @@
 use std::ops::RangeFrom;
+use crate::error::{AppError, IOContext};
 
 use nom::{
     branch::alt,
@@ -12,6 +13,7 @@ use nom::{
     Slice,
 };
 use time::Date;
+use tokio::fs;
 
 #[derive(PartialEq, Eq, Debug)]
 pub enum PostStatus {
@@ -114,6 +116,37 @@ impl Post {
         })
     }
 }
+
+#[tracing::instrument]
+pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
+    let mut read_dir = fs::read_dir("./blog/posts/")
+        .await
+        .io_context("./blog/posts")?;
+
+    let mut res = Vec::new();
+    while let Some(entry) = read_dir
+        .next_entry()
+        .await
+        .map_err(|e| AppError::IOError(e, "reading post entry"))?
+    {
+        if !entry.file_type().await.io_context("coucou")?.is_file() {
+            continue;
+        };
+        tracing::debug!("reading {:?}", entry.path());
+        let post = Post::parse(
+            &entry
+                .path()
+                .file_name()
+                .expect("valid utf-8 filename")
+                .to_string_lossy(),
+            &fs::read_to_string(entry.path()).await.unwrap(),
+        )
+        .map_err(|e| AppError::ParseError(e, entry.path().to_string_lossy().to_string()))?;
+        res.push(post);
+    }
+    Ok(res)
+}
+
 
 #[cfg(test)]
 mod test {
