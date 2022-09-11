@@ -1,18 +1,15 @@
 use axum::{extract::State, response::Html};
 
 use crate::error::Result;
-use crate::post::{read_all_posts, PostStatus};
-use crate::state::AppState;
 use crate::handlers::blog::PostHeader;
+use crate::post::PostStatus;
+use crate::state::AppState;
 
 #[tracing::instrument]
 pub async fn get(State(state): State<AppState>) -> Result<Html<String>> {
-    let mut posts = read_all_posts().await?;
-    posts.sort_unstable_by_key(|p| p.date);
-    let posts = posts;
-
-    let top_headers = posts
-        .into_iter()
+    let top_headers = state
+        .posts
+        .iter()
         .rev()
         .filter(|p| matches!(p.status, PostStatus::Published))
         .take(5)

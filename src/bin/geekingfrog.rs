@@ -4,7 +4,7 @@ use axum::BoxError;
 use parking_lot::RwLock;
 use tera::Tera;
 use tokio::sync::watch;
-use website::{app, state::AppState};
+use website::{app, post::read_all_posts, state::AppState};
 
 #[tokio::main]
 async fn main() -> Result<(), BoxError> {
@@ -17,9 +17,13 @@ async fn main() -> Result<(), BoxError> {
     // is sure to return something.
     refresh_tx.send(())?;
 
+    let mut posts = read_all_posts().await?;
+    posts.sort_unstable_by(|a, b| a.date.cmp(&b.date));
+
     let app_state = AppState {
         template: tera.clone(),
         refresh_chan: refresh_rx,
+        posts: Arc::new(posts),
     };
 
     let app = app::build(app_state);

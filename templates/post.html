@@ -1,0 +1,38 @@
+{# vim: set ft=jinja #}
+{% import "macros.html" as macros %}
+
+{% extends "base.html" %}
+{% block homeclass %}
+class="blog"
+{% endblock %}
+
+{% block sections %}
+
+<section class="hero">
+  <div class="container hero-container">
+    <h1 class="main-title main-title__blog"> {{ post.title }} </h1>
+  </div>
+</section>
+
+<section class="container content">
+  <div class="blog-meta-container">
+    <ul>
+      <li class="blog-meta-section">
+        <span class="name">POSTED:</span>
+        <span class="value">{{post.date}}</span>
+      </li>
+      <li class="blog-meta-section">
+        <span class="name">TAGGED:</span>
+        <span class="value">
+          {% for tag in post.tags %} #{{tag}} {% endfor %}
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="blog-content">
+    {{post.html | safe}}
+  </div>
+</section>
+
+{% endblock sections %}

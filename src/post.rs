@@ -15,7 +15,7 @@ use nom::{
 use time::Date;
 use tokio::fs;
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone, Copy)]
 pub enum PostStatus {
     Draft,
     Published,
@@ -27,6 +27,7 @@ pub enum PostStatus {
 // but it complicated things a great deal having to keep around the raw
 // strings alongside the Post (tried self ref structs, didn't work).
 // So do some good old cloning when constructing from nom parsed results.
+#[derive(Debug, Clone)]
 pub struct Post {
     pub date: Date,
     pub title: String,

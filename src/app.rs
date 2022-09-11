@@ -23,6 +23,7 @@ pub fn build(app_state: AppState) -> Router<AppState> {
         .layer(service)
         .route("/", routing::get(handlers::root::get))
         .route("/blog", routing::get(handlers::blog::get_all_posts))
+        .route("/blog/post/:slug", routing::get(handlers::blog::get_post))
         .route("/gpg", routing::get(handlers::gpg::get))
         .route("/ws/autorefresh", routing::get(autorefresh_handler))
         .nest(
