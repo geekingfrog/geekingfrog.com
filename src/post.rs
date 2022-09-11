@@ -1,14 +1,14 @@
-use std::ops::RangeFrom;
 use crate::error::{AppError, IOContext};
+use std::ops::RangeFrom;
 
 use nom::{
     branch::alt,
-    bytes::complete::{tag, take_till, take_until},
+    bytes::complete::{tag, take, take_till, take_until},
     character::complete::{newline, space0},
     combinator::map,
     error::ParseError,
     multi::separated_list0,
-    sequence::{delimited, pair, tuple, terminated},
+    sequence::{delimited, pair, separated_pair, terminated, tuple},
     AsChar, Compare, Finish, IResult, InputIter, InputLength, InputTake, InputTakeAtPosition,
     Slice,
 };
@@ -30,6 +30,7 @@ pub enum PostStatus {
 pub struct Post {
     pub date: Date,
     pub title: String,
+    pub slug: String,
     pub tags: Vec<String>,
     pub status: PostStatus,
     pub raw_content: String,
@@ -87,29 +88,34 @@ fn post_header(input: &str) -> IResult<&str, (&str, Vec<&str>, PostStatus)> {
     )(input)
 }
 
+/// extract the url friendly slug and the date of the post based on the filename
+/// 2022-06-29-clojure-context-logging.md will give
+/// (2022-06-29, clojure-context-logging)
+fn post_metadata(input: &str) -> IResult<&str, (&str, &str)> {
+    separated_pair(
+        take("yyyy-mm-dd".len()),
+        nom::character::complete::char('-'),
+        take_until("."),
+    )(input)
+}
+
 impl Post {
     pub fn parse(filename: &str, input: &str) -> Result<Post, nom::error::Error<String>> {
-        // bit meh to convert the parse error for date into a nom error
-        if filename.len() < 10 {
-            let err =
-                nom::error::make_error(filename.to_string(), nom::error::ErrorKind::LengthValue);
-            return Err(err);
-        };
+        let (_remaining, (raw_date, slug)) =
+            post_metadata(filename).map_err(|e| e.to_owned()).finish()?;
 
         let format = time::macros::format_description!("[year]-[month]-[day]");
-        let sub_str = filename
-            .chars()
-            .take("YYYY-MM-DD".len())
-            .collect::<String>();
-        let date = Date::parse(&sub_str, &format)
+        let date = Date::parse(raw_date, &format)
             .map_err(|e| nom::error::make_error(format!("{e:?}"), nom::error::ErrorKind::Fail))?;
 
         // let date = Date::parse
         let (remaining, (title, tags, status)) =
             post_header(input).map_err(|e| e.to_owned()).finish()?;
+
         Ok(Self {
             date,
             title: title.to_string(),
+            slug: slug.to_string(),
             tags: tags.into_iter().map(|s| s.to_string()).collect(),
             status,
             raw_content: remaining.to_string(),
@@ -146,7 +152,6 @@ pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
     }
     Ok(res)
 }
-
 
 #[cfg(test)]
 mod test {
@@ -187,9 +192,15 @@ mod test {
             post_status("status:published\n"),
             Ok(("", PostStatus::Published))
         );
+        assert_eq!(post_status("status: draft\n"), Ok(("", PostStatus::Draft)));
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_metadata() -> BoxResult<()> {
         assert_eq!(
-            post_status("status: draft\n"),
-            Ok(("", PostStatus::Draft))
+            post_metadata("2022-06-29-clojure-context-logging.md"),
+            Ok((".md", ("2022-06-29", "clojure-context-logging")))
         );
         Ok(())
     }

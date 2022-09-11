@@ -9,6 +9,7 @@ use crate::state::AppState;
 pub struct PostHeader {
     date: String,
     title: String,
+    slug: String,
     tags: Vec<String>,
 }
 
@@ -18,6 +19,7 @@ impl From<Post> for PostHeader {
         Self {
             date: p.date.format(&format).unwrap(),
             title: p.title,
+            slug: p.slug,
             tags: p.tags,
         }
     }
