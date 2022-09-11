@@ -14,7 +14,7 @@ pub struct PostHeader {
 
 impl From<Post> for PostHeader {
     fn from(p: Post) -> Self {
-        let format = time::macros::format_description!("[month]-[year]");
+        let format = time::macros::format_description!("[month]/[year]");
         Self {
             date: p.date.format(&format).unwrap(),
             title: p.title,
@@ -23,6 +23,7 @@ impl From<Post> for PostHeader {
     }
 }
 
+#[tracing::instrument(skip(state))]
 pub async fn get_all_posts(State(state): State<AppState>) -> Result<Html<String>> {
     let mut posts = read_all_posts().await?;
     posts.sort_unstable_by_key(|p| p.date);

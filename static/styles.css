@@ -248,7 +248,7 @@ nav {
 }
 
 .posts {
-  float: left;
+  float: right;
   width: 48%;
 }
 
@@ -260,7 +260,7 @@ nav {
 }
 
 .misc {
-  float: right;
+  float: left;
   width: 48%;
 }
 
