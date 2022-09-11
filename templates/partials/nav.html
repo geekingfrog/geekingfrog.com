@@ -1,12 +1,12 @@
 <nav>
   <ul class="nav-links">
-    <li class="nav-link {% if nav_target == 'HOME' %} nav-link__active {% endif %}">
+    <li class="nav-link {% if nav_target and nav_target == 'HOME' %} nav-link__active {% endif %}">
       <a href="/">HOME</a>
     </li><!--
-    --><li class="nav-link {% if nav_target == 'BLOG' %} nav-link__active {% endif %}">
+    --><li class="nav-link {% if nav_target and nav_target == 'BLOG' %} nav-link__active {% endif %}">
       <a href="/blog">BLOG</a>
     </li><!--
-    --><li class="nav-link {% if nav_target == 'GPG' %} nav-link__active {% endif %}">
+    --><li class="nav-link {% if nav_target and nav_target == 'GPG' %} nav-link__active {% endif %}">
       <a href="/gpg">GPG*</a>
     </li>
   </ul>

@@ -34,6 +34,7 @@ pub fn build(app_state: AppState) -> Router<AppState> {
                 },
             ),
         )
+        .fallback(handlers::not_found::not_found)
 }
 
 async fn autorefresh_handler(
