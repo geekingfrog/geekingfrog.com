@@ -10,6 +10,7 @@ use website::{app, post::read_all_posts, state::AppState};
 async fn main() -> Result<(), BoxError> {
     tracing_subscriber::fmt::init();
 
+
     let tera = Arc::new(RwLock::new(Tera::new("templates/**/*.html")?));
     let (refresh_tx, refresh_rx) = watch::channel(());
 
@@ -17,8 +18,12 @@ async fn main() -> Result<(), BoxError> {
     // is sure to return something.
     refresh_tx.send(())?;
 
+    // TODO: perhaps I should cache the rendered posts instead of just the raw text
     let mut posts = read_all_posts().await?;
-    posts.sort_unstable_by(|a, b| a.date.cmp(&b.date));
+    posts.sort_unstable_by(|a, b| a.date.cmp(&b.date).reverse());
+
+    // println!("{}", website::feed::build(&posts));
+    // return Ok(());
 
     let app_state = AppState {
         template: tera.clone(),

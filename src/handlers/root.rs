@@ -10,7 +10,6 @@ pub async fn get(State(state): State<AppState>) -> Result<Html<String>> {
     let top_headers = state
         .posts
         .iter()
-        .rev()
         .filter(|p| matches!(p.status, PostStatus::Published))
         .take(5)
         .map(|p| p.into())

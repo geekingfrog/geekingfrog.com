@@ -6,7 +6,9 @@ edition = "2021"
 
 
 [dependencies]
+atom_syndication = "0.11.0"
 axum = { version = "0.6.0-rc.1", features = ["ws"] }
+chrono = "0.4.22"
 futures = "0.3.24"
 hyper = { version = "0.14.18", features = ["full"] }
 itertools = "0.10.3"
