@@ -4,7 +4,6 @@ use axum::response::Html;
 use crate::error::Result;
 use crate::post::{Post, PostStatus};
 use crate::state::AppState;
-use crate::html::HtmlRenderer;
 
 #[derive(serde::Serialize)]
 pub struct PostHeader {
@@ -68,17 +67,12 @@ struct RenderedPost {
 impl From<Post> for RenderedPost {
     fn from(p: Post) -> Self {
         let format = time::macros::format_description!("[day] [month repr:short] [year]");
-        // let parser = Parser::new(&p.raw_content);
-        // let events = SyntectEvent::new(parser);
-        // let mut html_output = String::new();
-        // html::push_html(&mut html_output, events);
-        let html = HtmlRenderer::new().render_content(&p.raw_content);
 
         RenderedPost {
             date: p.date.format(&format).unwrap(),
             title: p.title.to_string(),
             tags: p.tags,
-            html,
+            html: p.html_content,
         }
     }
 }

@@ -1,4 +1,4 @@
-use crate::error::{AppError, IOContext};
+use crate::{error::{AppError, IOContext}, html::HtmlRenderer};
 use std::ops::RangeFrom;
 
 use nom::{
@@ -35,6 +35,7 @@ pub struct Post {
     pub tags: Vec<String>,
     pub status: PostStatus,
     pub raw_content: String,
+    pub html_content: String,
 }
 
 fn header_key<T, Input, E: ParseError<Input>>(k: T) -> impl FnMut(Input) -> IResult<Input, (), E>
@@ -113,6 +114,7 @@ impl Post {
         let (remaining, (title, tags, status)) =
             post_header(input).map_err(|e| e.to_owned()).finish()?;
 
+
         Ok(Self {
             date,
             title: title.to_string(),
@@ -120,6 +122,7 @@ impl Post {
             tags: tags.into_iter().map(|s| s.to_string()).collect(),
             status,
             raw_content: remaining.to_string(),
+            html_content: HtmlRenderer::new().render_content(remaining),
         })
     }
 }
@@ -131,6 +134,7 @@ pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
         .io_context("./blog/posts")?;
 
     let mut res = Vec::new();
+    // TODO can parallelize that to speed up startup time
     while let Some(entry) = read_dir
         .next_entry()
         .await

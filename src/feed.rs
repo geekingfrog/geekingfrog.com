@@ -5,7 +5,6 @@ use atom_syndication::{
 use chrono::naive::{NaiveDate, NaiveDateTime};
 use chrono::DateTime;
 
-use crate::html::HtmlRenderer;
 use crate::post::{Post, PostStatus};
 
 /// content: sorted list of posts, newest first.
@@ -17,11 +16,9 @@ pub fn build_page(content: &[Post], page: usize) -> Option<String> {
         .email(Some("greg@geekingfrog.com".to_string()))
         .build();
 
-    let html_renderer = HtmlRenderer::new();
     let page_size = 10;
 
     let entries = build_entries(
-        &html_renderer,
         author.clone(),
         content
             .iter()
@@ -93,7 +90,7 @@ pub fn build_page(content: &[Post], page: usize) -> Option<String> {
     Some(feed.to_string())
 }
 
-fn build_entries<'a, P>(renderer: &HtmlRenderer, author: Person, posts: P) -> Vec<Entry>
+fn build_entries<'a, P>(author: Person, posts: P) -> Vec<Entry>
 where
     P: Iterator<Item = &'a Post>,
 {
@@ -106,7 +103,7 @@ where
                 .collect::<Vec<_>>();
 
             let content = ContentBuilder::default()
-                .value(Some(renderer.render_content(&p.raw_content)))
+                .value(Some(p.html_content.clone()))
                 .base(Some(format!("/blog/post/{}", p.slug)))
                 .content_type(Some("html".to_string()))
                 .build();

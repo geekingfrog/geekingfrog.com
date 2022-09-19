@@ -15,10 +15,16 @@ impl axum::response::IntoResponse for AtomResponse {
     fn into_response(self) -> axum::response::Response {
         match self.resp {
             Some(feed) => (
-                [(
-                    header::CONTENT_TYPE,
-                    HeaderValue::from_static("application/atom+xml"),
-                )],
+                [
+                    (
+                        header::CONTENT_TYPE,
+                        HeaderValue::from_static("application/atom+xml"),
+                    ),
+                    (
+                        header::CACHE_CONTROL,
+                        HeaderValue::from_static("max-age=3600"),
+                    ),
+                ],
                 feed,
             )
                 .into_response(),
