@@ -140,10 +140,11 @@ pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
         .await
         .map_err(|e| AppError::IOError(e, "reading post entry"))?
     {
+        tracing::debug!("reading {:?}", entry.path());
         if !entry.file_type().await.io_context("coucou")?.is_file() {
             continue;
         };
-        tracing::debug!("reading {:?}", entry.path());
+
         let post = Post::parse(
             &entry
                 .path()

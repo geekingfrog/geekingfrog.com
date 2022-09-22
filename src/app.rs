@@ -109,6 +109,9 @@ pub fn watch_templates_change(
     // So use the raw_watcher and manually debounce
     let mut watcher = notify::raw_watcher(tx)?;
     watcher.watch("templates", notify::RecursiveMode::Recursive)?;
+    // truly, only interested in static/styles.css but only watching one file
+    // has unexpected behaviour so watch the parent instead
+    watcher.watch("static", notify::RecursiveMode::NonRecursive)?;
     loop {
         match rx.recv() {
             Ok(ev) => {

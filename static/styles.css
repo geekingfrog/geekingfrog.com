@@ -582,35 +582,30 @@ footer a {
 /*****************************************/
 /*               Highlighting            */
 /*****************************************/
-code,
+
 pre {
-  color: black;
-  background-color: #f5f2f0;
-  text-shadow: 0 1px white;
+  padding: 0;
+  margin: 0;
+}
+
+pre > code pre {
+  padding: .5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(32,74,135,.2);
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  text-align: left;
   white-space: pre-wrap;
   word-spacing: normal;
   word-break: normal;
   word-wrap: normal;
   line-height: 1.5;
-  padding: .2rem;
-
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
-  hyphens: none;
 }
 
-pre {
+code.inline {
+  color: black;
+  background-color: #f5f2f0;
+  text-shadow: 0 1px white;
+  border: 1px solid rgba(32, 74, 135, .2);
   border-radius: 4px;
-  border: 1px solid rgba(32, 74, 135, .2)
-}
-
-pre code {
-  padding: 0;
+  padding: .1rem .3rem;
+  display: inline-block;
 }

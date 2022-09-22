@@ -46,10 +46,14 @@ where
         match self.inner.next() {
             None => None,
             Some(ev) => match ev {
+                // hack to inject a special class for inline code
+                Event::Code(code) => {
+                    let new_str = format!(r#"<code class="inline">{}</code>"#, code);
+                    Some(Event::Html(new_str.into()))
+                }
                 Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(ref tok))) => {
                     self.tok = Some(tok.to_string());
-                    // Some(ev)
-                    self.next() // TODO check that, it's fishy, used to strip the <code> block
+                    Some(ev)
                 }
                 Event::Text(ref content) => {
                     if let Some(tok) = &self.tok {
@@ -71,8 +75,7 @@ where
                 }
                 Event::End(Tag::CodeBlock(CodeBlockKind::Fenced(_))) => {
                     self.tok = None;
-                    // Some(ev)
-                    self.next() // skip the closing </code> since the opening was also skipped
+                    Some(ev)
                 }
                 _ => Some(ev),
             },
