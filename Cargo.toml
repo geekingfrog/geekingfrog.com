@@ -24,6 +24,7 @@ tera = "1.17.0"
 thiserror = "1.0.32"
 time = "0.3.14"
 tokio = { version = "1.18.1", features = ["full"] }
+tokio-stream = "0.1.10"
 tower = "0.4.12"
 tower-http = { version="0.3.4", features = ["trace", "fs"] }
 tracing = "0.1.34"

@@ -1,5 +1,11 @@
-use crate::{error::{AppError, IOContext}, html::HtmlRenderer};
+use crate::{
+    error::{AppError, IOContext},
+    html::HtmlRenderer,
+};
+use rayon::prelude::*;
 use std::ops::RangeFrom;
+
+use futures::stream::{Stream, StreamExt};
 
 use nom::{
     branch::alt,
@@ -114,7 +120,6 @@ impl Post {
         let (remaining, (title, tags, status)) =
             post_header(input).map_err(|e| e.to_owned()).finish()?;
 
-
         Ok(Self {
             date,
             title: title.to_string(),
@@ -127,36 +132,86 @@ impl Post {
     }
 }
 
+struct ReadDirStream {
+    inner: tokio::fs::ReadDir,
+}
+
+impl ReadDirStream {
+    fn new(inner: tokio::fs::ReadDir) -> Self {
+        Self { inner }
+    }
+}
+
+impl Stream for ReadDirStream {
+    type Item = tokio::io::Result<tokio::fs::DirEntry>;
+
+    fn poll_next(
+        mut self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Option<Self::Item>> {
+        self.inner.poll_next_entry(cx).map(Result::transpose)
+    }
+}
+
+pub fn read_all_posts_sync() -> Result<Vec<Post>, AppError> {
+    std::fs::read_dir("./blog/posts")
+        .unwrap()
+        .into_iter()
+        .collect::<Result<Vec<_>, _>>()
+        .unwrap()
+        .into_par_iter()
+        .map(|entry| {
+            tracing::debug!("reading entry {:?}", entry.path());
+            let content = std::fs::read_to_string(entry.path()).io_context("cannot read entry")?;
+            let post = Post::parse(
+                &entry
+                    .path()
+                    .file_name()
+                    .expect("valid utf-8 filename")
+                    .to_string_lossy(),
+                &content,
+            )
+            .map_err(|e| AppError::ParseError(e, entry.path().to_string_lossy().to_string()))?;
+
+            Result::<_, AppError>::Ok(post)
+        })
+        .collect()
+}
+
+// left here for posterity, but it's at least two times slower than the sync version
+// powered by rayon. I'm probably doing something stupid though.
 #[tracing::instrument]
 pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
-    let mut read_dir = fs::read_dir("./blog/posts/")
+    let read_dir = fs::read_dir("./blog/posts/")
         .await
         .io_context("./blog/posts")?;
 
-    let mut res = Vec::new();
-    // TODO can parallelize that to speed up startup time
-    while let Some(entry) = read_dir
-        .next_entry()
-        .await
-        .map_err(|e| AppError::IOError(e, "reading post entry"))?
-    {
-        tracing::debug!("reading {:?}", entry.path());
-        if !entry.file_type().await.io_context("coucou")?.is_file() {
-            continue;
-        };
+    let posts = ReadDirStream::new(read_dir)
+        .map(|x| async {
+            let entry = x.io_context("cannot read entry")?;
+            tracing::debug!("reading entry {:?}", entry.path());
+            let content = fs::read_to_string(entry.path())
+                .await
+                .io_context("cannot read entry")?;
+            let post = Post::parse(
+                &entry
+                    .path()
+                    .file_name()
+                    .expect("valid utf-8 filename")
+                    .to_string_lossy(),
+                &content,
+            )
+            .map_err(|e| AppError::ParseError(e, entry.path().to_string_lossy().to_string()))?;
 
-        let post = Post::parse(
-            &entry
-                .path()
-                .file_name()
-                .expect("valid utf-8 filename")
-                .to_string_lossy(),
-            &fs::read_to_string(entry.path()).await.unwrap(),
-        )
-        .map_err(|e| AppError::ParseError(e, entry.path().to_string_lossy().to_string()))?;
-        res.push(post);
-    }
-    Ok(res)
+            Result::<_, AppError>::Ok(post)
+        })
+        .buffer_unordered(100)
+        .collect::<Vec<_>>()
+        .await;
+
+    let posts: Vec<Post> = posts.into_iter().collect::<Result<Vec<_>, _>>()?;
+
+    Ok(posts)
 }
 
 #[cfg(test)]

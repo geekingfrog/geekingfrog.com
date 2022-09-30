@@ -4,7 +4,7 @@ use axum::BoxError;
 use parking_lot::RwLock;
 use tera::Tera;
 use tokio::sync::watch;
-use website::{app, post::read_all_posts, state::AppState};
+use website::{app, post::read_all_posts_sync, state::AppState};
 
 #[tokio::main]
 async fn main() -> Result<(), BoxError> {
@@ -18,8 +18,25 @@ async fn main() -> Result<(), BoxError> {
     // is sure to return something.
     refresh_tx.send(())?;
 
-    // TODO: perhaps I should cache the rendered posts instead of just the raw text
-    let mut posts = read_all_posts().await?;
+    // let mut posts = vec![];
+    // let start = std::time::Instant::now();
+    // let mut posts1 = read_all_posts().await?;
+    // let async_duration = start.elapsed();
+    //
+    // let start = std::time::Instant::now();
+    // let mut posts2 = website::post::read_all_posts_sync()?;
+    // let sync_duration = start.elapsed();
+    //
+    // posts.append(&mut posts1);
+    // posts.append(&mut posts2);
+    // println!("Don't elide code: {}", posts.len());
+    //
+    // println!("async time: {}ms", async_duration.as_millis());
+    // println!(" sync time: {}ms",  sync_duration.as_millis());
+    //
+    // return Ok(());
+
+    let mut posts = read_all_posts_sync()?;
     posts.sort_unstable_by(|a, b| a.date.cmp(&b.date).reverse());
 
     // println!("{}", website::feed::build(&posts));
