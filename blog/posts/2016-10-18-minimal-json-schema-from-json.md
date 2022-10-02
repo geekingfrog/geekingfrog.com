@@ -1,7 +1,10 @@
 ---
 title: Minimal json schema from json
-tags: haskell, json-schema, tutorial
 status: draft
+tags:
+- haskell
+- json-schema
+- tutorial
 ---
 
 # Script to convert json to minimal json-schema

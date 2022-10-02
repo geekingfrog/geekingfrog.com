@@ -1,7 +1,10 @@
 ---
-title: Book: High performance browser networking
-tags: book, performance, network
+title: 'Book: High performance browser networking'
 status: published
+tags:
+- book
+- performance
+- network
 ---
 
 I recently finished [this excellent book](http://chimera.labs.oreilly.com/books/1230000000545) written by Ilya Grigorik, an engineer at Google. This book is really really good and if you are even remotely interested in web performances you should definitely read it.

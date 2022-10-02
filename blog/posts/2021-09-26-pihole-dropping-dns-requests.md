@@ -1,7 +1,8 @@
 ---
 title: Investigating dropped DNS requests with pi-hole
-tags: networking
 status: published
+tags:
+- networking
 ---
 
 # What's wrong with my program?

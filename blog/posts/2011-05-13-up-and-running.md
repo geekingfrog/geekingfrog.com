@@ -1,7 +1,8 @@
 ---
 title: Up and running
-tags: server
 status: published
+tags:
+- server
 ---
 
 Here it is. This blog is at last online. This took me much longer than expected because I had to do anything from scratch.

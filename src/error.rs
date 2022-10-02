@@ -11,8 +11,8 @@ pub enum AppError {
     #[error("IO error from {1}: {0}")]
     IOError(#[source] std::io::Error, &'static str),
 
-    #[error("Parsing error")]
-    ParseError(#[source] nom::error::Error<String>, String)
+    #[error("Parsing error: {0}")]
+    ParseError(String)
 
 }
 
@@ -27,9 +27,9 @@ impl IntoResponse for AppError {
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("{self:?}"),
             ),
-            AppError::ParseError(err, path) => (
+            AppError::ParseError(err) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Cannot parse post at {path}: {err:?}")
+                format!("Parse error: {err}")
             )
         };
         res.into_response()

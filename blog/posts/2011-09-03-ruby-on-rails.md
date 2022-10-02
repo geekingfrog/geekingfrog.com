@@ -1,7 +1,8 @@
 ---
 title: Ruby on rails
-tags: rails
 status: published
+tags:
+- rails
 ---
 
 Back to the usual stuff here.

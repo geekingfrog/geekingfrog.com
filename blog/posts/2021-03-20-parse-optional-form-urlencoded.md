@@ -1,7 +1,8 @@
 ---
 title: Parse optional values in form-urlencoded
-tags: rust
 status: published
+tags:
+- rust
 ---
 
 # The setup

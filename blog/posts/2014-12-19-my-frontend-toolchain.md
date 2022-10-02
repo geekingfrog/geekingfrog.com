@@ -1,7 +1,9 @@
 ---
 title: My frontend toolchain
-tags: javascript, tool
 status: published
+tags:
+- javascript
+- tool
 ---
 
 I'm a bit of a tooling nerd, I believe having good tool is crucial to do a good job and be efficient. I've recently played around quite a bit of new technologies and I'm now very happy with my front-end toolchain.

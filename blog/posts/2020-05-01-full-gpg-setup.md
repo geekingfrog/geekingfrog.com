@@ -1,7 +1,8 @@
 ---
 title: Full GPG setup
-tags: gpg
 status: published
+tags:
+- gpg
 ---
 
 If you care about security and encryption, gpg is very good. It's used by git and the amazon command line sdk whenever something needs to be signed. PGP uses a system of public/private key, the same used for TLS/SSL.

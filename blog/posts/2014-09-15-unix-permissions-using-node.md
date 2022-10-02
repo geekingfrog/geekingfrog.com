@@ -1,7 +1,9 @@
 ---
 title: Unix permissions using node
-tags: node, javascript
 status: published
+tags:
+- node
+- javascript
 ---
 
 Small snippets to get file permissions using node.

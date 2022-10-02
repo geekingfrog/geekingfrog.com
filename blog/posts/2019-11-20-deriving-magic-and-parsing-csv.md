@@ -1,7 +1,9 @@
 ---
 title: Deriving magic and parsing csv
-tags: haskell, tutorial
 status: published
+tags:
+- haskell
+- tutorial
 ---
 
 # Parsing CSV with "NaN" values

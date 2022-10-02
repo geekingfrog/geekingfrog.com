@@ -1,7 +1,8 @@
 ---
 title: Rails tutorial/book
-tags: rails
 status: published
+tags:
+- rails
 ---
 
 I just finished Michael Hartl's <a href="http://ruby.railstutorial.org/ruby-on-rails-tutorial-book">tutorial</a> on rails and it's a very good one. Currently I am more interested in starting developing android stuff but rails left me a really good impression.

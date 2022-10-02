@@ -1,7 +1,9 @@
 ---
 title: git svn and perl bindings
-tags: svn, perl
 status: published
+tags:
+- svn
+- perl
 ---
 
 I'm starting a new project and this time I want to use git svn. I am tired of working with git in local but with svn with the repo and always switching between the two.

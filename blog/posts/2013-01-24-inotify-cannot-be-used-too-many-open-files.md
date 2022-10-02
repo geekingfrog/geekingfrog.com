@@ -1,7 +1,8 @@
 ---
 title: inotify cannot be used; too many open files
-tags: linux
 status: published
+tags:
+- linux
 ---
 
 Today, while I was doing a little bit of dev on a server, I got with a tail:

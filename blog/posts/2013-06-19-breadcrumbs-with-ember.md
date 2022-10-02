@@ -1,7 +1,9 @@
 ---
 title: Breadcrumbs with ember
-tags: coffeescript, ember
 status: published
+tags:
+- coffeescript
+- ember
 ---
 
 So today I refactored some part of our application and I redid the breadcrumbs part. All routes are stored in `App.Router.router.currentHandlerInfos`. So by using this, I could compute the needed informations and put that in a controller:

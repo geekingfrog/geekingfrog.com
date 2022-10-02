@@ -1,7 +1,8 @@
 ---
 title: Upload progress with jquery and FormData
-tags: coffeescript
 status: published
+tags:
+- coffeescript
 ---
 
 After quite a bit of searching, I found a way to track the upload progress when posting some stuff through FormData. In this case, I assume a recent browser with FormData and xhr2.

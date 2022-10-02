@@ -1,7 +1,9 @@
 ---
 title: Some bash tweaks
-tags: cli, bash
 status: published
+tags:
+- cli
+- bash
 ---
 
 When you are a basic nerd who wants to always use the command line, or when you are playing with a server (like me) you have to use the command line. I wasn't  too used to the shell, and there were some things which really annoyed me. I'm using bash and I have no idea what are the other shell which can support the following tweaks but that's enough for me.

@@ -1,7 +1,9 @@
 ---
 title: Efficient development of webapp
-tags: javascript, meetup
 status: published
+tags:
+- javascript
+- meetup
 ---
 
 Last week I hosted a meetup about *How to efficiently develop webapp*. The slides [there](http://geekingfrog.com/meetup/).

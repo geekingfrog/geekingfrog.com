@@ -1,7 +1,10 @@
 ---
 title: Maven, spring, camel and JUnit
-tags: java, spring, maven
 status: published
+tags:
+- java
+- spring
+- maven
 ---
 
 I won't explain everything here because it's quite huge, but I just solved a nasty bug which took me many hours.

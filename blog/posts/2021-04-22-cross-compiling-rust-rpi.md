@@ -1,7 +1,9 @@
 ---
 title: Cross compiling rust
-tags: rust, raspberry
 status: published
+tags:
+- rust
+- raspberry
 ---
 
 # Cross compiling from linux to a raspberry pi

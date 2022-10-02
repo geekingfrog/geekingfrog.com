@@ -1,7 +1,9 @@
 ---
-title: !Bangs in DuckDuckGo
-tags: geek, duduckgo
+title: '!Bangs in DuckDuckGo'
 status: published
+tags:
+- geek
+- duduckgo
 ---
 
 I learnt yesterday from a friend how to use the [!bang](https://duckduckgo.com/bang.html) feature of the search engine DuckDuckGo, and it's **amazing**!

@@ -1,7 +1,9 @@
 ---
 title: Effective java
-tags: book, java
 status: published
+tags:
+- book
+- java
 ---
 
 I just finished a great book <a href="http://neumino.com">a friend</a> recommended to me about java. Although I don't have the knowledge to understand everything (it's quite complete and complex), I learned a lot of things. Here are some of them :

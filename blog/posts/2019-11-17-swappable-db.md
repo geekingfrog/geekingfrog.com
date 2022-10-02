@@ -1,7 +1,9 @@
 ---
 title: Swap the DB based on a config file
-tags: haskell, tutorial
 status: published
+tags:
+- haskell
+- tutorial
 ---
 
 # Swappable DB backend

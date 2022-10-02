@@ -1,7 +1,9 @@
 ---
 title: Wishlist for a node API framework
-tags: javascript, thoughts
 status: published
+tags:
+- javascript
+- thoughts
 ---
 
 I have been working for 3 months now on a node.js server and so I started thinking more about how to build an API.

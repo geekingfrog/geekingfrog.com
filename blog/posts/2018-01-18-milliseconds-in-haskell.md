@@ -1,7 +1,8 @@
 ---
 title: Milliseconds in haskell
-tags: haskell
 status: published
+tags:
+- haskell
 ---
 
 At the day job we had this "funny" situation where some timestamps are in milliseconds (coming from javascript clients) and some in seconds. Time is notoriously difficult to deal with. In haskell, my goto library is [datetime](http://hackage.haskell.org/package/datetime) which wraps nicely a lot of other primitives.

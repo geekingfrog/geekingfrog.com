@@ -3,28 +3,30 @@ use crate::{
     html::HtmlRenderer,
 };
 use rayon::prelude::*;
-use std::ops::RangeFrom;
 
 use futures::stream::{Stream, StreamExt};
 
 use nom::{
-    branch::alt,
-    bytes::complete::{tag, take, take_till, take_until},
-    character::complete::{newline, space0},
-    combinator::map,
-    error::ParseError,
-    multi::separated_list0,
-    sequence::{delimited, pair, separated_pair, terminated, tuple},
-    AsChar, Compare, Finish, IResult, InputIter, InputLength, InputTake, InputTakeAtPosition,
-    Slice,
+    bytes::complete::{take, take_until},
+    sequence::separated_pair,
+    Finish, IResult,
 };
 use time::Date;
 use tokio::fs;
 
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(PartialEq, Eq, Debug, Clone, Copy, serde::Deserialize, serde::Serialize)]
 pub enum PostStatus {
+    #[serde(rename = "draft")]
     Draft,
+    #[serde(rename = "published")]
     Published,
+}
+
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+struct PostHeader {
+    title: String,
+    status: PostStatus,
+    tags: Vec<String>,
 }
 
 // a simple struct to hold a post, without parsing the markdown
@@ -44,58 +46,6 @@ pub struct Post {
     pub html_content: String,
 }
 
-fn header_key<T, Input, E: ParseError<Input>>(k: T) -> impl FnMut(Input) -> IResult<Input, (), E>
-where
-    Input:
-        InputTake + InputTakeAtPosition + Compare<T> + Clone + InputIter + Slice<RangeFrom<usize>>,
-    <Input as InputTakeAtPosition>::Item: AsChar + Clone,
-    <Input as InputIter>::Item: AsChar,
-    T: InputLength + Clone,
-    // ^ 😱 I was just following orders from rust-analyzer
-{
-    map(
-        tuple((tag(k), space0, nom::character::complete::char(':'), space0)),
-        |_| (),
-    )
-}
-
-fn post_title(input: &str) -> IResult<&str, &str> {
-    delimited(header_key("title"), take_until("\n"), newline)(input)
-}
-
-fn post_tags(input: &str) -> IResult<&str, Vec<&str>> {
-    delimited(
-        header_key("tags"),
-        separated_list0(
-            tuple((space0, tag(","), space0)),
-            take_till(|c| c == ',' || c == '\n'),
-        ),
-        newline,
-    )(input)
-}
-
-fn post_status(input: &str) -> IResult<&str, PostStatus> {
-    delimited(
-        header_key("status"),
-        terminated(
-            alt((
-                map(tag("published"), |_| PostStatus::Published),
-                map(tag("draft"), |_| PostStatus::Draft),
-            )),
-            space0,
-        ),
-        newline,
-    )(input)
-}
-
-fn post_header(input: &str) -> IResult<&str, (&str, Vec<&str>, PostStatus)> {
-    delimited(
-        pair(tag("---"), newline),
-        tuple((post_title, post_tags, post_status)),
-        pair(tag("---"), newline),
-    )(input)
-}
-
 /// extract the url friendly slug and the date of the post based on the filename
 /// 2022-06-29-clojure-context-logging.md will give
 /// (2022-06-29, clojure-context-logging)
@@ -108,26 +58,38 @@ fn post_metadata(input: &str) -> IResult<&str, (&str, &str)> {
 }
 
 impl Post {
-    pub fn parse(filename: &str, input: &str) -> Result<Post, nom::error::Error<String>> {
-        let (_remaining, (raw_date, slug)) =
-            post_metadata(filename).map_err(|e| e.to_owned()).finish()?;
+    pub fn parse(filename: &str, input: &str) -> Result<Post, String> {
+        let (_remaining, (raw_date, slug)) = post_metadata(filename)
+            .map_err(|e| e.to_owned())
+            .finish()
+            .map_err(|e| format!("{:?}", e))?;
 
         let format = time::macros::format_description!("[year]-[month]-[day]");
         let date = Date::parse(raw_date, &format)
-            .map_err(|e| nom::error::make_error(format!("{e:?}"), nom::error::ErrorKind::Fail))?;
+            .map_err(|e| format!("Invalid date: {} - {:?}", raw_date, e))?;
 
-        // let date = Date::parse
-        let (remaining, (title, tags, status)) =
-            post_header(input).map_err(|e| e.to_owned()).finish()?;
+        let mut segments = input.split("---");
+        segments
+            .next()
+            .ok_or_else(|| "Missing first segment".to_string())?;
+
+        let header: PostHeader = serde_yaml::from_str(
+            segments
+                .next()
+                .ok_or_else(|| "Missing header".to_string())?,
+        )
+        .map_err(|e| format!("Invalid header: {:?}", e))?;
+
+        let raw_content = segments.next().ok_or_else(|| "Empty content".to_string())?;
 
         Ok(Self {
             date,
-            title: title.to_string(),
+            title: header.title,
             slug: slug.to_string(),
-            tags: tags.into_iter().map(|s| s.to_string()).collect(),
-            status,
-            raw_content: remaining.to_string(),
-            html_content: HtmlRenderer::new().render_content(remaining),
+            tags: header.tags,
+            status: header.status,
+            raw_content: raw_content.to_string(),
+            html_content: HtmlRenderer::new().render_content(raw_content),
         })
     }
 }
@@ -163,15 +125,15 @@ pub fn read_all_posts_sync() -> Result<Vec<Post>, AppError> {
         .map(|entry| {
             tracing::debug!("reading entry {:?}", entry.path());
             let content = std::fs::read_to_string(entry.path()).io_context("cannot read entry")?;
-            let post = Post::parse(
-                &entry
-                    .path()
-                    .file_name()
-                    .expect("valid utf-8 filename")
-                    .to_string_lossy(),
-                &content,
-            )
-            .map_err(|e| AppError::ParseError(e, entry.path().to_string_lossy().to_string()))?;
+            let filename = entry
+                .path()
+                .file_name()
+                .expect("valid utf-8 filename")
+                .to_string_lossy()
+                .to_string();
+            let post = Post::parse(&filename, &content).map_err(|e| {
+                AppError::ParseError(format!("Parse error for file {} - {:?}", filename, e))
+            })?;
 
             Result::<_, AppError>::Ok(post)
         })
@@ -190,18 +152,18 @@ pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
         .map(|x| async {
             let entry = x.io_context("cannot read entry")?;
             tracing::debug!("reading entry {:?}", entry.path());
+            let filename: String = entry
+                .path()
+                .file_name()
+                .expect("valid utf-8 filename")
+                .to_string_lossy()
+                .to_string();
             let content = fs::read_to_string(entry.path())
                 .await
                 .io_context("cannot read entry")?;
-            let post = Post::parse(
-                &entry
-                    .path()
-                    .file_name()
-                    .expect("valid utf-8 filename")
-                    .to_string_lossy(),
-                &content,
-            )
-            .map_err(|e| AppError::ParseError(e, entry.path().to_string_lossy().to_string()))?;
+            let post = Post::parse(&filename, &content).map_err(|e| {
+                AppError::ParseError(format!("Parse error for file {} - {:?}", filename, e))
+            })?;
 
             Result::<_, AppError>::Ok(post)
         })
@@ -219,43 +181,6 @@ mod test {
     type BoxResult<T> = Result<T, Box<dyn std::error::Error>>;
     use super::*;
     use pretty_assertions::assert_eq;
-
-    #[test]
-    fn test_parse_title() -> BoxResult<()> {
-        assert_eq!(post_title("title: coucou\n"), Ok(("", "coucou")));
-        assert_eq!(post_title("title  : coucou\n"), Ok(("", "coucou")));
-        assert_eq!(post_title("title:coucou\n"), Ok(("", "coucou")));
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_status() -> BoxResult<()> {
-        assert_eq!(post_tags("tags: one, two\n"), Ok(("", vec!["one", "two"])));
-        assert_eq!(
-            post_tags("tags  : one, two\n"),
-            Ok(("", vec!["one", "two"]))
-        );
-        assert_eq!(post_tags("tags:one, two\n"), Ok(("", vec!["one", "two"])));
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_tags() -> BoxResult<()> {
-        assert_eq!(
-            post_status("status: published\n"),
-            Ok(("", PostStatus::Published))
-        );
-        assert_eq!(
-            post_status("status  : published\n"),
-            Ok(("", PostStatus::Published))
-        );
-        assert_eq!(
-            post_status("status:published\n"),
-            Ok(("", PostStatus::Published))
-        );
-        assert_eq!(post_status("status: draft\n"), Ok(("", PostStatus::Draft)));
-        Ok(())
-    }
 
     #[test]
     fn test_parse_metadata() -> BoxResult<()> {

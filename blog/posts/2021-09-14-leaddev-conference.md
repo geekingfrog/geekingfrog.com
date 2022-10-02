@@ -1,7 +1,9 @@
 ---
 title: Leaddev virtual conference
-tags: conference, career
 status: published
+tags:
+- conference
+- career
 ---
 
 # Leaddev and StaffPlus event

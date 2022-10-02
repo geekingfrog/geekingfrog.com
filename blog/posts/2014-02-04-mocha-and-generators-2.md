@@ -1,7 +1,8 @@
 ---
 title: Mocha and generators (2)
-tags: 
 status: published
+tags:
+- ''
 ---
 
 I've [blogged before](/mocha-and-generators/) about this topic and I had a problem when it comes to test exceptions.

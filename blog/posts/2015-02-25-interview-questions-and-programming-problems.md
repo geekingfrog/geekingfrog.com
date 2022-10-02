@@ -1,7 +1,8 @@
 ---
 title: Interview questions and programming problems
-tags: hiring
 status: published
+tags:
+- hiring
 ---
 
 I recently changed jobs and I'll soon join [opensignal](opensignal.com) in London. So I've done a few interviews for various companies and I'll write a bit about the kind of questions I had.

@@ -1,7 +1,9 @@
 ---
 title: Quick static hosting
-tags: server, raspberry-pi
 status: published
+tags:
+- server
+- raspberry-pi
 ---
 
 The goal was to be able to share files with friends, hosted on my raspberry pi.

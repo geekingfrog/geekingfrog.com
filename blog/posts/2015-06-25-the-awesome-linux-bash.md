@@ -1,7 +1,9 @@
 ---
 title: The awesome linux bash
-tags: bash, linux
 status: published
+tags:
+- bash
+- linux
 ---
 
 I'm a big fan of unix and bash, the idea of having tons of small tools that can be combined to achieve complex result is really neat.

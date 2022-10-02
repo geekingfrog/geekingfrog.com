@@ -1,7 +1,9 @@
 ---
 title: Vim and ssh
-tags: ssh, vim
 status: published
+tags:
+- ssh
+- vim
 ---
 
 One more reason I love vim: I can ssh to a remote server, and still have my custom editor without any inconvenience.

@@ -1,7 +1,10 @@
 ---
 title: Faster webapp, understand the network
-tags: performance, meetup, network
 status: published
+tags:
+- performance
+- meetup
+- network
 ---
 
 This is the title of a talk I gave at my local meetup. You can find the slides [on speakerdeck](https://speakerdeck.com/geekingfrog/faster-webapp-understand-the-network). It was basically a introduction to UDP, TCP, TLS and HTTP, to understand how they work and how to make your application load faster.

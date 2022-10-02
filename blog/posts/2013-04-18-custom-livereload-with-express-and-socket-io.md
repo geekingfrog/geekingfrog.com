@@ -1,7 +1,9 @@
 ---
 title: Custom livereload with express and socket.io
-tags: javascript, websocket
 status: published
+tags:
+- javascript
+- websocket
 ---
 
 Here's a very quick guide to set up your own livereload server. By livereload, I mean that the browser automatically refresh when some files change. No more Alt-tab F5 Alt-tab \o/

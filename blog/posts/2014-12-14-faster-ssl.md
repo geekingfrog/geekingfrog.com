@@ -1,7 +1,8 @@
 ---
 title: Faster SSL
-tags: 
 status: draft
+tags:
+- ''
 ---
 
 Upgrading openssl on ubuntu following [these instructions](http://sandilands.info/sgordon/upgrade-latest-version-openssl-on-ubuntu).

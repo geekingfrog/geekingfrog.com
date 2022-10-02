@@ -1,7 +1,8 @@
 ---
 title: Typeclassopedia
-tags: haskell
 status: draft
+tags:
+- haskell
 ---
 
 I've been going through the very good [typeclassopedia](https://wiki.haskell.org/Typeclassopedia) to better understand haskell types and their relations with each others.

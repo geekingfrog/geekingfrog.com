@@ -1,7 +1,8 @@
 ---
-title: Donation of the month: internet archive
-tags: donation
+title: 'Donation of the month: internet archive'
 status: published
+tags:
+- donation
 ---
 
 This month, it's for the internet archive, also known as the wayback machine.

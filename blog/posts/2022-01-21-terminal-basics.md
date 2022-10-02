@@ -1,7 +1,9 @@
 ---
 title: Terminal basics
-tags: linux, shell
 status: published
+tags:
+- linux
+- shell
 ---
 
 # Unixy terminal basics

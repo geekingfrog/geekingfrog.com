@@ -1,7 +1,9 @@
 ---
 title: Keyboard control for mpv
-tags: mpv, linux
 status: published
+tags:
+- mpv
+- linux
 ---
 
 # Control mpv from a keypress from anywhere

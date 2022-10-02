@@ -1,7 +1,8 @@
 ---
 title: SVN server
-tags: svn
 status: published
+tags:
+- svn
 ---
 
 Here is a memo of how to set up and use an svn server with apache and Eclipse. The main instructions I followed are <a href="http://www.howtoforge.com/debian_subversion_websvn">there</a>.

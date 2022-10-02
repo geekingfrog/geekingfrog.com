@@ -1,7 +1,9 @@
 ---
 title: How many pings were dropped?
-tags: haskell, parsing
 status: published
+tags:
+- haskell
+- parsing
 ---
 
 ## How bad my wifi is ?

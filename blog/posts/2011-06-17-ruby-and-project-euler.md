@@ -1,7 +1,9 @@
 ---
 title: Ruby and project euler
-tags: ruby, project-euler
 status: published
+tags:
+- ruby
+- project-euler
 ---
 
 Lastly I got interested in Ruby, which seems to be efficient and quite easy to learn. For me who is more used to strong typed language like c++ and Java, it's refreshing to see something different.

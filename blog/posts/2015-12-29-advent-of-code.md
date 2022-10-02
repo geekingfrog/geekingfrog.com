@@ -1,7 +1,9 @@
 ---
 title: Advent of code
-tags: programming, haskell
 status: published
+tags:
+- programming
+- haskell
 ---
 
 [advent of code](http://adventofcode.com/) is a set of 50 problems which ran the 25th days before Christmas 2015.

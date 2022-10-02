@@ -1,7 +1,9 @@
 ---
 title: Python asyncio guide (part 1/2)
-tags: python, asyncio
 status: published
+tags:
+- python
+- asyncio
 ---
 
 # Before python 3.4

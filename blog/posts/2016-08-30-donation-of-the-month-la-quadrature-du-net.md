@@ -1,7 +1,8 @@
 ---
-title: Donation of the month: La Quadrature du Net
-tags: donation
+title: 'Donation of the month: La Quadrature du Net'
 status: published
+tags:
+- donation
 ---
 
 [La Quadrature du Net](https://www.laquadrature.net/) is a French association doing lobbying to protect the internet as a medium for free speech. It is similar to the [EFF](https://www.eff.org/) in the USA.

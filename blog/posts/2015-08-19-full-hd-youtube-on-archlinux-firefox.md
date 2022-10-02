@@ -1,7 +1,8 @@
 ---
 title: Full hd youtube on archlinux firefox
-tags: arch
 status: published
+tags:
+- arch
 ---
 
 I was usually only allowed to watch youtube video at 360p or 480p only until now.

@@ -1,7 +1,9 @@
 ---
-title: JSConf: Minimal surface abstraction
-tags: javascript, jsconf
+title: 'JSConf: Minimal surface abstraction'
 status: published
+tags:
+- javascript
+- jsconf
 ---
 
 [Great talk](https://www.youtube.com/watch?v=4anAwXYqLG8) given at JSConf EU 2014 about javascripts patterns and API surface.

@@ -1,7 +1,8 @@
 ---
-title: Donation resumed: open Gapps
-tags: donation
+title: 'Donation resumed: open Gapps'
 status: published
+tags:
+- donation
 ---
 
 The recurring donations are back !

@@ -1,7 +1,10 @@
 ---
 title: Webservice from contract with tomcat
-tags: java, tomcat, webservice
 status: published
+tags:
+- java
+- tomcat
+- webservice
 ---
 
 <p>I just spent quite some time to create a prototype to tests some stuff about web service security. But for that, I first needed to set up another environment.</p>

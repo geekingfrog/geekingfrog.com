@@ -1,7 +1,9 @@
 ---
 title: Run ssh commands on multiple ec2 instances
-tags: aws, geek
 status: published
+tags:
+- aws
+- geek
 ---
 
 One of my recent task was to restart a service after a database migration. The "problem" was

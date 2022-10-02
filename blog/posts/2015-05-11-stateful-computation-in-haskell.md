@@ -1,7 +1,9 @@
 ---
 title: Stateful computation in Haskell
-tags: monad, state-monad
 status: published
+tags:
+- monad
+- state-monad
 ---
 
 Now that I'm comfortable with the simpler monads like `Maybe` and `List`, I challenged myself to redo a small [coding challenge](http://challenge.shopcurbside.com/) I saw a few month ago using haskell and the `State` monad.

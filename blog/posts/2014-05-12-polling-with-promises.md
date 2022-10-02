@@ -1,7 +1,9 @@
 ---
 title: Polling with promises
-tags: promise, javascript
 status: published
+tags:
+- promise
+- javascript
 ---
 
 I'm a big fan of promises in javascript. I think they are a cleaner way to express asynchronous operations than callback. They encourage re-use, are immutable and you don't care *when* your data is ready. Unfortunately, they are not well understood by the community, and few people are using it.

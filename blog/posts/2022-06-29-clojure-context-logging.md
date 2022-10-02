@@ -1,7 +1,9 @@
 ---
 title: Contextual logging in clojure with timbre
-tags: clojure, logging
 status: published
+tags:
+- clojure
+- logging
 ---
 
 # Contextual logging?
