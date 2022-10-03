@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, State},
+    extract::{Path, State, Host},
     http::HeaderValue,
 };
 use hyper::{header, StatusCode};
@@ -35,18 +35,19 @@ impl axum::response::IntoResponse for AtomResponse {
 }
 
 #[tracing::instrument(skip(state))]
-pub(crate) async fn get_feed(State(state): State<AppState>) -> AtomResponse {
+pub(crate) async fn get_feed(Host(hostname): Host, State(state): State<AppState>) -> AtomResponse {
     AtomResponse {
-        resp: feed::build_page(&state.posts, 0),
+        resp: feed::build_page(&hostname, &state.posts, 0),
     }
 }
 
 #[tracing::instrument(skip(state))]
 pub(crate) async fn get_feed_page(
+    Host(hostname): Host,
     State(state): State<AppState>,
     Path(page): Path<usize>,
 ) -> AtomResponse {
     AtomResponse {
-        resp: feed::build_page(&state.posts, page),
+        resp: feed::build_page(&hostname, &state.posts, page),
     }
 }

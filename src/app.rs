@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{State, WebSocketUpgrade};
-use axum::response::IntoResponse;
+use axum::response::{IntoResponse, Redirect};
 use axum::{routing, BoxError, Router};
 use hyper::StatusCode;
 use notify::Watcher;
@@ -27,12 +27,18 @@ pub fn build(app_state: AppState) -> Router<AppState> {
         .route("/gpg", routing::get(handlers::gpg::get))
         .route("/feed.atom", routing::get(handlers::feed::get_feed))
         .route("/feed/:page", routing::get(handlers::feed::get_feed_page))
+        .route(
+            "/rss",
+            routing::get(|| async { Redirect::permanent("/feed.atom") }),
+        )
+        .route("/robots.txt", routing::get(handlers::robots::get_robots))
+        .route("/sitemap.txt", routing::get(handlers::robots::get_sitemap))
         .route("/ws/autorefresh", routing::get(autorefresh_handler))
         .nest(
             "/static",
             routing::get_service(ServeDir::new("static")).handle_error(
                 |err: std::io::Error| async move {
-                    tracing::info!("Error serving static staff: {err:?}");
+                    tracing::info!("Error serving static stuff: {err:?}");
                     (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}"))
                 },
             ),
