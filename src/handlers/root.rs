@@ -4,6 +4,7 @@ use crate::error::Result;
 use crate::handlers::blog::PostHeader;
 use crate::post::PostStatus;
 use crate::state::AppState;
+use crate::template::{self, Section};
 
 #[tracing::instrument]
 pub async fn get(State(state): State<AppState>) -> Result<Html<String>> {
@@ -15,8 +16,7 @@ pub async fn get(State(state): State<AppState>) -> Result<Html<String>> {
         .map(|p| p.into())
         .collect::<Vec<PostHeader>>();
 
-    let mut tpl_context = tera::Context::new();
-    tpl_context.insert("nav_target", "HOME");
+    let mut tpl_context = template::base_ctx(Some(Section::Home));
     tpl_context.insert("top_posts_headers", &top_headers);
 
     Ok(state

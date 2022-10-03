@@ -46,12 +46,21 @@ pub fn build(app_state: AppState) -> Router<AppState> {
         .fallback(handlers::not_found::not_found)
 }
 
+#[cfg(debug_assertions)]
 async fn autorefresh_handler(
     ws: WebSocketUpgrade,
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     tracing::debug!("got a websocket upgrade request");
     ws.on_upgrade(|socket| handle_socket(socket, state.refresh_chan))
+}
+
+#[cfg(not(debug_assertions))]
+async fn autorefresh_handler(
+    _ws: WebSocketUpgrade,
+    State(_state): State<AppState>,
+) -> impl IntoResponse {
+    axum::http::StatusCode::NOT_FOUND
 }
 
 async fn handle_socket(mut socket: WebSocket, mut refresh_tx: Receiver<()>) {
@@ -99,6 +108,7 @@ async fn handle_socket(mut socket: WebSocket, mut refresh_tx: Receiver<()>) {
     }
 }
 
+#[cfg(debug_assertions)]
 pub fn watch_templates_change(
     tera: Arc<RwLock<Tera>>,
     refresh_tx: Sender<()>,
@@ -131,6 +141,15 @@ pub fn watch_templates_change(
         }
     }
 }
+
+#[cfg(not(debug_assertions))]
+pub fn watch_templates_change(
+    _tera: Arc<RwLock<Tera>>,
+    _refresh_tx: Sender<()>,
+) -> Result<(), BoxError> {
+    Ok(())
+}
+
 
 /// wrap a Receiver<T> such that if many T are received between the given Duration
 /// then only the latest one will be kept and returned when calling recv

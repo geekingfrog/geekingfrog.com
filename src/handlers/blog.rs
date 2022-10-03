@@ -4,6 +4,7 @@ use axum::response::Html;
 use crate::error::Result;
 use crate::post::{Post, PostStatus};
 use crate::state::AppState;
+use crate::template::{self, Section};
 
 #[derive(serde::Serialize)]
 pub struct PostHeader {
@@ -43,8 +44,7 @@ pub async fn get_all_posts(State(state): State<AppState>) -> Result<Html<String>
         .map(|p| p.into())
         .collect::<Vec<PostHeader>>();
 
-    let mut tpl_context = tera::Context::new();
-    tpl_context.insert("nav_target", "BLOG");
+    let mut tpl_context = template::base_ctx(Some(Section::Blog));
     tpl_context.insert("post_headers", &post_headers);
 
     Ok(state
@@ -83,8 +83,7 @@ pub async fn get_post(
     Path(slug): Path<String>,
 ) -> Result<Html<String>> {
     tracing::debug!("getting post for slug {slug}");
-    let mut tpl_context = tera::Context::new();
-    tpl_context.insert("nav_target", "BLOG");
+    let mut tpl_context = template::base_ctx(Some(Section::Blog));
 
     let post = state.posts.iter().find(|p| p.slug == slug);
     match post {

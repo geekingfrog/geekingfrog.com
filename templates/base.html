@@ -2,7 +2,9 @@
 <html>
   <head>
     <link rel="stylesheet" href="/static/styles.css" type="text/css">
-    <script src="/static/autorefresh.js" async></script>
+    {% if should_autorefresh %}
+      <script src="/static/autorefresh.js" async></script>
+    {% endif %}
     {% block title %}
     <title>Geekingfrog &#x2212; Geek stuff by a batrachian</title>
     {% endblock title %}

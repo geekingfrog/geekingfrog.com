@@ -3,11 +3,11 @@ use axum::response::Html;
 
 use crate::error::Result;
 use crate::state::AppState;
+use crate::template::{self, Section};
 
 #[tracing::instrument(skip(state))]
 pub async fn get(State(state): State<AppState>) -> Result<Html<String>> {
-    let mut tpl_context = tera::Context::new();
-    tpl_context.insert("nav_target", "GPG");
+    let tpl_context = template::base_ctx(Some(Section::Gpg));
 
     Ok(state
         .template

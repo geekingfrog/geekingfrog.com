@@ -10,7 +10,6 @@ use website::{app, post::read_all_posts_sync, state::AppState};
 async fn main() -> Result<(), BoxError> {
     tracing_subscriber::fmt::init();
 
-
     let tera = Arc::new(RwLock::new(Tera::new("templates/**/*.html")?));
     let (refresh_tx, refresh_rx) = watch::channel(());
 
