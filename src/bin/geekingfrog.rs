@@ -48,7 +48,7 @@ async fn main() -> Result<(), BoxError> {
     };
 
     let app = app::build(app_state);
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8088));
 
     tokio::try_join!(
         async {

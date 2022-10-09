@@ -109,12 +109,19 @@ where
                 .content_type(Some("html".to_string()))
                 .build();
 
+            let entry_link = LinkBuilder::default()
+                .rel("alternate".to_string())
+                .mime_type(Some("text/html".to_string()))
+                .href(format!("https://{hostname}/blog/post/{}", p.slug))
+                .build();
+
             EntryBuilder::default()
                 .title(p.title.clone())
                 .id(format!("https://{hostname}/blog/post/{}", p.slug))
                 .updated(convert_date(p.date))
                 .author(author.clone())
                 .categories(categories)
+                .link(entry_link)
                 // TODO summary of the post
                 .content(Some(content))
                 .build()

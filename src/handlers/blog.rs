@@ -88,7 +88,6 @@ pub async fn get_post(
     let post = state.posts.iter().find(|p| p.slug == slug);
     match post {
         Some(p) => {
-            tracing::debug!("found the post");
             let rp: RenderedPost = p.clone().into();
             tpl_context.insert("post", &rp);
             Ok(state
