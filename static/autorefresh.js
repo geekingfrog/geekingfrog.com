@@ -1,4 +1,5 @@
-let socket = new WebSocket("ws://localhost:8888/ws/autorefresh");
+console.log("establishing socket connection for autorefresh");
+let socket = new WebSocket(`ws://${window.location.host}/ws/autorefresh`);
 
 socket.onopen = function onopen() {
   console.log("opening websocket");

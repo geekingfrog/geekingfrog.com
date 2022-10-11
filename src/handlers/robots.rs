@@ -2,7 +2,7 @@ use axum::extract::{Host, State};
 
 use crate::state::AppState;
 
-#[tracing::instrument()]
+#[tracing::instrument]
 pub(crate) async fn get_robots(Host(hostname): Host) -> String {
     let sitemap = format!(
         "User-agent: *\n\

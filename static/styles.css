@@ -459,7 +459,8 @@ footer a {
 
 .home footer a,
 .home .posts-overview--item .date,
-.home .nav-link::after {
+.home .nav-link::after,
+.misc a {
   border-color: #388E3C;
   color: #388E3C;
 }
