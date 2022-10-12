@@ -1,0 +1,44 @@
+[package]
+name = "website"
+version = "0.1.0"
+authors = ["Grégoire Charvet 黑瓜 <greg+git@geekingfrog.com>"]
+edition = "2021"
+
+
+[dependencies]
+atom_syndication = "0.11.0"
+axum = { version = "0.6.0-rc.2", features = ["ws"] }
+chrono = "0.4.22"
+futures = "0.3.24"
+hyper = { version = "0.14.18", features = ["full"] }
+itertools = "0.10.3"
+liquid = "0.26.0"
+nom = "7.1.1"
+notify = { version = "4.0.17", default-features = false }
+parking_lot = "0.12.1"
+pulldown-cmark = "0.9.1"
+rayon = "1.5.3"
+serde = { version = "1.0.144", features = ["derive"] }
+serde_yaml = "0.9.13"
+syntect = "5.0.0"
+tera = "1.17.0"
+thiserror = "1.0.32"
+time = "0.3.14"
+tokio = { version = "1.18.1", features = ["full"] }
+tokio-stream = "0.1.10"
+tower = "0.4.12"
+tower-http = { version="0.3.4", features = ["trace", "fs"] }
+tracing = "0.1.34"
+tracing-subscriber = { version = "0.3.11", features = ["env-filter"] }
+tracing-tree = "0.2.0"
+
+[[bin]]
+name = "geekingfrog"
+path = "src/bin/geekingfrog.rs"
+
+[[bin]]
+name = "testingfrog"
+path = "src/bin/testingfrog.rs"
+
+[dev-dependencies]
+pretty_assertions = "1.3.0"

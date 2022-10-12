@@ -1,7 +1,10 @@
 ---
 title: Cyanogenmod and Htc
-tags: android, cyanogenmod, geek
 status: published
+tags:
+- android
+- cyanogenmod
+- geek
 ---
 
 After 5 years of good service, my phone was really too slow and I decided to change it.  Even with cyanogenmod which gave it a second life, doing anything would require seconds.  So with the new device (htc one a9), I also wanted to have cyanogenmod, an awesome custom rom. I thought the whole process would take me one or two hours, but I actually wasted 2 full days.  I believe I messed up everything I could, and almost bricked the phone twice.  Below is some sort of checklist for troubleshooting, should the need arise again in the future.

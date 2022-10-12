@@ -1,7 +1,9 @@
 ---
 title: Be strict with your javascript
-tags: javascript, strict-mode
 status: published
+tags:
+- javascript
+- strict-mode
 ---
 
 Today, my boss ask me help about a very weird bug:

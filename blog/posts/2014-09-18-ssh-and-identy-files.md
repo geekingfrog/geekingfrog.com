@@ -1,7 +1,8 @@
 ---
 title: ssh and identy files
-tags: ssh
 status: published
+tags:
+- ssh
 ---
 
 Out of frustration, and maybe it'll be useful for another one.

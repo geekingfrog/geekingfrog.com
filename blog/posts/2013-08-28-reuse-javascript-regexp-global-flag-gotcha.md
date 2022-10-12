@@ -1,7 +1,8 @@
 ---
 title: Reuse javascript regexp, global flag gotcha
-tags: javascript
 status: published
+tags:
+- javascript
 ---
 
 I'm working on a small pre-interview assignment for Mozilla (more in a future post), and I stumbled on a very weird bug.

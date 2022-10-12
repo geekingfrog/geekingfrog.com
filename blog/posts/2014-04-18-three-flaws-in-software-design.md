@@ -1,7 +1,9 @@
 ---
 title: Three flaws in software design
-tags: software-design, meta
 status: published
+tags:
+- software-design
+- meta
 ---
 
 Google posted a [small serie of videos](https://www.youtube.com/watch?v=JOAq3YN45YE) about some flaws in software design. I found it really interesting as it relates to the day to day life to any developer. Here's my quick takeaway.

@@ -1,7 +1,9 @@
 ---
 title: Arch linux for Thinkpad T440
-tags: linux, arch
 status: published
+tags:
+- linux
+- arch
 ---
 
 New laptop, new arch install. With a few issues.

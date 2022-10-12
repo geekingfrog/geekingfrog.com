@@ -1,7 +1,9 @@
 ---
 title: Cache-Control & PageSpeed insights
-tags: web, performance
 status: published
+tags:
+- web
+- performance
 ---
 
 In the [last post](http://blog.geekingfrog.com/http-1-1-performance-optimizations/) I ended up with a PageSpeed insight score of 98/100, and I was wondering why.

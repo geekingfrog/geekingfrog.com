@@ -1,7 +1,9 @@
 ---
 title: Networking and raspberry pi
-tags: server, networking
 status: published
+tags:
+- server
+- networking
 ---
 
 # Network configuration for the raspberry pi

@@ -1,0 +1,27 @@
+{# vim: set ft=jinja #}
+{% import "macros.html" as macros %}
+
+{% extends "base.html" %}
+{% block homeclass %}
+class="blog"
+{% endblock %}
+
+{% block sections %}
+
+<section>
+  <div class="hero">
+    <div class="container hero-container">
+      <h1 class="main-title">Blog &#x2014; Geek stuff by a batrachian</h1>
+    </div>
+  </div>
+</section>
+<section class="container content">
+  <ul class="posts-overview">
+
+      {% for post_header in post_headers %}
+        {{ macros::post_header(post=post_header, more_classes="posts-overview--item__blog") }}
+      {% endfor %}
+
+  </ul>
+</section>
+{% endblock sections %}

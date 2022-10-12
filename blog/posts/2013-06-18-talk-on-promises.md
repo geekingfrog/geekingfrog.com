@@ -1,7 +1,10 @@
 ---
 title: Talk on promises
-tags: promise, javascript, meetup
 status: published
+tags:
+- promise
+- javascript
+- meetup
 ---
 
 Last friday I gave a talk for a <a href="http://www.meetup.com/javascript-enthusiasts/">javascript meetup in taipei</a> about the promise/A+ pattern. The <a href="http://slid.es/geekingfrog/asynchronous-programming-with-promises">presentation</a> is hosted on slid.es

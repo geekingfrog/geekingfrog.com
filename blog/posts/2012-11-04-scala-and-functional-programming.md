@@ -1,7 +1,9 @@
 ---
 title: Scala and functional programming
-tags: scala, functional-programming
 status: published
+tags:
+- scala
+- functional-programming
 ---
 
 I enrolled to my first online class 2 month ago on <a href="https://www.coursera.org/">coursera</a> to learn <a href="http://www.scala-lang.org/">scala </a>and functional programming. The class was given by none other than Martin Odersky, one of the creator of scala, and I have to admit that I am impressed by the quality of the course. I just finished the last assignment and I'll upload all of them on github after the hard deadline for the last one.

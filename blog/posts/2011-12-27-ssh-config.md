@@ -1,7 +1,8 @@
 ---
 title: ssh config
-tags: ssh
 status: published
+tags:
+- ssh
 ---
 
 Apparently I like ssh, because here is another post about it. This is a quick note after I encountered this error when I was trying to connect to some machine at work :

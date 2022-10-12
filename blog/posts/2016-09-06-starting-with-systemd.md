@@ -1,7 +1,10 @@
 ---
 title: Starting with systemd
-tags: systemd, linux, devops
 status: published
+tags:
+- systemd
+- linux
+- devops
 ---
 
 

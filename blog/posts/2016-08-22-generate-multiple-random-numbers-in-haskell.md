@@ -1,7 +1,10 @@
 ---
 title: Generate multiple random numbers in haskell
-tags: haskell, monad, state-monad
 status: published
+tags:
+- haskell
+- monad
+- state-monad
 ---
 
 # 1) System.Random.randoms

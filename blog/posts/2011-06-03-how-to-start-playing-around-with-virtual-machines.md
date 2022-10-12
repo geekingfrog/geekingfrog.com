@@ -1,7 +1,8 @@
 ---
-title: How to : start playing around with virtual machines
-tags: vm
+title: 'How to : start playing around with virtual machines'
 status: published
+tags:
+- vm
 ---
 
 So here it is, a post to explain how to set up :

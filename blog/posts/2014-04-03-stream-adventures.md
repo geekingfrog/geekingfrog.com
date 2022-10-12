@@ -1,7 +1,9 @@
 ---
 title: Stream adventures
-tags: node, stream
 status: published
+tags:
+- node
+- stream
 ---
 
 Recently, I was trying to get some file from amazon S3 to compute their MD5. In the process, I found [this article](http://ejohn.org/blog/node-js-stream-playground/) from John Resig about steams in node (>=0.10). There was a link to a very fun tutorial about streams: [stream-adventure](https://github.com/substack/stream-adventure).

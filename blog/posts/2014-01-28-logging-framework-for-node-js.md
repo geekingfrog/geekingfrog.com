@@ -1,7 +1,9 @@
 ---
 title: Logging framework for node.js
-tags: rsyslog, log4js
 status: published
+tags:
+- rsyslog
+- log4js
 ---
 
 I spent two days refactoring our 'logging' system. It was broken because of a poor override of the default console object.

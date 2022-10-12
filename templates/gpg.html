@@ -1,0 +1,25 @@
+{# vim: set ft=jinja #}
+{% import "macros.html" as macros %}
+
+{% extends "base.html" %}
+{% block homeclass %}
+class="gpg gpg-content"
+{% endblock %}
+
+{% block sections %}
+
+<section class="hero">
+  <div class="container hero-container">
+    <h1 class="main-title">Gpg</h1>
+  </div>
+</section>
+
+<section class="container content">
+  <p>Last updated: July 25th 2021</p>
+  <p>
+    <a href="https://latacora.micro.blog/2019/07/16/the-pgp-problem.html">This article</a> and the fact that I never use gpg conviced me it's not worth keeping a gpg key.
+  </p>
+  <p>If you really want to send me something encrypted, I recommend using <a href="https://github.com/FiloSottile/age">age</a>, with the following ssh public key:</p><pre>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJG+Ud7QuiO+AT6hAnPPhJTpGVI9i833/hYAgN4fXL4A</pre>Email address is in the footer.
+</section>
+
+{% endblock sections %}

@@ -1,7 +1,8 @@
 ---
 title: Akka - typedActor with customed supervision
-tags: akka
 status: published
+tags:
+- akka
 ---
 
 Recently I have been asigned some R&amp;D work about <a href="http://akka.io/">akka</a>. For those who don't know what it is, basically it is an api (built on scala with a java version) to enable people to create asynchronous application without bothering with locking problems. This is achieved using the actor model.

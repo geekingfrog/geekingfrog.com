@@ -1,7 +1,9 @@
 ---
 title: Custom glibc version for haskell binaries
-tags: haskell, libc
 status: published
+tags:
+- haskell
+- libc
 ---
 
 # The problem

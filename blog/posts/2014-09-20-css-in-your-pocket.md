@@ -1,7 +1,10 @@
 ---
 title: CSS in your pocket
-tags: performance, css, layout
 status: published
+tags:
+- performance
+- css
+- layout
 ---
 
 Some notes from the talk: [Angelina Fabbro: CSS In Your Pocket - Mobile CSS Tips From The Trenches [CSSConfUS2014]](https://www.youtube.com/watch?v=vBHt61yDO9U):

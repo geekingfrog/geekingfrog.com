@@ -1,7 +1,10 @@
 ---
 title: Next generation javascript
-tags: javascript, meetup, es6
 status: published
+tags:
+- javascript
+- meetup
+- es6
 ---
 
 Last week, I gave a talk at [my local meetup](http://www.meetup.com/javascript-enthusiasts/events/162274962/) about the upcoming standard ECMAScript6. Javascript is definitely starting to look like a decent language, and will have a lot in common with python (destructuring assignment, default parameters and so on).

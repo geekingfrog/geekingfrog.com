@@ -1,7 +1,9 @@
 ---
 title: TV show in China 非诚勿扰
-tags: life, chinese
 status: published
+tags:
+- life
+- chinese
 ---
 
 Here is a completely different post from the usual geek stuff. But as this blog is a kind of huge memo of what I am doing (worthy) in China, I'll add this story here.

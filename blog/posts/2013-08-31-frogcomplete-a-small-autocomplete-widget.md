@@ -1,7 +1,8 @@
 ---
 title: FrogComplete, a small autocomplete widget
-tags: javascript
 status: published
+tags:
+- javascript
 ---
 
 So I applied for a position as a web engineer at Mozilla Taiwan to work on firefox OS (a full html5 os to run on smartphone, super cool project), and I got a pre-interview assignment. The goal was to write a small autocomplete widget with some requirements:

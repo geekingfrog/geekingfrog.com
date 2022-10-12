@@ -1,7 +1,9 @@
 ---
 title: HTTP 1.1 performance optimizations
-tags: web, performance
 status: published
+tags:
+- web
+- performance
 ---
 
 So recently I changed [my website](//geekingfrog.com), and I wanted to optimize everything I could, mostly for fun. I've [read](http://chimera.labs.oreilly.com/books/1230000000545/index.html) and [watched](https://www.youtube.com/watch?v=FEs2jgZBaQA) quite a lot of stuff about it, and it was a good way to start practicing.

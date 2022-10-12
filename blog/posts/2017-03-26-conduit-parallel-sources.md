@@ -1,7 +1,9 @@
 ---
 title: Concurrent sources with conduit
-tags: haskell, conduit
 status: published
+tags:
+- haskell
+- conduit
 ---
 
 Recently I've been using quite a bit of [conduits](http://hackage.haskell.org/package/conduit). While building some tools to check for bugs in our dataset in dynamodb, I had to use the parallel scan feature. Since [amazonka](https://hackage.haskell.org/package/amazonka) (the haskell aws sdk) uses conduit when paging, I had to find a way to get multiple sources running concurrently and feeding into the next stage of the pipeline.

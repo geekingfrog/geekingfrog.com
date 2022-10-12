@@ -1,7 +1,9 @@
 ---
 title: Contextual logging in clojure with timbre
-tags: clojure, logging
 status: published
+tags:
+- clojure
+- logging
 ---
 
 # Contextual logging?
@@ -15,7 +17,7 @@ For example, let's consider the following function:
   (:require [taoensso.timbre :as t]))
 
 (defn do-work [request-id]
-  (t/info "start working for request-id" request -id)
+  (t/info "start working for request-id" request-id)
   ;; do-stuff
   (t/info "done working on request" request-id))
 ```

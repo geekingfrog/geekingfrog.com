@@ -1,7 +1,8 @@
 ---
 title: Installing guest OS using XEN
-tags: vm
 status: published
+tags:
+- vm
 ---
 
 Recently I am working on OS virtualization and load balancing. To do some test I have to install an Hypervisor (xen) to manage virtual machines (VM) on hosts. I am just at the beginning and it's a quite tedious work. I am using Debian Squeeze with Xen 4.0.1. Because Xen is still under development, there is no clear and up-to-date documentation.

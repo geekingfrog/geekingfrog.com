@@ -1,7 +1,9 @@
 ---
 title: Why I dislike OS X
-tags: rant, os-x
 status: published
+tags:
+- rant
+- os-x
 ---
 
 It's going to be three months that I've been working on a macbook pro, here are some of my thoughts.

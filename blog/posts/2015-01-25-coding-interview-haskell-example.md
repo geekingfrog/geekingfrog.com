@@ -1,7 +1,11 @@
 ---
 title: Coding interview, haskell example
-tags: functional-programming, interview, haskell, algorithm
 status: published
+tags:
+- functional-programming
+- interview
+- haskell
+- algorithm
 ---
 
 Recently I've been looking for a job and as usual in the IT field, I got lots of tests and programming quizz (more on this in another post).

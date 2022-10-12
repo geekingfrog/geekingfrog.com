@@ -1,7 +1,10 @@
 ---
-title: Donation of the month: neovim
-tags: vim, donation, neovim
+title: 'Donation of the month: neovim'
 status: published
+tags:
+- vim
+- donation
+- neovim
 ---
 
 ##Neovim

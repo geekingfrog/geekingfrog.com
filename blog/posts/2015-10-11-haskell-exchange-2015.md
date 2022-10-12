@@ -1,7 +1,9 @@
 ---
 title: Haskell Exchange 2015
-tags: haskell, conference
 status: published
+tags:
+- haskell
+- conference
 ---
 
 Last Thursday and Friday was the Haskell Exchange 2015 in London. Even though I am a bit inexperienced in Haskell, these two days were a blast.

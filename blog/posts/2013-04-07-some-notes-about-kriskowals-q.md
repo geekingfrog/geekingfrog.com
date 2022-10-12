@@ -1,7 +1,8 @@
 ---
 title: Some notes about Kriskowal's Q
-tags: promise
 status: published
+tags:
+- promise
 ---
 
 I just finish reading the source code of <a href="https://github.com/kriskowal/q">Kriskowal's Q</a> library and below are some notes (mainly to my future self).

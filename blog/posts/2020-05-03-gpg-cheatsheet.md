@@ -1,7 +1,8 @@
 ---
 title: GPG usage cheatsheet
-tags: gpg
 status: published
+tags:
+- gpg
 ---
 
 Braindump of some common command.

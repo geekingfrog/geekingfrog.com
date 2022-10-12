@@ -1,7 +1,9 @@
 ---
 title: Keyboard control for mpv(2)
-tags: mpv, linux
 status: published
+tags:
+- mpv
+- linux
 ---
 
 A while ago, I [posted](./keyboard-control-mpv) my setup to control mpv through keypresses. It was done through JSON IPC.

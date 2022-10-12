@@ -1,7 +1,10 @@
 ---
 title: Mocha and generators
-tags: coroutine, mocha, test
 status: published
+tags:
+- coroutine
+- mocha
+- test
 ---
 
 Lately I have been writing a dependency injection module for node.js which works with coroutines. I'll probably write more about it later since I find this topic super interesting but for now, one can look at [this introduction](http://tobyho.com/2013/06/16/what-are-generators/) to generators. I am using the excellent [bluebird promises library](https://github.com/petkaantonov/bluebird) for the coroutine part.

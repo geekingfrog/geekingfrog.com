@@ -1,0 +1,45 @@
+{# vim: set ft=jinja #}
+{% import "macros.html" as macros %}
+
+{% extends "base.html" %}
+{% block homeclass %}
+class="home"
+{% endblock %}
+
+{% block sections %}
+
+<section class="hero">
+  <div class="container hero-container">
+    <h1 class="main-title main-title__huge">The Geekingfrog</h1>
+  </div>
+</section>
+<section class="container content">
+  <div class="misc">
+    <h2>About me</h2>
+    <p>I'm Greg, polyglot backend &amp; cloud developer.</p>
+    <ul class="misc-list">
+      <li class="misc-item">
+        <b>I'm from</b>
+        <span> France</span>
+      </li>
+      <li class="misc-item">
+        <b>I currently work </b>
+        <span> in the UK</span>
+      </li>
+      <p>In 10+ years, I've built various applications for different business and scales  (from a few views per days to millions of requests per hour).</p>
+      <p>I've also managed and automated the deployement and monitoring of these service on AWS.</p>
+      <p>On the front end, I've translated designer vision into beautiful websites, as  well as complex single page application in ember and react.</p>
+    </ul>
+  </div>
+  <div class="posts">
+    <h2>Blog</h2>
+    <p>Some brain dumps about various things, mostly coding, programming languages and open source projects. Here are the most recent posts.</p>
+    <ul class="posts-overview posts-overview__index">
+      {% for post_header in top_posts_headers %}
+        {{ macros::post_header(post=post_header) }}
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% endblock %}

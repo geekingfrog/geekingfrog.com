@@ -1,7 +1,9 @@
 ---
 title: Custom 404 with servant
-tags: haskell, servant
 status: published
+tags:
+- haskell
+- servant
 ---
 
 (last edited 2020-11-29)

@@ -1,7 +1,8 @@
 ---
 title: Lazyness and exceptions
-tags: haskell
 status: published
+tags:
+- haskell
 ---
 
 In haskell, evaluation is lazy, sometimes it's also reffered as "call by need". Historically, there were a lot of lazy languages and haskell was created to unify all of them. Nowaday, it's the only remaining language with lazy evaluation by default, at least to my knowledge.

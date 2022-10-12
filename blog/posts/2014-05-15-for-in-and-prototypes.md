@@ -1,7 +1,9 @@
 ---
-title: `for in` and prototypes
-tags: javascr, prototype
+title: '`for in` and prototypes'
 status: published
+tags:
+- javascr
+- prototype
 ---
 
 # The problem

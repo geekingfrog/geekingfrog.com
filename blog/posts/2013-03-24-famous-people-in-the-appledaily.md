@@ -1,7 +1,9 @@
 ---
 title: Famous people in the appledaily
-tags: life, javascript
 status: published
+tags:
+- life
+- javascript
 ---
 
 I just put online a small project to visualize how many articles are about famous taiwanese people. **edit** The project has been taken down since I need some resources back on my server.**/edit** <a href="https://github.com/geekingfrog/twPeople">The code</a> is on github, and below is a copy of the readme which explains some things:

@@ -1,7 +1,8 @@
 ---
-title: Donation of the month: EFF
-tags: donation
+title: 'Donation of the month: EFF'
 status: published
+tags:
+- donation
 ---
 
 This month, it's the [Electronic Frontier Foundation](eff.org) which receive 50$ from me.

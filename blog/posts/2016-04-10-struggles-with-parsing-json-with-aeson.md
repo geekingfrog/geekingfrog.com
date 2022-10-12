@@ -1,7 +1,9 @@
 ---
 title: Struggles with parsing JSON with Aeson
-tags: haskell, aeson
 status: published
+tags:
+- haskell
+- aeson
 ---
 
 [Aeson](http://hackage.haskell.org/package/aeson) is the de-facto library to get data to and from json. It works very well but there is a lot of magic and I had some issue tweaking the default behaviors, notably to add some more error messages.

@@ -1,7 +1,9 @@
 ---
 title: Notes on ssh agent
-tags: ssh, server
 status: published
+tags:
+- ssh
+- server
 ---
 
 While I was installing my svn server, I learnt that sometimes, the svn command like commit establishes multiple connections. Because I am using svn over ssh, each connection prompt the user to enter the password, which is very annoying. It was the perfect occasion to discover what ssh agent is.

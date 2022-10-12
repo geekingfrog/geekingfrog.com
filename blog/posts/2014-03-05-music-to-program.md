@@ -1,7 +1,10 @@
 ---
 title: Music to program
-tags: programming, music, productivity
 status: published
+tags:
+- programming
+- music
+- productivity
 ---
 
 With the rise of the open space, a headset is mandatory for anyone who wants to focus on something. Some [famous people](http://www.joelonsoftware.com/articles/FieldGuidetoDevelopers.html) talk about having private office for developpers, but hey, if you're not there, then you need some sort of noise control.

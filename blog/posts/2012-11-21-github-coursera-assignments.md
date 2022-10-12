@@ -1,7 +1,8 @@
 ---
 title: github coursera assignments
-tags: functional-programming
 status: published
+tags:
+- functional-programming
 ---
 
 <a href="http://blog.geekingfrog.com/?p=185">As promised</a> I put my work for the scala course on <a href="https://github.com/geekingfrog/coursera-scala">my github</a>.

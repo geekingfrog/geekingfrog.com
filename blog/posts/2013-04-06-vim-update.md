@@ -1,7 +1,8 @@
 ---
 title: Vim update
-tags: vim
 status: published
+tags:
+- vim
 ---
 
 My snipmate plugin broke yesterday and when I headed to github to see what was wrong, I discovered that the plugin was abandoned by their mainteners... They said <a href="https://github.com/SirVer/ultisnips">UltiSnips</a> was a good candidate, provided you have vim build with python. So I installed UltiSnips, and it rocks !

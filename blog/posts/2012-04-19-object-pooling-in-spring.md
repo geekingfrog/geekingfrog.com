@@ -1,7 +1,9 @@
 ---
 title: Object pooling in Spring
-tags: java, spring
 status: published
+tags:
+- java
+- spring
 ---
 
 I spent a lot of time trying to activate a special feature of object pooling in spring, and now I finally found a workaround I'll post that.

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/styles.css" type="text/css">
+    <link rel="alternate" title="Blog posts" type="application/atom+xml" href="/feed.atom">
+    {% if should_autorefresh %}
+      <script src="/static/autorefresh.js" async></script>
+    {% endif %}
+    {% block title %}
+    <title>Geekingfrog &#x2212; Geek stuff by a batrachian</title>
+    {% endblock title %}
+    {% include "partials/inline_styles.html" %}
+  </head>
+
+  <body {% block homeclass %} class="home" {% endblock %}>
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <a href="/">{% include "partials/svglogo.html" %}</a>
+        </div>
+        {% include "partials/nav.html" %}
+      </div>
+    </header>
+
+    {% block sections %} {% endblock sections %}
+
+    <footer>
+      <div class="container">
+        <div class="panel panel-bio">
+          <h2>HELLO!</h2>
+          <p>My name is Greg. I'm a senior software engineer with deep experience in cloud and distributed systems applications.</p>
+          <p>I have designed, built and deployed in the cloud many kind of APIs and processing pipelines for various industries.</p>
+        </div>
+        <div class="panel">
+          <h2>GET IN TOUCH</h2>
+          <p>On <a href="https://www.linkedin.com/in/gr%C3%A9goire-charvet-b62440aa">linkedin</a> or at greg&#xFF20;geekingfrog&#x2024;com <a href="http://lea.verou.me/2009/11/yet-another-email-hiding-technique/">(don't copy paste this email.</a>)</p>
+        </div>
+        <div class="panel">
+          <a href="/feed.atom">
+            <h2>SUBSCRIBE</h2>
+          </a>
+          <p>RSS is love &#x2665;</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

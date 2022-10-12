@@ -1,7 +1,8 @@
 ---
 title: Think fast and slow
-tags: 
 status: draft
+tags:
+- ''
 ---
 
 // Notes ici pour introduire le livre et présenter les raccourcis que sont le système 1&2. Plus l'objectif de cet article: personal reminder and resume

@@ -1,7 +1,8 @@
 ---
 title: Synergy, for greedy geeks
-tags: synergy
 status: published
+tags:
+- synergy
 ---
 
 Ultra quick post to note this software : <a href="http://synergy-foss.org/">synergy</a> is ultra cool !

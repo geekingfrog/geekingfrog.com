@@ -1,7 +1,9 @@
 ---
 title: Start working !
-tags: life, work
 status: published
+tags:
+- life
+- work
 ---
 
 I have been very busy these last weeks, because I moved to Taipei in Taiwan, and I just started working last monday. I am now a backoffice developper in <a href="http://www.toro-asia.com/">Toro</a>, a small french compagny which is developping a platform and some widgets for NFC enabled smartphones.
