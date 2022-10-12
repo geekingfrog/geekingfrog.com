@@ -1,4 +1,4 @@
-use std::{net::SocketAddr, sync::Arc};
+use std::{env, net::SocketAddr, sync::Arc};
 
 use axum::BoxError;
 use parking_lot::RwLock;
@@ -8,6 +8,7 @@ use website::{app, post::read_all_posts_sync, state::AppState};
 
 #[tokio::main]
 async fn main() -> Result<(), BoxError> {
+
     tracing_subscriber::fmt::init();
 
     if cfg!(debug_assertions) {
@@ -15,6 +16,12 @@ async fn main() -> Result<(), BoxError> {
     } else {
         tracing::info!("release mode");
     };
+
+    let port = env::args()
+        .next()
+        .as_ref()
+        .and_then(|p| p.parse::<u16>().ok())
+        .unwrap_or(8088);
 
 
     let tera = Arc::new(RwLock::new(Tera::new("templates/**/*.html")?));
@@ -55,7 +62,7 @@ async fn main() -> Result<(), BoxError> {
     };
 
     let app = app::build(app_state);
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8088));
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
 
     tokio::try_join!(
         async {
