@@ -31,29 +31,9 @@ async fn main() -> Result<(), BoxError> {
     // is sure to return something.
     refresh_tx.send(())?;
 
-    // let mut posts = vec![];
-    // let start = std::time::Instant::now();
-    // let mut posts1 = read_all_posts().await?;
-    // let async_duration = start.elapsed();
-    //
-    // let start = std::time::Instant::now();
-    // let mut posts2 = website::post::read_all_posts_sync()?;
-    // let sync_duration = start.elapsed();
-    //
-    // posts.append(&mut posts1);
-    // posts.append(&mut posts2);
-    // println!("Don't elide code: {}", posts.len());
-    //
-    // println!("async time: {}ms", async_duration.as_millis());
-    // println!(" sync time: {}ms",  sync_duration.as_millis());
-    //
-    // return Ok(());
-
     let mut posts = read_all_posts_sync()?;
+    tracing::info!("read {} posts", posts.len());
     posts.sort_unstable_by(|a, b| a.date.cmp(&b.date).reverse());
-
-    // println!("{}", website::feed::build(&posts));
-    // return Ok(());
 
     let app_state = AppState {
         template: tera.clone(),
@@ -70,7 +50,7 @@ async fn main() -> Result<(), BoxError> {
                 .await?
         },
         async {
-            tracing::info!("Listening on {addr}");
+            tracing::info!("listening on {addr}");
             axum::Server::bind(&addr)
                 .serve(app.into_make_service())
                 .await?;

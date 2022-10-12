@@ -17,7 +17,7 @@ pub async fn get(State(state): State<AppState>, Host(hostname): Host) -> Result<
         .map(|p| p.into())
         .collect::<Vec<PostHeader>>();
 
-    tracing::info!("hostname is {hostname}");
+    tracing::debug!("hostname is {hostname}");
     let mut tpl_context = template::base_ctx(Some(Section::Home));
     tpl_context.insert("top_posts_headers", &top_headers);
 
