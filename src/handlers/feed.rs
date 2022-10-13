@@ -4,7 +4,7 @@ use axum::{
 };
 use hyper::{header, StatusCode};
 
-use crate::{feed, state::AppState};
+use crate::{feed, state::AppState, post::PostStatus};
 
 pub(crate) struct AtomResponse {
     // None means 404
@@ -36,8 +36,13 @@ impl axum::response::IntoResponse for AtomResponse {
 
 #[tracing::instrument(skip(state))]
 pub(crate) async fn get_feed(Host(hostname): Host, State(state): State<AppState>) -> AtomResponse {
+    let posts = state
+        .posts
+        .iter()
+        .filter(|p| matches!(p.status, PostStatus::Published))
+        .collect::<Vec<_>>();
     AtomResponse {
-        resp: feed::build_page(&hostname, &state.posts, 0),
+        resp: feed::build_page(&hostname, &posts, 0),
     }
 }
 
@@ -47,7 +52,12 @@ pub(crate) async fn get_feed_page(
     State(state): State<AppState>,
     Path(page): Path<usize>,
 ) -> AtomResponse {
+    let posts = state
+        .posts
+        .iter()
+        .filter(|p| matches!(p.status, PostStatus::Published))
+        .collect::<Vec<_>>();
     AtomResponse {
-        resp: feed::build_page(&hostname, &state.posts, page),
+        resp: feed::build_page(&hostname, &posts, page),
     }
 }

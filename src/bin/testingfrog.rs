@@ -2,6 +2,7 @@
 #![allow(unused_variables)]
 #![allow(unreachable_code)]
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 
 //****************************************
 // tracing test

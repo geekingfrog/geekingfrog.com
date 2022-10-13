@@ -5,12 +5,12 @@ use atom_syndication::{
 use chrono::naive::{NaiveDate, NaiveDateTime};
 use chrono::DateTime;
 
-use crate::post::{Post, PostStatus};
+use crate::post::Post;
 
-/// content: sorted list of posts, newest first.
+/// content: sorted list of *published* posts, newest first.
 /// Ref:
 /// https://kevincox.ca/2022/05/06/rss-feed-best-practices/
-pub fn build_page(hostname: &str, content: &[Post], page: usize) -> Option<String> {
+pub fn build_page(hostname: &str, posts: &[&Post], page: usize) -> Option<String> {
     let author = PersonBuilder::default()
         .name("Greg Charvet 黑瓜".to_string())
         .email(Some(format!("greg@{hostname}")))
@@ -21,11 +21,7 @@ pub fn build_page(hostname: &str, content: &[Post], page: usize) -> Option<Strin
     let entries = build_entries(
         hostname,
         &author,
-        content
-            .iter()
-            .filter(|p| matches!(p.status, PostStatus::Published))
-            .skip(page * page_size)
-            .take(page_size),
+        posts.iter().skip(page * page_size).take(page_size).copied(),
     );
 
     if entries.is_empty() {
@@ -38,7 +34,7 @@ pub fn build_page(hostname: &str, content: &[Post], page: usize) -> Option<Strin
         format!("https://{hostname}/feed/{page}")
     };
 
-    let last_url = format!("https://{hostname}/feed/{}", content.len() / page_size);
+    let last_url = format!("https://{hostname}/feed/{}", posts.len() / page_size);
 
     let mut links = vec![
         LinkBuilder::default()
@@ -83,7 +79,7 @@ pub fn build_page(hostname: &str, content: &[Post], page: usize) -> Option<Strin
         .title("geekingfrog feed")
         .id(format!("https://{hostname}/"))
         .links(links)
-        .updated(convert_date(content[0].date))
+        .updated(convert_date(posts[0].date))
         .author(author)
         .entries(entries)
         .build();
