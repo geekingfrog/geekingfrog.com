@@ -1,10 +1,14 @@
 use std::sync::Arc;
 use std::time::Duration;
 
+#[cfg(debug_assertions)]
 use axum::extract::ws::{Message, WebSocket};
-use axum::extract::{State, WebSocketUpgrade};
+use axum::extract::State;
+#[cfg(debug_assertions)]
+use axum::extract::WebSocketUpgrade;
 use axum::response::{IntoResponse, Redirect};
 use axum::{routing, BoxError, Router};
+
 use hyper::StatusCode;
 use notify::Watcher;
 use parking_lot::RwLock;
@@ -23,6 +27,10 @@ pub fn build(app_state: AppState) -> Router<AppState> {
         .layer(service)
         .route("/", routing::get(handlers::root::get))
         .route("/blog", routing::get(handlers::blog::get_all_posts))
+        .route(
+            "/blog/",
+            routing::get(|| async { Redirect::permanent("/blog") }),
+        )
         .route("/blog/post/:slug", routing::get(handlers::blog::get_post))
         .route("/gpg", routing::get(handlers::gpg::get))
         .route("/feed.atom", routing::get(handlers::feed::get_feed))
@@ -56,13 +64,11 @@ async fn autorefresh_handler(
 }
 
 #[cfg(not(debug_assertions))]
-async fn autorefresh_handler(
-    _ws: WebSocketUpgrade,
-    State(_state): State<AppState>,
-) -> impl IntoResponse {
+async fn autorefresh_handler() -> impl IntoResponse {
     axum::http::StatusCode::NOT_FOUND
 }
 
+#[cfg(debug_assertions)]
 async fn handle_socket(mut socket: WebSocket, mut refresh_tx: Receiver<()>) {
     // There's this weird problem, if a watched file has changed at some point
     // there will be a new value on the refresh_rx channel, and calling
@@ -149,7 +155,6 @@ pub fn watch_templates_change(
 ) -> Result<(), BoxError> {
     Ok(())
 }
-
 
 /// wrap a Receiver<T> such that if many T are received between the given Duration
 /// then only the latest one will be kept and returned when calling recv
