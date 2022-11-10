@@ -22,6 +22,7 @@ So for example, when an application makes a request to gitlab.com this is roughl
 
 ```
 application             zscaler   OS root CA store          gitlab.com
+    |                      |                                     |
     | −−−−−−−CHLO−−−−−−−−> | −−−−−−−−−−−−−−−−CHLO(Z)−−−−−−−−−−−> |
     |                      |                                     |
     | <−−−−−−SHLO(Z)−−−−−− | <−−−−−−−−−−−−−−−SHLO−−−−−−−−−−−−−−− |
