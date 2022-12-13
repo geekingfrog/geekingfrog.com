@@ -21,9 +21,9 @@ use tower_http::trace::TraceLayer;
 use crate::handlers;
 use crate::state::AppState;
 
-pub fn build(app_state: AppState) -> Router<AppState> {
+pub fn build(app_state: AppState) -> Router<()> {
     let service = ServiceBuilder::new().layer(TraceLayer::new_for_http());
-    Router::with_state(app_state)
+    Router::new()
         .layer(service)
         .route("/", routing::get(handlers::root::get))
         .route("/blog", routing::get(handlers::blog::get_all_posts))
@@ -42,7 +42,7 @@ pub fn build(app_state: AppState) -> Router<AppState> {
         .route("/robots.txt", routing::get(handlers::robots::get_robots))
         .route("/sitemap.txt", routing::get(handlers::robots::get_sitemap))
         .route("/ws/autorefresh", routing::get(autorefresh_handler))
-        .nest(
+        .merge(Router::new().route(
             "/static",
             routing::get_service(ServeDir::new("static")).handle_error(
                 |err: std::io::Error| async move {
@@ -50,8 +50,9 @@ pub fn build(app_state: AppState) -> Router<AppState> {
                     (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}"))
                 },
             ),
-        )
+        ))
         .fallback(handlers::not_found::not_found)
+        .with_state(app_state)
 }
 
 #[cfg(debug_assertions)]
