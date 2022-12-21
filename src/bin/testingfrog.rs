@@ -221,7 +221,7 @@ fn main() -> BoxResult<()> {
         .map(|s| Post::from_str(s).unwrap())
         .collect::<Vec<_>>();
 
-    let raw = include_str!("../../test.md");
+    let raw = include_str!("test.md");
     let post = Post::from_str(raw)?;
     let parser = Parser::new(post.raw_content);
 
