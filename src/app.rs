@@ -9,7 +9,6 @@ use axum::extract::WebSocketUpgrade;
 use axum::response::{IntoResponse, Redirect};
 use axum::{routing, BoxError, Router};
 
-use hyper::StatusCode;
 use notify::Watcher;
 use parking_lot::RwLock;
 use tera::Tera;
@@ -42,15 +41,7 @@ pub fn build(app_state: AppState) -> Router<()> {
         .route("/robots.txt", routing::get(handlers::robots::get_robots))
         .route("/sitemap.txt", routing::get(handlers::robots::get_sitemap))
         .route("/ws/autorefresh", routing::get(autorefresh_handler))
-        .merge(Router::new().route(
-            "/static",
-            routing::get_service(ServeDir::new("static")).handle_error(
-                |err: std::io::Error| async move {
-                    tracing::info!("Error serving static stuff: {err:?}");
-                    (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}"))
-                },
-            ),
-        ))
+        .nest_service("/static", ServeDir::new("./static"))
         .fallback(handlers::not_found::not_found)
         .with_state(app_state)
 }

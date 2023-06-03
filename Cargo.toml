@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 atom_syndication = "0.11.0"
-axum = { version = "0.6.1", features = ["ws"] }
+axum = { version = "0.6", features = ["ws"] }
 chrono = "0.4.22"
 futures = "0.3.24"
 hyper = { version = "0.14.18", features = ["full"] }
@@ -27,7 +27,7 @@ time = "0.3.17"
 tokio = { version = "1.18.1", features = ["full"] }
 tokio-stream = "0.1.10"
 tower = "0.4.12"
-tower-http = { version="0.3.4", features = ["trace", "fs"] }
+tower-http = { version="0.4.0", features = ["trace", "fs"] }
 tracing = "0.1.34"
 tracing-subscriber = { version = "0.3.11", features = ["env-filter"] }
 tracing-tree = "0.2.0"
