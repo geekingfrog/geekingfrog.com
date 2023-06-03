@@ -13,6 +13,7 @@ use nom::{
 };
 use time::Date;
 use tokio::fs;
+use tracing::Level;
 
 #[derive(PartialEq, Eq, Debug, Clone, Copy, serde::Deserialize, serde::Serialize)]
 pub enum PostStatus {
@@ -115,6 +116,7 @@ impl Stream for ReadDirStream {
     }
 }
 
+#[tracing::instrument]
 pub fn read_all_posts_sync() -> Result<Vec<Post>, AppError> {
     std::fs::read_dir("./blog/posts")
         .unwrap()
@@ -122,7 +124,15 @@ pub fn read_all_posts_sync() -> Result<Vec<Post>, AppError> {
         .collect::<Result<Vec<_>, _>>()
         .unwrap()
         .into_par_iter()
+        // when I want to debug only one entry and want to speed up the debug build/startup
+        // .filter(|entry| {
+        //     entry.path().to_string_lossy().to_string().as_str()
+        //         == "./blog/posts/2023-06-03-getting-things-done-with-async.md"
+        // })
         .map(|entry| {
+            let entryname = entry.path().to_string_lossy().to_string();
+            let span = tracing::span!(Level::INFO, "reading_entry", entry = entryname.as_str());
+            let _guard = span.enter();
             tracing::debug!("reading entry {:?}", entry.path());
             let content = std::fs::read_to_string(entry.path()).io_context("cannot read entry")?;
             let filename = entry
@@ -151,7 +161,6 @@ pub async fn read_all_posts() -> Result<Vec<Post>, AppError> {
     let posts = ReadDirStream::new(read_dir)
         .map(|x| async {
             let entry = x.io_context("cannot read entry")?;
-            tracing::debug!("reading entry {:?}", entry.path());
             let filename: String = entry
                 .path()
                 .file_name()

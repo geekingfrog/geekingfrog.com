@@ -48,6 +48,9 @@ where
             Some(ev) => match ev {
                 // hack to inject a special class for inline code
                 Event::Code(code) => {
+                    // if the code contains things that look like html tags that's going
+                    // to mess up the display. The replace like that seems a bit fishy though
+                    let code = code.replace("<", "&lt;").replace(">", "&gt;");
                     let new_str = format!(r#"<code class="inline">{}</code>"#, code);
                     Some(Event::Html(new_str.into()))
                 }
