@@ -607,6 +607,6 @@ code.inline {
   text-shadow: 0 1px white;
   border: 1px solid rgba(32, 74, 135, .2);
   border-radius: 4px;
-  padding: .1rem .3rem;
+  padding: 0 .3rem;
   display: inline-block;
 }
