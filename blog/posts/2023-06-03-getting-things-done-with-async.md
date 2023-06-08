@@ -1,6 +1,6 @@
 ---
 title: Getting things done with async rust
-status: draft
+status: published
 tags:
 - rust
 - async
