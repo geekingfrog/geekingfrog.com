@@ -40,7 +40,14 @@ pub async fn get_all_posts(State(state): State<AppState>) -> Result<Html<String>
     let post_headers = state
         .posts
         .iter()
-        .filter(|p| matches!(p.status, PostStatus::Published))
+        .filter(|p| {
+            // in debug mode, also display drafts
+            if cfg!(debug_assertions) {
+                true
+            } else {
+                matches!(p.status, PostStatus::Published)
+            }
+        })
         .map(|p| p.into())
         .collect::<Vec<PostHeader>>();
 

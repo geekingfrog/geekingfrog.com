@@ -10,6 +10,8 @@ use website::{app, post::read_all_posts_sync, state::AppState};
 async fn main() -> Result<(), BoxError> {
     tracing_subscriber::fmt::init();
 
+    // TODO: relying on debug mode isn't the best, it would be better
+    // to have a cli flag to enable the mode, and store that in the state
     if cfg!(debug_assertions) {
         tracing::info!("debug mode");
     } else {
