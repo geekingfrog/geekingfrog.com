@@ -2,6 +2,12 @@
 {% import "macros.html" as macros %}
 
 {% extends "base.html" %}
+
+{% block title %}
+<title>{{ post.title }} &#x2212; Geekingfrog's blog</title>
+{% endblock %}
+
+
 {% block homeclass %}
 class="blog"
 {% endblock %}
