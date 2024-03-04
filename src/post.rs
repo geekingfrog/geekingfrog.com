@@ -69,7 +69,7 @@ impl Post {
         let date = Date::parse(raw_date, &format)
             .map_err(|e| format!("Invalid date: {} - {:?}", raw_date, e))?;
 
-        let mut segments = input.split("---");
+        let mut segments = input.splitn(3, "---");
         segments
             .next()
             .ok_or_else(|| "Missing first segment".to_string())?;
