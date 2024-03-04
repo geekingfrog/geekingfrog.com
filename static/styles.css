@@ -1,6 +1,8 @@
 html {
-  -ms-text-size-adjust: 100%; /* 2 */
-  -webkit-text-size-adjust: 100%; /* 2 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
 }
 
 body {
@@ -11,16 +13,28 @@ body {
   color: #3A4145;
 }
 
-body * { box-sizing: inherit; }
+body * {
+  box-sizing: inherit;
+}
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   padding: 0;
   margin: 0;
   font-family: 'Fira Sans', Helvetica, Helvetica, sans-serif;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 1.6rem; }
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+}
 
 footer,
 header,
@@ -40,7 +54,8 @@ ul {
   list-style-type: none;
 }
 
-ul, li {
+ul,
+li {
   list-style-position: inside;
 }
 
@@ -104,6 +119,7 @@ header::before {
 }
 
 @media screen and (max-width: 800px) {
+
   .header-container::before,
   .header-container::after {
     display: none;
@@ -217,7 +233,7 @@ nav {
   margin-bottom: 1rem;
 }
 
-.sub-title > * {
+.sub-title>* {
   display: inline-block;
 }
 
@@ -269,6 +285,7 @@ nav {
 }
 
 @media screen and (max-width: 800px) {
+
   .posts,
   .misc {
     float: none;
@@ -387,8 +404,7 @@ nav {
   color: #919191;
 }
 
-.blog-meta-section span.value {
-}
+.blog-meta-section span.value {}
 
 footer {
   background-color: #222;
@@ -416,7 +432,8 @@ footer a {
 .panel-bio {
   width: 40%;
   position: relative;
-  padding-left: 150px;  /* must at least the same as bg size for profile image */
+  padding-left: 150px;
+  /* must at least the same as bg size for profile image */
 }
 
 .panel-bio::before {
@@ -471,13 +488,11 @@ footer a {
 
 .home .hero::after,
 .home header::before {
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    #4caf50,
-    #ffca28,
-    #222
-  );
+  background-image: linear-gradient(to right,
+      transparent,
+      #4caf50,
+      #ffca28,
+      #222);
 }
 
 /*****************************************/
@@ -505,13 +520,11 @@ footer a {
 
 .blog .hero::after,
 .blog header::before {
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    #03a9f4,
-    #9c27b0,
-    #222
-  );
+  background-image: linear-gradient(to right,
+      transparent,
+      #03a9f4,
+      #9c27b0,
+      #222);
 }
 
 .blog-content a {
@@ -567,13 +580,11 @@ footer a {
 
 .gpg .hero::after,
 .gpg header::before {
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    #ffc107,
-    #e91e63,
-    #222
-  );
+  background-image: linear-gradient(to right,
+      transparent,
+      #ffc107,
+      #e91e63,
+      #222);
 }
 
 .gpg-content a {
@@ -593,10 +604,10 @@ pre {
   margin: 0;
 }
 
-pre > code pre {
+pre>code pre {
   padding: .5rem;
   border-radius: 6px;
-  border: 1px solid rgba(32,74,135,.2);
+  border: 1px solid rgba(32, 74, 135, .2);
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   white-space: pre-wrap;
   word-spacing: normal;
