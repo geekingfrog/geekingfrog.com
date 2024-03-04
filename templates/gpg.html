@@ -15,6 +15,7 @@ class="gpg gpg-content"
 </section>
 
 <section class="container content">
+  <h1>Encryption</h1>
   <p>Last updated: July 25th 2021</p>
   <p>
     <a href="https://latacora.micro.blog/2019/07/16/the-pgp-problem.html">This article</a> and the fact that I never use gpg conviced me it's not worth keeping a gpg key.
@@ -22,6 +23,17 @@ class="gpg gpg-content"
   <p>If you really want to send me something encrypted, I recommend using <a href="https://github.com/FiloSottile/age">age</a>, with the following ssh public key:</p>
   <pre><code><pre>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJG+Ud7QuiO+AT6hAnPPhJTpGVI9i833/hYAgN4fXL4A</pre></code></pre>
   <p>Email address is in the footer. </p>
+
+  <h1>Signing</h1>
+  <p>Last updated: March 4th 2024</p>
+  <p>
+  If you want to merely authenticate something, I would recommend
+  <a href="https://jedisct1.github.io/minisign/">minisign</a>.
+  And if you ever want me to send you something that I signed, here's the public key I'd use:
+  </p>
+  <pre><code><pre>untrusted comment: minisign public key E6502BBF06919A97
+RWSXmpEGvytQ5oERaG8Sn71RSsUTwE2J8HAmK+oFGax7v4bm17h4x6zV</pre></code></pre>
+
 </section>
 
 {% endblock sections %}
