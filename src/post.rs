@@ -6,11 +6,8 @@ use rayon::prelude::*;
 
 use futures::stream::{Stream, StreamExt};
 
-use nom::{
-    bytes::complete::{take, take_until},
-    sequence::separated_pair,
-    Finish, IResult,
-};
+use winnow::{token, ModalResult, Parser};
+
 use time::Date;
 use tokio::fs;
 use tracing::Level;
@@ -35,7 +32,7 @@ struct PostHeader {
 // originally everything was tied to the lifetime of the original input
 // but it complicated things a great deal having to keep around the raw
 // strings alongside the Post (tried self ref structs, didn't work).
-// So do some good old cloning when constructing from nom parsed results.
+// So do some good old cloning when constructing from parsed results.
 #[derive(Debug, Clone)]
 pub struct Post {
     pub date: Date,
@@ -50,24 +47,37 @@ pub struct Post {
 /// extract the url friendly slug and the date of the post based on the filename
 /// 2022-06-29-clojure-context-logging.md will give
 /// (2022-06-29, clojure-context-logging)
-fn post_metadata(input: &str) -> IResult<&str, (&str, &str)> {
-    separated_pair(
-        take("yyyy-mm-dd".len()),
-        nom::character::complete::char('-'),
-        take_until("."),
-    )(input)
+fn post_metadata<'s>(filename: &mut &'s str) -> ModalResult<(Date, &'s str)> {
+    (datestr, token::literal('-'), title)
+        .map(|(d, _, t)| (d, t))
+        .parse_next(filename)
+}
+
+fn datestr<'s>(input: &mut &'s str) -> ModalResult<Date> {
+    token::take(4usize + 1 + 2 + 1 + 2)
+        .try_map(|raw_date| {
+            let format = time::macros::format_description!("[year]-[month]-[day]");
+            Date::parse(raw_date, &format)
+        })
+        .parse_next(input)
+}
+
+fn title<'s>(input: &mut &'s str) -> ModalResult<&'s str> {
+    winnow::combinator::alt((
+        // with suffix
+        (token::take_until(1.., ".md"), token::literal(".md")).map(|(t, _s)| t),
+        // without suffix
+        token::rest,
+    ))
+    .parse_next(input)
 }
 
 impl Post {
     pub fn parse(filename: &str, input: &str) -> Result<Post, String> {
-        let (_remaining, (raw_date, slug)) = post_metadata(filename)
-            .map_err(|e| e.to_owned())
-            .finish()
+        let mut x = filename;
+        let (date, slug) = post_metadata
+            .parse(&mut x)
             .map_err(|e| format!("{:?}", e))?;
-
-        let format = time::macros::format_description!("[year]-[month]-[day]");
-        let date = Date::parse(raw_date, &format)
-            .map_err(|e| format!("Invalid date: {} - {:?}", raw_date, e))?;
 
         let mut segments = input.splitn(3, "---");
         segments
@@ -190,12 +200,31 @@ mod test {
     type BoxResult<T> = Result<T, Box<dyn std::error::Error>>;
     use super::*;
     use pretty_assertions::assert_eq;
+    use time::macros::date;
 
     #[test]
-    fn test_parse_metadata() -> BoxResult<()> {
+    fn test_parse_metadata_with_suffix() -> BoxResult<()> {
         assert_eq!(
-            post_metadata("2022-06-29-clojure-context-logging.md"),
-            Ok((".md", ("2022-06-29", "clojure-context-logging")))
+            post_metadata(&mut "2022-06-29-clojure-context-logging.md"),
+            Ok((date!(2022 - 06 - 29), "clojure-context-logging"))
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_metadata_blah() -> BoxResult<()> {
+        assert_eq!(
+            post_metadata(&mut "2014-12-14-faster-ssl.md"),
+            Ok((date!(2014 - 12 - 14), "faster-ssl"))
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_metadata_without_suffix() -> BoxResult<()> {
+        assert_eq!(
+            post_metadata(&mut "2022-06-29-clojure-context-logging"),
+            Ok((date!(2022 - 06 - 29), "clojure-context-logging"))
         );
         Ok(())
     }

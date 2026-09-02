@@ -13,7 +13,6 @@ futures = "0.3.24"
 hyper = { version = "0.14.18", features = ["full"] }
 itertools = "0.10.3"
 liquid = "0.26.0"
-nom = "7.1.1"
 notify = { version = "4.0.17", default-features = false }
 parking_lot = "0.12.1"
 pulldown-cmark = "0.9.1"
@@ -23,7 +22,7 @@ serde_yaml = "0.9.13"
 syntect = "5.3.0"
 tera = "1.17.0"
 thiserror = "1.0.32"
-time = "0.3.17"
+time = {version = "0.3.17", features = ["parsing"] }
 tokio = { version = "1.18.1", features = ["full"] }
 tokio-stream = "0.1.10"
 tower = "0.4.12"
@@ -31,6 +30,7 @@ tower-http = { version="0.4.0", features = ["trace", "fs"] }
 tracing = "0.1.34"
 tracing-subscriber = { version = "0.3.11", features = ["env-filter"] }
 tracing-tree = "0.2.0"
+winnow = { version = "1.0.4", features = ["parser"] }
 
 
 [[bin]]
