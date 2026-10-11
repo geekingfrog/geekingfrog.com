@@ -554,6 +554,23 @@ footer a {
   display: block;
 }
 
+.blog-content {
+  figure {
+    margin: 2rem auto;
+    max-width: 100%;
+
+    img {
+      max-width: 100%;
+    }
+
+    figcaption {
+      margin: 0.5rem 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+  }
+}
+
 /*****************************************/
 /*                   GPG                 */
 /*****************************************/

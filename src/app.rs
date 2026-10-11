@@ -31,6 +31,7 @@ pub fn build(app_state: AppState) -> Router<()> {
             routing::get(|| async { Redirect::permanent("/blog") }),
         )
         .route("/blog/post/:slug", routing::get(handlers::blog::get_post))
+        .route("/nom", routing::get(handlers::nom::get))
         .route("/gpg", routing::get(handlers::gpg::get))
         .route("/feed.atom", routing::get(handlers::feed::get_feed))
         .route("/feed/:page", routing::get(handlers::feed::get_feed_page))

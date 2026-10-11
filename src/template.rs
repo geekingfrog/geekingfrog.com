@@ -1,6 +1,7 @@
 pub(crate) enum Section {
     Home,
     Blog,
+    Nom,
     Gpg
 }
 
@@ -19,6 +20,7 @@ pub(crate) fn base_ctx(header_link: Option<Section>) -> tera::Context {
     match header_link {
         Some(Section::Home) => ctx.insert("nav_target", "HOME"),
         Some(Section::Blog) => ctx.insert("nav_target", "BLOG"),
+        Some(Section::Nom) => ctx.insert("nav_target", "NOM"),
         Some(Section::Gpg) => ctx.insert("nav_target", "GPG"),
         None => (),
     }
